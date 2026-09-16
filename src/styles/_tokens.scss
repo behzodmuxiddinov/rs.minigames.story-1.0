@@ -1,0 +1,85 @@
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --bg: #f9f8f3;
+  --on-bg: #5f5d75;
+  --on-bg-low: #737380;
+  --bg-footer: #1e1b3a;
+  --bg-footer-low: #2a264f;
+  --bg-footer-lowest: #3c376e;
+  --on-bg-footer: #b9b5c9;
+  --surface: #fff9e5;
+  --surface-low: #fffcf5;
+  --primary: #ffd02b;
+  --primary-low: #fde047;
+  --primary-high: #e5bb00;
+  --on-primary: #242145;
+  --secondary: #f0eeff;
+  --tertiary: #3a2ebf;
+  --like: #ff4b4b;
+  --error: #b3261e;
+  --price-free: #0b8a8f;
+
+  --outline: #e5e7eb;
+  --outline-variant: #d2d2d2;
+
+  --avatar-random-1: #e9eef6;
+
+  --font-size-display-large: 56px;
+  --font-size-display-medium: 36px;
+  --font-size-display-small: 24px;
+  --font-size-headline-large: 32px;
+  --font-size-headline-medium: 24px;
+  --font-size-headline-small: 20px;
+  --font-size-body-large: 18px;
+  --font-size-body-medium: 16px;
+  --font-size-body-small: 14px;
+  --font-size-label-extra-large: 16px;
+  --font-size-label-large: 14px;
+  --font-size-label-medium: 12px;
+  --font-size-label-small: 10px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+
+  --font-family-inter: 'Inter', sans-serif;
+
+  --size-05: 4px;
+  --size-1: 8px;
+  --size-2: 16px;
+  --size-3: 24px;
+  --size-4: 32px;
+  --size-5: 40px;
+  --size-6: 48px;
+  --size-7: 56px;
+  --size-8: 64px;
+  --size-9: 72px;
+  --size-10: 80px;
+  --size-11: 88px;
+  --size-12: 96px;
+  --size-13: 104px;
+  --size-14: 112px;
+  --size-15: 120px;
+
+  --corner-extra-small: 4px;
+  --corner-small: 8px;
+  --corner-medium: 12px;
+  --corner-large: 16px;
+  --corner-extra-large: 24px;
+  --corner-full: 9999px;
+
+  --btn-large-padding: 24px 16px;
+  --btn-medium-padding: 20px 10px;
+  --btn-small-padding: 16px 8px;
+  --btn-icon-padding: 8px;
+
+  --shadow-level-1: 4px 4px var(--on-primary);
+  --shadow-level-2: 6px 6px var(--on-primary);
+  --shadow-level-3: 8px 8px var(--on-primary);
+}
+$breakpoint-mobile: 375px;
+$breakpoint-tablet: 768px;
+$breakpoint-large: 1024px;
+$breakpoint-desktop: 1920px;
