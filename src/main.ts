@@ -1,6 +1,4 @@
-import { App } from './app/app';
 import './style.scss';
+import { renderLayout } from './app/layout/layout';
 
-const app = document.createElement('div');
-app.id = 'app';
-document.body.innerHTML = App();
+renderLayout();
