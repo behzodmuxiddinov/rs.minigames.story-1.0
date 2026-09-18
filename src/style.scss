@@ -1,3 +1,8 @@
 @use './styles/tokens' as *;
 @use './styles/functions' as *;
 @use './styles/mixins' as *;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
