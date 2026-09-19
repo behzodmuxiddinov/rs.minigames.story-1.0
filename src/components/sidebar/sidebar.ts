@@ -1,7 +1,14 @@
-import logoUrl from '../../assets/brand-logo(white).svg';
+import './sidebar.scss';
+import logoUrl from '../../assets/images/brand-logo-white.svg';
 import closeIconUrl from '../../assets/icons/close.svg';
+import { NAV_LINKS } from '../../app/router';
 
 export function Sidebar(): string {
+  const navItems = NAV_LINKS.map(
+    ({ href, label }) =>
+      `<li class="nav_item"><a href="${href}">${label}</a></li>`,
+  ).join('');
+
   return `
     <aside id="sidebar" aria-label="Mobile navigation">
       <header>
@@ -19,14 +26,7 @@ export function Sidebar(): string {
         </button>
       </header>
       <nav class="sidebar_nav">
-        <ul class="nav_items">
-          <li class="nav_item">
-            <a href="#/home">Home</a>
-          </li>
-          <li class="nav_item"><a href="#/library">Library</a></li>
-          <li class="nav_item"><a href="#/tournaments">Tournaments</a></li>
-          <li class="nav_item"><a href="#/community">Community</a></li>
-        </ul>
+        <ul class="nav_items">${navItems}</ul>
       </nav>
       <div class="sidebar_actions">
         <button class="btn btn_outline" type="button">Log In</button>
@@ -82,19 +82,4 @@ export function initSidebar(): void {
       setOpen(false);
     }
   });
-
-  function updateActiveLink(): void {
-    const navItems = [
-      ...document.querySelectorAll<HTMLAnchorElement>('.nav_items a'),
-    ];
-    const currentHash = globalThis.location.hash;
-    const normalizedHash = ['', '#', '#/'].includes(currentHash)
-      ? '#/home'
-      : currentHash;
-    for (const item of navItems) {
-      item.classList.toggle('is_active', item.hash === normalizedHash);
-    }
-  }
-  updateActiveLink();
-  globalThis.addEventListener('hashchange', updateActiveLink);
 }

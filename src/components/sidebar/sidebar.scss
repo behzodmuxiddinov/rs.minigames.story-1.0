@@ -1,8 +1,4 @@
-@use '../mixins' as *;
-
-body.is_locked {
-  overflow: hidden;
-}
+@use '../../styles/mixins' as *;
 
 aside {
   position: fixed;
@@ -111,15 +107,5 @@ aside {
       width: 100%;
       padding: 10px;
     }
-  }
-}
-
-.btn_outline {
-  background-color: transparent;
-  color: var(--white);
-  border-color: var(--white);
-
-  &:hover {
-    background-color: var(--bg-footer-low);
   }
 }
