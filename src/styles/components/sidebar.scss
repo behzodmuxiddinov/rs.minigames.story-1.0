@@ -74,14 +74,14 @@ aside {
     flex: 1;
   }
 
-  .sidebar_items {
+  .nav_items {
     display: flex;
     flex-direction: column;
     gap: var(--size-3);
     list-style: none;
   }
 
-  .sidebar_item {
+  .nav_item {
     a {
       display: inline-block;
       color: var(--on-bg-footer);
@@ -97,8 +97,7 @@ aside {
       }
 
       &.is_active {
-        color: var(--primary);
-        font-weight: var(--font-weight-bold);
+        @include active_link;
       }
     }
   }

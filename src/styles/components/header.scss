@@ -155,11 +155,13 @@
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
       text-decoration: none;
-      transition: color 0.2s ease;
+      transition: transform 0.2s ease;
 
-      &:hover,
-      &:focus-visible {
-        color: var(--on-primary);
+      &:hover:not(.is_active) {
+        transform: scale(1.1);
+      }
+      &.is_active {
+        @include active_link;
       }
     }
   }

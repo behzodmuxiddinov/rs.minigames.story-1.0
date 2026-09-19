@@ -19,13 +19,13 @@ export function Sidebar(): string {
         </button>
       </header>
       <nav class="sidebar_nav">
-        <ul class="sidebar_items">
-          <li class="sidebar_item">
-            <a href="#/home" class="is_active">Home</a>
+        <ul class="nav_items">
+          <li class="nav_item">
+            <a href="#/home">Home</a>
           </li>
-          <li class="sidebar_item"><a href="#/library">Library</a></li>
-          <li class="sidebar_item"><a href="#/tournaments">Tournaments</a></li>
-          <li class="sidebar_item"><a href="#/community">Community</a></li>
+          <li class="nav_item"><a href="#/library">Library</a></li>
+          <li class="nav_item"><a href="#/tournaments">Tournaments</a></li>
+          <li class="nav_item"><a href="#/community">Community</a></li>
         </ul>
       </nav>
       <div class="sidebar_actions">
@@ -82,4 +82,19 @@ export function initSidebar(): void {
       setOpen(false);
     }
   });
+
+  function updateActiveLink(): void {
+    const nav_items =
+      document.querySelectorAll<HTMLAnchorElement>('.nav_items a');
+    const currentHash = window.location.hash;
+    const normalizedHash =
+      currentHash === '#' || currentHash === '' || currentHash === '#/'
+        ? '#/home'
+        : currentHash;
+    nav_items.forEach((item) => {
+      item.classList.toggle('is_active', item.hash === normalizedHash);
+    });
+  }
+  updateActiveLink();
+  window.addEventListener('hashchange', updateActiveLink);
 }
