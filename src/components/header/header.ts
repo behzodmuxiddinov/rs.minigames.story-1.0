@@ -18,7 +18,7 @@ export function Header(): string {
             </a>
           </div>
           <div class="tablet_nav">
-            <button class="btn btn_primary" type="button">Sign up</button>
+            <button class="btn btn_primary" type="button" data-auth="register">Sign up</button>
             <button
               class="header_burger"
               type="button"
@@ -34,8 +34,8 @@ export function Header(): string {
           <nav class="header_nav" id="header_nav" aria-label="Main navigation">
             <ul class="nav_items">${navItems}</ul>
             <div class="header_actions">
-              <button class="btn btn_ghost" type="button">Log in</button>
-              <button class="btn btn_primary" type="button">Sign up</button>
+              <button class="btn btn_ghost" type="button" data-auth="login">Log in</button>
+              <button class="btn btn_primary" type="button" data-auth="register">Sign up</button>
             </div>
           </nav>
         </div>

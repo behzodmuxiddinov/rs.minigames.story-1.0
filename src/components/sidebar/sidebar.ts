@@ -29,8 +29,8 @@ export function Sidebar(): string {
         <ul class="nav_items">${navItems}</ul>
       </nav>
       <div class="sidebar_actions">
-        <button class="btn btn_outline" type="button">Log In</button>
-        <button class="btn btn_primary" type="button">Sign Up</button>
+        <button class="btn btn_outline" type="button" data-auth="login">Log In</button>
+        <button class="btn btn_primary" type="button" data-auth="register">Sign Up</button>
       </div>
     </aside>
   `;
@@ -42,7 +42,8 @@ export function initSidebar(): void {
   const overlay = document.querySelector<HTMLDivElement>('.overlay');
   const closeButton =
     document.querySelector<HTMLButtonElement>('.sidebar_close_btn');
-
+  const authButtons =
+    document.querySelectorAll<HTMLButtonElement>('[data-auth]');
   if (!sidebar || !burger || !closeButton || !overlay) {
     return;
   }
@@ -76,6 +77,12 @@ export function initSidebar(): void {
   overlay.addEventListener('click', () => {
     setOpen(false);
   });
+
+  for (const authButton of authButtons) {
+    authButton.addEventListener('click', () => {
+      setOpen(false);
+    });
+  }
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && sidebar.classList.contains('is_open')) {
