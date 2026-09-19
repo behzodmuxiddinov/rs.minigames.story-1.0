@@ -1,3 +1,4 @@
+import { Footer } from '../components/footer/footer';
 import { Header } from '../components/header/header';
 import { Overlay } from '../components/overlay/overlay';
 import { Sidebar, initSidebar } from '../components/sidebar/sidebar';
@@ -12,6 +13,8 @@ export function initApp(): void {
     ${AuthDialog()}
 
     <main class="main_content"></main>
+
+    ${Footer()}
   `;
 
   initSidebar();
