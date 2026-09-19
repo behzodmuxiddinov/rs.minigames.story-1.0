@@ -1,4 +1,7 @@
-@use './tokens' as *;
+$breakpoint-mobile: 375px;
+$breakpoint-tablet: 768px;
+$breakpoint-large: 1024px;
+$breakpoint-desktop: 1920px;
 
 @mixin mobile {
   @media (min-width: $breakpoint-mobile) {
@@ -17,11 +20,13 @@
     @content;
   }
 }
+
 @mixin active_link {
   &.is_active {
     color: var(--primary);
     font-weight: var(--font-weight-bold);
-    @include desktop() {
+
+    @include desktop {
       color: var(--on-primary);
     }
   }

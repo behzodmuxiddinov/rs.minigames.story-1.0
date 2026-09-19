@@ -1,4 +1,4 @@
-import './style.scss';
-import { renderLayout } from './app/layout/layout';
+import './styles/globals.scss';
+import { initApp } from './app';
 
-renderLayout();
+initApp();
