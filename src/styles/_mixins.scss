@@ -17,3 +17,12 @@
     @content;
   }
 }
+@mixin active_link {
+  &.is_active {
+    color: var(--primary);
+    font-weight: var(--font-weight-bold);
+    @include desktop() {
+      color: var(--on-primary);
+    }
+  }
+}
