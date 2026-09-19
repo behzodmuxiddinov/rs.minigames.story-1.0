@@ -17,7 +17,7 @@ export function Header(): string {
               type="button"
               aria-label="Toggle navigation"
               aria-expanded="false"
-              aria-controls="header_nav"
+              aria-controls="sidebar"
             >
               <span></span>
               <span></span>
@@ -40,26 +40,4 @@ export function Header(): string {
       </div>
     </header>
   `;
-}
-
-export function initHeader(): void {
-  const burger = document.querySelector<HTMLButtonElement>('.header_burger');
-
-  if (!burger) {
-    return;
-  }
-
-  const setExpanded = (expanded: boolean): void => {
-    burger.setAttribute('aria-expanded', String(expanded));
-  };
-
-  burger.addEventListener('click', () => {
-    setExpanded(burger.getAttribute('aria-expanded') !== 'true');
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      setExpanded(false);
-    }
-  });
 }
