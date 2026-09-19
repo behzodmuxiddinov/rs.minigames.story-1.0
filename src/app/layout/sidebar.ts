@@ -84,17 +84,17 @@ export function initSidebar(): void {
   });
 
   function updateActiveLink(): void {
-    const nav_items =
-      document.querySelectorAll<HTMLAnchorElement>('.nav_items a');
-    const currentHash = window.location.hash;
-    const normalizedHash =
-      currentHash === '#' || currentHash === '' || currentHash === '#/'
-        ? '#/home'
-        : currentHash;
-    nav_items.forEach((item) => {
+    const navItems = [
+      ...document.querySelectorAll<HTMLAnchorElement>('.nav_items a'),
+    ];
+    const currentHash = globalThis.location.hash;
+    const normalizedHash = ['', '#', '#/'].includes(currentHash)
+      ? '#/home'
+      : currentHash;
+    for (const item of navItems) {
       item.classList.toggle('is_active', item.hash === normalizedHash);
-    });
+    }
   }
   updateActiveLink();
-  window.addEventListener('hashchange', updateActiveLink);
+  globalThis.addEventListener('hashchange', updateActiveLink);
 }
