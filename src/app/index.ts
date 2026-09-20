@@ -4,6 +4,7 @@ import { Overlay } from '../components/overlay/overlay';
 import { Sidebar, initSidebar } from '../components/sidebar/sidebar';
 import { AuthDialog, initAuthDialog } from '../features/auth/auth-dialog';
 import { initRouter } from './router';
+import { initiMainContent } from '../pages/home/home';
 
 export function initApp(): void {
   document.body.innerHTML = `
@@ -20,4 +21,5 @@ export function initApp(): void {
   initSidebar();
   initRouter();
   initAuthDialog();
+  initiMainContent();
 }
