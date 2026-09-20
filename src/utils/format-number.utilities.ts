@@ -1,6 +1,6 @@
 export const formatNumber = (number: number): string => {
   if (!number) return '';
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return number.toString().replaceAll(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
 export const formatCompact = (number: number): string => {

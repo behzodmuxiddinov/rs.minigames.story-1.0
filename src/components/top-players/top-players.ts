@@ -1,5 +1,5 @@
 import './top-players.scss';
-import { formatNumber } from '@/utils/formatNumber.utils';
+import { formatNumber } from '@/utils/format-number.utilities';
 
 type TableData = {
   rank: number;

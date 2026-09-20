@@ -1,5 +1,5 @@
 import './new-games.scss';
-import { formatCompact } from '@/utils/formatNumber.utils';
+import { formatCompact } from '@/utils/format-number.utilities';
 import arrowLeftIcon from '@/assets/icons/arrow_back.svg';
 import arrowRightIcon from '@/assets/icons/arrow_forward.svg';
 import starIcon from '@/assets/icons/star.svg';
