@@ -4,24 +4,29 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  padding: var(--size-2);
   background-color: var(--bg);
   border-bottom: 2px solid var(--on-primary);
 
+  @include tablet {
+    padding: var(--size-2) var(--size-5);
+  }
+
+  @include desktop {
+    padding: calc(var(--size-3) + 2px) var(--size-5);
+  }
+
+  .header_container {
+    max-width: calc(1680px + var(--size-5) * 2);
+    width: 100%;
+    margin: 0 auto;
+  }
+
   .header_inner_content {
-    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: var(--size-4);
-    padding: var(--size-2);
-
-    @include tablet {
-      padding: var(--size-2) var(--size-5);
-    }
-
-    @include desktop {
-      padding: 26px var(--size-10);
-    }
   }
 
   .logo_content {

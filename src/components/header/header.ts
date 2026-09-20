@@ -10,7 +10,7 @@ export function Header(): string {
 
   return `
     <header class="header_content">
-      <div class="container">
+      <div class="header_container">
         <div class="header_inner_content">
           <div class="logo_content">
             <a href="#/home" class="logo_link" aria-label="MiniGames home">
