@@ -20,10 +20,14 @@ body.is_locked {
 
 .main_content {
   flex: 1;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .container {
-  max-width: 1920px;
+  max-width: 1680px;
   width: 100%;
   margin: 0 auto;
 }
