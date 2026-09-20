@@ -163,16 +163,20 @@
 
   .footer_credit_icon {
     display: flex;
+    justify-content: center;
     align-items: center;
     line-height: 0;
+    background-color: var(--on-primary);
+    height: var(--size-3);
+    width: var(--size-3);
+    border-radius: var(--corner-full);
 
     svg {
       width: auto;
-      height: var(--size-2);
+      height: calc(var(--size-05) * 2);
     }
   }
-
-  .footer_credit_icon_mono svg path {
-    fill: currentColor;
+  .footer_credit_icon_mono {
+    background-color: var(--white);
   }
 }

@@ -93,7 +93,7 @@ export function Footer(): string {
           <div class="footer_bottom">
             <p>&copy; 2026 MiniGames. All rights reserved.</p>
             <a href="https://rs.school" class="footer_credit" target="_blank" rel="noreferrer">
-              <span class="footer_credit_icon">${rsSchoolIcon}</span>
+              <div class="footer_credit_icon">${rsSchoolIcon}</div>
               RS School
             </a>
             <a href="https://github.com" class="footer_credit" target="_blank" rel="noreferrer">
