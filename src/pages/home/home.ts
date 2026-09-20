@@ -1,5 +1,6 @@
 import './home.scss';
 import { formatNumber } from '@/utils/formatNumber.utils';
+import { NewGames, initNewGames } from '@/components/new-games/new-games';
 
 export function Home(): string {
   const tableBody = tableData()
@@ -45,6 +46,7 @@ export function Home(): string {
         </section>
         <div class="main_section">
           <div class="container">
+            ${NewGames()}
             <div class="top_players_content">
               <div class="top_players_header">
                 <div class="top_players_stick"></div>
@@ -143,7 +145,9 @@ function getColors(index: number): string {
   return '';
 }
 
-export function initiMainContent(): void {
+export function initMainContent(): void {
+  void initNewGames();
+
   const playersTable = document.querySelectorAll('.top_players_table tbody tr');
   playersTable.forEach((player, index) => {
     if ((index + 1) % 2 === 0) {

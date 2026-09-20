@@ -111,6 +111,12 @@
     @include desktop {
       padding: var(--size-5) 0;
     }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--size-5);
+    }
   }
   .top_players_content {
     display: flex;
