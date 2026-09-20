@@ -102,14 +102,13 @@
   }
   .main_section {
     background-color: var(--surface);
-    @include mobile {
-      padding: var(--size-2);
-    }
+    padding: var(--size-2);
+
     @include tablet {
       padding: var(--size-3) var(--size-5);
     }
     @include desktop {
-      padding: var(--size-5) 0;
+      padding: var(--size-5);
     }
 
     .container {
