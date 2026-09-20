@@ -1,6 +1,7 @@
 import './home.scss';
 import { formatNumber } from '@/utils/formatNumber.utils';
 import { NewGames, initNewGames } from '@/components/new-games/new-games';
+import { DeveloperCta } from '@/components/developer-cta/developer-cta';
 
 export function Home(): string {
   const tableBody = tableData()
@@ -70,6 +71,7 @@ export function Home(): string {
                 </table>
               </div>
             </div>
+            ${DeveloperCta()}
           </div>
         </div>
     </div>

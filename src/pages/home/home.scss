@@ -115,7 +115,15 @@
     .container {
       display: flex;
       flex-direction: column;
-      gap: var(--size-5);
+      @include mobile {
+        gap: var(--size-4);
+      }
+      @include tablet {
+        gap: var(--size-6);
+      }
+      @include desktop {
+        gap: var(--size-8);
+      }
     }
   }
   .top_players_content {
