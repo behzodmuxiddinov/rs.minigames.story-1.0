@@ -19,11 +19,16 @@
   --like: #ff4b4b;
   --error: #b3261e;
   --price-free: #0b8a8f;
+  --scrim: rgb(93 98 120 / 70%);
 
   --outline: #e5e7eb;
   --outline-variant: #d2d2d2;
 
   --avatar-random-1: #e9eef6;
+  --avatar-random-2: #a3e2c9;
+  --avatar-random-3: #bce3ff;
+  --avatar-random-4: #ffc6ff;
+  --avatar-random-5: #e8dff5;
 
   --font-size-display-large: 56px;
   --font-size-display-medium: 36px;
@@ -79,7 +84,3 @@
   --shadow-level-2: 6px 6px var(--on-primary);
   --shadow-level-3: 8px 8px var(--on-primary);
 }
-$breakpoint-mobile: 375px;
-$breakpoint-tablet: 768px;
-$breakpoint-large: 1024px;
-$breakpoint-desktop: 1920px;

@@ -1,6 +1,4 @@
-import { App } from './app/app';
-import './style.scss';
+import './styles/globals.scss';
+import { initApp } from './app';
 
-const app = document.createElement('div');
-app.id = 'app';
-document.body.innerHTML = App();
+initApp();
