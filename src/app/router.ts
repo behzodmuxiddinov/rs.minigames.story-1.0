@@ -1,4 +1,4 @@
-import { Home } from '@/pages/home/home';
+import { Home, initMainContent } from '@/pages/home/home';
 
 export interface NavLink {
   href: string;
@@ -15,17 +15,29 @@ interface Route {
 const DEFAULT_HASH = '#/home';
 
 const ROUTES: Record<string, Route> = {
-  '#/home': { label: 'Home', title: 'MiniGames', render: Home },
-  '#/library': { label: 'Library', title: 'Library | MiniGames', render: Home },
+  '#/home': {
+    label: 'Home',
+    title: 'MiniGames',
+    render: Home,
+    init: initMainContent,
+  },
+  '#/library': {
+    label: 'Library',
+    title: 'Library | MiniGames',
+    render: Home,
+    init: initMainContent,
+  },
   '#/tournaments': {
     label: 'Tournaments',
     title: 'Tournaments | MiniGames',
     render: Home,
+    init: initMainContent,
   },
   '#/community': {
     label: 'Community',
     title: 'Community | MiniGames',
     render: Home,
+    init: initMainContent,
   },
 };
 
