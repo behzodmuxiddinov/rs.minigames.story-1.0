@@ -1,0 +1,101 @@
+@use '../../styles/mixins' as *;
+
+.home_hero {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: var(--size-6) var(--size-2);
+  background-image: url('@/assets/images/home_hero.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  @include tablet {
+    padding: var(--size-10) var(--size-5);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--scrim);
+  }
+
+  .hero_container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero_card {
+    max-width: calc(var(--size-15) * 5 + 40px);
+    width: 100%;
+    background-color: var(--bg);
+    border: calc(var(--size-05) - 1px) solid var(--on-primary);
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+    border-radius: var(--corner-extra-large);
+    line-height: 150%;
+    padding: var(--size-2);
+    box-shadow: var(--shadow-level-1);
+
+    @include tablet {
+      padding: var(--size-3);
+      gap: var(--size-2);
+    }
+    @include desktop {
+      padding: var(--size-6);
+    }
+  }
+
+  .hero_title {
+    font-size: var(--font-size-display-small);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+    color: var(--on-primary);
+
+    @include tablet {
+      font-size: var(--font-size-display-medium);
+    }
+
+    @include desktop {
+      font-size: var(--font-size-display-large);
+    }
+  }
+
+  .hero_descr {
+    color: var(--on-bg);
+    font-weight: var(--font-weight-medium);
+  }
+  .hero_descr_large {
+    display: none;
+    @include tablet {
+      display: block;
+    }
+  }
+
+  .hero_descr_short {
+    display: block;
+    @include tablet {
+      display: none;
+    }
+  }
+
+  .hero_card_btn {
+    font-weight: var(--font-weight-bold);
+    padding: var(--size-2) var(--size-3);
+    background-color: var(--primary);
+    color: var(--on-primary);
+    text-decoration: none;
+    border: calc(var(--size-05) - 2px) solid var(--on-primary);
+    border-radius: var(--size-1);
+    width: max-content;
+    line-height: 150%;
+    size: calc(var(--size-2) + 2px);
+    &:hover {
+      background-color: var(--primary-high);
+    }
+  }
+}
