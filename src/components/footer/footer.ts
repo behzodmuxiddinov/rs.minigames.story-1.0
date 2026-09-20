@@ -66,36 +66,42 @@ export function Footer(): string {
 
   return `
     <footer class="footer_content">
-      <div class="container">
-        <div class="footer_inner_content">
-          <div class="footer_brand">
-            <a href="#/home" class="logo_link" aria-label="MiniGames home">
-              <img src="${logoUrl}" alt="MiniGames" width="150" height="32" />
-            </a>
-            <p class="footer_text">
-              Take a short break and have fun. Hundreds of curated casual
-              mini-games right in your web browser. No download required.
-            </p>
-          </div>
-          <div class="footer_columns">
-            ${columns}
-            <div class="footer_column">
-              <h2 class="footer_title">Community</h2>
-              <div class="footer_socials">${socials}</div>
+      <div class="footer_top">
+        <div class="container">
+          <div class="footer_inner_content">
+            <div class="footer_brand">
+              <a href="#/home" class="logo_link" aria-label="MiniGames home">
+                <img src="${logoUrl}" alt="MiniGames" width="150" height="32" />
+              </a>
+              <p class="footer_text">
+                Take a short break and have fun. Hundreds of curated casual
+                mini-games right in your web browser. No download required.
+              </p>
+            </div>
+            <div class="footer_columns">
+              ${columns}
+              <div class="footer_column">
+                <h2 class="footer_title">Community</h2>
+                <div class="footer_socials">${socials}</div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="footer_bottom">
-          <p>&copy; 2026 MiniGames. All rights reserved.</p>
-          <a href="https://rs.school" class="footer_credit" target="_blank" rel="noreferrer">
-            <span class="footer_credit_icon">${rsSchoolIcon}</span>
-            RS School
-          </a>
-          <a href="https://github.com" class="footer_credit" target="_blank" rel="noreferrer">
-            <span class="footer_credit_icon footer_credit_icon_mono">${codeIcon}</span>
-            @student-nickname
-          </a>
-          <p class="footer_note">Designed with love</p>
+      </div>
+      <div class="footer_bottom_wrap">
+        <div class="container">
+          <div class="footer_bottom">
+            <p>&copy; 2026 MiniGames. All rights reserved.</p>
+            <a href="https://rs.school" class="footer_credit" target="_blank" rel="noreferrer">
+              <span class="footer_credit_icon">${rsSchoolIcon}</span>
+              RS School
+            </a>
+            <a href="https://github.com" class="footer_credit" target="_blank" rel="noreferrer">
+              <span class="footer_credit_icon footer_credit_icon_mono">${codeIcon}</span>
+              @student-nickname
+            </a>
+            <p class="footer_note">Designed with love</p>
+          </div>
         </div>
       </div>
     </footer>
