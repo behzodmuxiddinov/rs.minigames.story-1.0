@@ -12,7 +12,7 @@ export function initApp(): void {
     ${Overlay()}
     ${AuthDialog()}
 
-    <main class="main_content"></main>
+    <main class="main_content" tabindex="-1"></main>
 
     ${Footer()}
   `;
