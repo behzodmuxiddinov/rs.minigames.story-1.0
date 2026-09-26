@@ -1,0 +1,22 @@
+@use '../../../styles/mixins' as *;
+.filter_card_types {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  gap: var(--size-1);
+  .filter_card_type_btn {
+    border: calc(var(--size-05) / 2) solid var(--on-primary);
+    border-radius: var(--corner-extra-large);
+    padding: var(--size-1) var(--size-2);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+    cursor: pointer;
+    text-transform: capitalize;
+    &:hover {
+      background-color: var(--surface);
+    }
+    &.is_active {
+      background-color: var(--primary);
+    }
+  }
+}
