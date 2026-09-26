@@ -1,4 +1,4 @@
-import { Home, initMainContent } from '@/pages/home/home';
+import { Home, Library, initMainContent, initLibrary } from '@/pages';
 
 export interface NavLink {
   href: string;
@@ -24,8 +24,8 @@ const ROUTES: Record<string, Route> = {
   '#/library': {
     label: 'Library',
     title: 'Library | MiniGames',
-    render: Home,
-    init: initMainContent,
+    render: Library,
+    init: initLibrary,
   },
   '#/tournaments': {
     label: 'Tournaments',

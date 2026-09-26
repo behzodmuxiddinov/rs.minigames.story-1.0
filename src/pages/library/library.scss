@@ -1,0 +1,55 @@
+@use '../../styles/mixins' as *;
+.library_content {
+  .library_inner_content {
+    padding: var(--size-2) var(--size-3);
+
+    @include tablet {
+      padding: var(--size-3) var(--size-5);
+    }
+    @include desktop {
+      padding: var(--size-5) var(--size-15);
+    }
+  }
+  .library_header_content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-1);
+    h1 {
+      font-weight: var(--font-weight-bold);
+      color: var(--on-primary);
+    }
+    p {
+      font-weight: var(--font-weight-medium);
+      color: var(--on-bg);
+    }
+  }
+  .library_inner_content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+    @include tablet {
+      gap: var(--size-3);
+    }
+    @include desktop {
+      gap: var(--size-5);
+    }
+  }
+  .games_section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+    padding: var(--size-2) 0;
+    @include desktop {
+      padding: calc(var(--size-05) * 3) 0;
+    }
+  }
+  .library_filter_content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--size-2);
+    @include desktop {
+      flex-direction: row;
+    }
+  }
+}
