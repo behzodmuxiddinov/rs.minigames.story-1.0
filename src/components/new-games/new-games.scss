@@ -44,21 +44,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--size-4);
-    height: var(--size-4);
+    width: var(--size-5);
+    height: var(--size-5);
     color: var(--on-primary);
-    background-color: var(--primary);
+    background-color: var(--white);
     border: 2px solid var(--on-primary);
     border-radius: var(--corner-full);
+    transition: all 0.2s ease;
     cursor: pointer;
 
     .carousel_icon {
-      width: var(--size-2);
-      height: var(--size-2);
+      width: calc(var(--size-2) + 2px);
+      height: calc(var(--size-3) - 4px);
+      padding: 4px;
     }
 
     &:hover:not(:disabled) {
-      background-color: var(--primary-high);
+      background-color: var(--primary);
     }
 
     &:disabled {
@@ -70,14 +72,8 @@
   .new_games_track {
     display: flex;
     gap: var(--size-2);
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
+    overflow: hidden;
     padding-bottom: var(--size-05);
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 
   .new_games_message {
@@ -87,28 +83,30 @@
 
   .game_card {
     position: relative;
-    flex: 0 0 auto;
-    width: calc(var(--size-12) - var(--size-2));
+    flex: 1 1 7.5%;
+    min-width: 0;
     height: calc(var(--size-15) + var(--size-10));
     overflow: hidden;
     background-color: var(--secondary);
     border: 2.5px solid var(--on-primary);
     border-radius: var(--corner-large);
     cursor: pointer;
-    transition: width 0.3s ease;
+    transition: flex-basis 0.3s ease;
 
     @include tablet {
-      width: calc(var(--size-15) + var(--size-10));
       height: calc(var(--size-15) * 2 + var(--size-2));
     }
 
     &.is_active {
-      width: calc(var(--size-15) + var(--size-4));
       box-shadow: var(--shadow-level-1);
+      flex-basis: 45%;
+    }
+    &.half_active {
+      flex-basis: 18%;
+    }
 
-      @include tablet {
-        width: calc(var(--size-15) * 4 + var(--size-9));
-      }
+    &.non_active .game_card_info {
+      display: none;
     }
   }
 
@@ -131,11 +129,21 @@
     gap: var(--size-05);
     padding: var(--size-1);
     color: var(--white);
-    background: linear-gradient(to top, rgb(0 0 0 / 85%), transparent);
-
     @include tablet {
       padding: var(--size-2);
     }
+  }
+  .game_card_shadow {
+    position: absolute;
+    inset: auto 0 0;
+    height: var(--size-10);
+    width: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.4) 17.31%,
+      rgba(0, 0, 0, 0.85) 46.15%
+    );
   }
 
   .game_card_name {
