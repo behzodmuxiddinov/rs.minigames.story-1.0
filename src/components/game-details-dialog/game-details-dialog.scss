@@ -1,0 +1,364 @@
+@use '../../styles/mixins' as *;
+
+.game_details_dialog {
+  --details-max-height: calc(100dvh - var(--size-4));
+  width: calc(100% - var(--size-4));
+  max-width: var(--dialog-width-large);
+  max-height: var(--details-max-height);
+  margin: auto;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  overflow: visible;
+
+  &::backdrop {
+    background-color: var(--on-bg);
+    opacity: 0.5;
+  }
+
+  .game_details_inner {
+    position: relative;
+    max-height: var(--details-max-height);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background-color: var(--bg);
+    border: var(--border-width-medium) solid var(--on-primary);
+    border-radius: var(--corner-large);
+    box-shadow: var(--shadow-level-2);
+  }
+
+  .game_details_close {
+    position: absolute;
+    top: var(--size-1);
+    right: var(--size-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-4);
+    height: var(--size-4);
+    padding: var(--size-1);
+    color: var(--on-primary);
+    background-color: var(--white);
+    border: var(--border-width-medium) solid var(--on-primary);
+    border-radius: var(--corner-full);
+    cursor: pointer;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .game_details_img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-bottom: var(--border-width-medium) solid var(--on-primary);
+
+    @include tablet {
+      aspect-ratio: 5 / 2;
+    }
+  }
+
+  .game_details_body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+    padding: var(--size-2);
+
+    @include tablet {
+      padding: var(--size-3);
+    }
+  }
+
+  .game_details_header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-1);
+
+    @include tablet {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .game_details_title {
+    font-size: var(--font-size-headline-medium);
+    font-weight: var(--font-weight-extra-bold);
+    line-height: 1.2;
+    color: var(--on-primary);
+
+    @include tablet {
+      font-size: var(--font-size-headline-large);
+    }
+  }
+
+  .game_details_meta {
+    display: flex;
+    gap: var(--size-2);
+  }
+
+  .game_details_meta_item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-05);
+    font-size: var(--font-size-label-large);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+    white-space: nowrap;
+
+    img {
+      width: var(--size-2);
+      height: var(--size-2);
+    }
+  }
+
+  .game_details_description {
+    font-size: var(--font-size-body-small);
+    line-height: 1.5;
+    color: var(--on-bg);
+  }
+
+  .game_details_stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--size-1);
+
+    @include tablet {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .game_details_stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-05);
+    padding: var(--size-1);
+    background-color: var(--white);
+    border: var(--border-width-medium) solid var(--on-primary);
+    border-radius: var(--corner-small);
+    box-shadow: var(--shadow-level-1);
+  }
+
+  .game_details_stat_label {
+    font-size: var(--font-size-label-small);
+    color: var(--on-bg-low);
+  }
+
+  .game_details_stat_value {
+    font-size: var(--font-size-label-large);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+    text-transform: capitalize;
+  }
+
+  .game_details_actions {
+    display: flex;
+    gap: var(--size-1);
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--size-1);
+      min-height: var(--size-5);
+      font-family: var(--font-family-inter);
+      font-size: var(--font-size-label-large);
+      font-weight: var(--font-weight-bold);
+      color: var(--on-primary);
+      border: var(--border-width-medium) solid var(--on-primary);
+      border-radius: var(--corner-small);
+      box-shadow: var(--shadow-level-1);
+      cursor: pointer;
+    }
+
+    img {
+      width: var(--size-3);
+      height: var(--size-3);
+      object-fit: contain;
+    }
+  }
+
+  .game_details_play {
+    flex: 1;
+    background-color: var(--primary);
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--primary-high);
+    }
+  }
+
+  .game_details_favorite {
+    width: var(--size-5);
+    background-color: var(--white);
+
+    span {
+      display: none;
+    }
+    &:hover {
+      background-color: var(--surface);
+    }
+
+    @include tablet {
+      flex: 1;
+
+      span {
+        display: inline;
+      }
+    }
+  }
+
+  .game_details_section_title {
+    margin-bottom: var(--size-1);
+    font-size: var(--font-size-label-large);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+  }
+
+  .game_details_records,
+  .game_details_comments {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-1);
+    list-style: none;
+  }
+
+  .game_details_record {
+    display: flex;
+    align-items: center;
+    gap: var(--size-1);
+    padding: var(--size-1) var(--size-2);
+    font-size: var(--font-size-label-medium);
+    background-color: var(--white);
+    border-radius: var(--corner-small);
+  }
+
+  .game_details_record_player {
+    flex: 1;
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+  }
+
+  .game_details_record_score {
+    font-size: var(--font-size-label-large);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+  }
+
+  .game_details_record_date,
+  .game_details_comment_date {
+    font-size: var(--font-size-label-small);
+    color: var(--on-bg-low);
+  }
+
+  .game_details_comment_form {
+    display: flex;
+    align-items: center;
+    gap: var(--size-1);
+    margin-bottom: var(--size-2);
+  }
+
+  .game_details_avatar {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-4);
+    height: var(--size-4);
+    font-size: var(--font-size-label-large);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+    background-color: var(--primary);
+    border: var(--border-width-medium) solid var(--on-primary);
+    border-radius: var(--corner-full);
+
+    &.is_small {
+      width: var(--size-3);
+      height: var(--size-3);
+      font-size: var(--font-size-label-small);
+      background-color: var(--avatar-random-3);
+      border-width: var(--border-width-thin);
+    }
+  }
+
+  .game_details_comment_input {
+    flex: 1;
+    min-width: 0;
+    height: var(--size-4);
+    padding: 0 var(--size-1);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-label-medium);
+    color: var(--on-primary);
+    background-color: var(--white);
+    border: var(--border-width-medium) solid var(--on-primary);
+    border-radius: var(--corner-small);
+  }
+
+  .game_details_send {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-4);
+    height: var(--size-4);
+    padding: var(--size-1);
+    color: var(--white);
+    background-color: var(--on-primary);
+    border: none;
+    border-radius: var(--corner-small);
+    cursor: pointer;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .game_details_comment {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-1);
+    padding: var(--size-1) var(--size-2);
+    background-color: var(--white);
+    border: var(--border-width-medium) solid var(--on-primary);
+    border-radius: var(--corner-small);
+    box-shadow: var(--shadow-level-1);
+  }
+
+  .game_details_comment_header {
+    display: flex;
+    align-items: center;
+    gap: var(--size-1);
+  }
+
+  .game_details_comment_author {
+    flex: 1;
+    font-size: var(--font-size-label-medium);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+  }
+
+  .game_details_comment_text {
+    font-size: var(--font-size-label-medium);
+    line-height: 1.5;
+    color: var(--on-primary);
+  }
+
+  .game_details_comment_likes {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-05);
+    font-size: var(--font-size-label-small);
+    color: var(--on-primary);
+
+    img {
+      width: var(--size-2);
+      height: var(--size-2);
+    }
+  }
+}
