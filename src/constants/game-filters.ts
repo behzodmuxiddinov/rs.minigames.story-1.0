@@ -1,3 +1,5 @@
+import type { TGameRatingSelect } from '@/types';
+
 export const GAME_FILTERS = [
   'all games',
   'puzzle',
@@ -8,7 +10,7 @@ export const GAME_FILTERS = [
   'arcade',
 ];
 
-export const GAME_RATINGS = [
+export const GAME_RATINGS: TGameRatingSelect[] = [
   { value: 'rating-asc', label: 'Rating ↑' },
   { value: 'rating-desc', label: 'Rating ↓' },
   { value: 'name-asc', label: 'Name A→Z' },
