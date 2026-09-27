@@ -11,6 +11,7 @@ import './library.scss';
 import database from '../../../public/db.json';
 import type { Game, GameRating } from '@/types';
 import { LibraryGameCard } from '@/components/library-game-card/library-game-card';
+import { Pagination } from '@/components/pagination/pagination';
 export function Library(): string {
   return `
         <div class="library_content">
@@ -30,6 +31,7 @@ export function Library(): string {
                     </div>
                     <div class="games_container">
                     </div>
+                    <div class="games_pagination"></div>
                 </div>
             </div>
         </div>
@@ -54,6 +56,12 @@ function renderGames(games: Game[]): void {
     .join('');
 }
 
+function renderPagination(page: number, totalPages: number): void {
+  const paginationContainer = document.querySelector('.games_pagination');
+  if (!paginationContainer) return;
+  paginationContainer.innerHTML = Pagination({ page, totalPages });
+}
+
 export function initLibrary(): void {
   initFilterCardTypes();
   initFilterCardRatings();
@@ -63,8 +71,12 @@ export function initLibrary(): void {
   const ratingSelect = document.querySelector(
     '#rating_select',
   ) as HTMLSelectElement;
+  const paginationContainer = document.querySelector('.games_pagination');
   let activeType = 'all games';
   let selectedRating: GameRating = 'name-asc';
+  const PAGE_SIZE = 6;
+  let currentPage = 1;
+
   function applyFilters(): void {
     let filteredGames = games.filter((game) => {
       if (activeType === 'all games') {
@@ -73,7 +85,6 @@ export function initLibrary(): void {
 
       return game.category === activeType;
     });
-
     filteredGames = [...filteredGames];
 
     switch (selectedRating) {
@@ -96,8 +107,15 @@ export function initLibrary(): void {
         break;
       }
     }
+    const totalPages = Math.ceil(filteredGames.length / PAGE_SIZE);
 
-    renderGames(filteredGames);
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
+
+    const paginatedGames = filteredGames.slice(startIndex, endIndex);
+
+    renderGames(paginatedGames);
+    renderPagination(currentPage, totalPages);
   }
   applyFilters();
 
@@ -105,12 +123,22 @@ export function initLibrary(): void {
     if (!(event.target instanceof HTMLButtonElement)) return;
 
     activeType = event.target.dataset.filterType ?? 'all games';
-
+    currentPage = 1;
     applyFilters();
   });
 
   ratingSelect?.addEventListener('change', () => {
     selectedRating = ratingSelect.value as GameRating;
+    currentPage = 1;
+    applyFilters();
+  });
+  paginationContainer?.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+
+    const button = event.target.closest<HTMLButtonElement>('.pagination_btn');
+    if (!button || button.disabled) return;
+
+    currentPage = Number(button.dataset.page);
 
     applyFilters();
   });
