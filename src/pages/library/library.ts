@@ -8,7 +8,7 @@ import {
 } from '@/components/filter/rating/filter-card-ratings';
 import { GAME_FILTERS } from '@/constants';
 import './library.scss';
-import db from '../../../public/db.json';
+import database from '../../../public/db.json';
 import type { Game, GameRating } from '@/types';
 import { LibraryGameCard } from '@/components/library-game-card/library-game-card';
 export function Library(): string {
@@ -57,7 +57,7 @@ function renderGames(games: Game[]): void {
 export function initLibrary(): void {
   initFilterCardTypes();
   initFilterCardRatings();
-  const games = db.data as Game[];
+  const games = database.data as Game[];
   const filterTypeBtns =
     document.querySelector<HTMLDivElement>('.filter_card_types');
   const ratingSelect = document.getElementById(
