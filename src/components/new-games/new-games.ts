@@ -15,6 +15,7 @@ type Game = {
 };
 
 const DB_URL = '/db.json';
+const AUTO_SLIDE_DELAY = 4000;
 
 export function NewGames(): string {
   return `
@@ -96,6 +97,7 @@ export async function initNewGames(): Promise<void> {
 
   let maxCount = getMaxCount();
   let activeIndex = 0;
+  let intervalId: number | undefined;
 
   const wrap = (index: number): number =>
     ((index % games.length) + games.length) % games.length;
@@ -128,6 +130,29 @@ export async function initNewGames(): Promise<void> {
     render();
   };
 
+  const stopAutoSlide = (): void => {
+    globalThis.clearInterval(intervalId);
+    intervalId = undefined;
+  };
+
+  const startAutoSlide = (): void => {
+    stopAutoSlide();
+    if (games.length < 2) return;
+
+    intervalId = globalThis.setInterval(() => {
+      if (!track.isConnected) {
+        stopAutoSlide();
+        return;
+      }
+      setActive(activeIndex + 1);
+    }, AUTO_SLIDE_DELAY);
+  };
+
+  const slideTo = (index: number): void => {
+    setActive(index);
+    startAutoSlide();
+  };
+
   if (games.length === 0) {
     previousButton.disabled = true;
     nextButton.disabled = true;
@@ -137,17 +162,20 @@ export async function initNewGames(): Promise<void> {
   previousButton.disabled = games.length < 2;
   nextButton.disabled = games.length < 2;
 
-  previousButton.addEventListener('click', () => setActive(activeIndex - 1));
-  nextButton.addEventListener('click', () => setActive(activeIndex + 1));
+  previousButton.addEventListener('click', () => slideTo(activeIndex - 1));
+  nextButton.addEventListener('click', () => slideTo(activeIndex + 1));
 
   track.addEventListener('click', (event) => {
     const card = (event.target as HTMLElement).closest<HTMLElement>(
       '.game_card',
     );
     if (card) {
-      setActive(Number(card.dataset.index));
+      slideTo(Number(card.dataset.index));
     }
   });
+
+  track.addEventListener('mouseenter', stopAutoSlide);
+  track.addEventListener('mouseleave', startAutoSlide);
 
   track.addEventListener(
     'error',
@@ -169,4 +197,5 @@ export async function initNewGames(): Promise<void> {
   });
 
   render();
+  startAutoSlide();
 }
