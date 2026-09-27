@@ -199,6 +199,9 @@
     span {
       display: none;
     }
+    &:hover {
+      background-color: var(--surface);
+    }
 
     @include tablet {
       flex: 1;
