@@ -12,6 +12,7 @@ import database from '../../../public/db.json';
 import type { Game, GameRating } from '@/types';
 import { LibraryGameCard } from '@/components/library-game-card/library-game-card';
 import { Pagination } from '@/components/pagination/pagination';
+import { openGameDetails } from '@/components/game-details-dialog/game-details-dialog';
 export function Library(): string {
   return `
         <div class="library_content">
@@ -72,6 +73,7 @@ export function initLibrary(): void {
     '#rating_select',
   ) as HTMLSelectElement;
   const paginationContainer = document.querySelector('.games_pagination');
+  const gamesContainer = document.querySelector('.games_container');
   let activeType = 'all games';
   let selectedRating: GameRating = 'name-asc';
   const PAGE_SIZE = 6;
@@ -131,6 +133,15 @@ export function initLibrary(): void {
     selectedRating = ratingSelect.value as GameRating;
     currentPage = 1;
     applyFilters();
+  });
+  gamesContainer?.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+
+    const button = event.target.closest<HTMLButtonElement>(
+      '.library_game_card_btn',
+    );
+    const game = games.find((item) => item.slug === button?.dataset.slug);
+    if (game) openGameDetails(game);
   });
   paginationContainer?.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
