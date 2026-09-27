@@ -1,0 +1,177 @@
+@use '../../styles/mixins' as *;
+
+.new_games {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+
+  .new_games_header {
+    display: flex;
+    align-items: center;
+    gap: var(--size-1);
+  }
+
+  .section_stick {
+    width: var(--size-1);
+    height: var(--size-4);
+    background-color: var(--primary);
+    border: 1.5px solid var(--on-primary);
+    border-radius: var(--size-05);
+  }
+
+  .section_title {
+    font-size: var(--font-size-headline-medium);
+    color: var(--on-primary);
+    font-weight: var(--font-weight-bold);
+    line-height: 100%;
+
+    @include tablet {
+      font-size: var(--font-size-headline-large);
+    }
+  }
+
+  .new_games_nav {
+    display: none;
+    margin-left: auto;
+    gap: var(--size-1);
+
+    @include tablet {
+      display: flex;
+    }
+  }
+
+  .carousel_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-4);
+    height: var(--size-4);
+    color: var(--on-primary);
+    background-color: var(--primary);
+    border: 2px solid var(--on-primary);
+    border-radius: var(--corner-full);
+    cursor: pointer;
+
+    .carousel_icon {
+      width: var(--size-2);
+      height: var(--size-2);
+    }
+
+    &:hover:not(:disabled) {
+      background-color: var(--primary-high);
+    }
+
+    &:disabled {
+      background-color: var(--surface-low);
+      cursor: not-allowed;
+    }
+  }
+
+  .new_games_track {
+    display: flex;
+    gap: var(--size-2);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding-bottom: var(--size-05);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .new_games_message {
+    color: var(--on-bg);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .game_card {
+    position: relative;
+    flex: 0 0 auto;
+    width: calc(var(--size-12) - var(--size-2));
+    height: calc(var(--size-15) + var(--size-10));
+    overflow: hidden;
+    background-color: var(--secondary);
+    border: 2.5px solid var(--on-primary);
+    border-radius: var(--corner-large);
+    cursor: pointer;
+    transition: width 0.3s ease;
+
+    @include tablet {
+      width: calc(var(--size-15) + var(--size-10));
+      height: calc(var(--size-15) * 2 + var(--size-2));
+    }
+
+    &.is_active {
+      width: calc(var(--size-15) + var(--size-4));
+      box-shadow: var(--shadow-level-1);
+
+      @include tablet {
+        width: calc(var(--size-15) * 4 + var(--size-9));
+      }
+    }
+  }
+
+  .game_card_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+
+    &.is_missing {
+      visibility: hidden;
+    }
+  }
+
+  .game_card_info {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-05);
+    padding: var(--size-1);
+    color: var(--white);
+    background: linear-gradient(to top, rgb(0 0 0 / 85%), transparent);
+
+    @include tablet {
+      padding: var(--size-2);
+    }
+  }
+
+  .game_card_name {
+    font-size: var(--font-size-label-medium);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.3;
+
+    @include tablet {
+      font-size: var(--font-size-body-medium);
+    }
+  }
+
+  .game_card_meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--size-1);
+    font-size: var(--font-size-label-medium);
+    font-weight: var(--font-weight-bold);
+
+    @include tablet {
+      font-size: var(--font-size-label-large);
+    }
+
+    .meta_icon {
+      width: var(--size-2);
+      height: var(--size-2);
+      flex-shrink: 0;
+    }
+  }
+
+  .game_card_rating,
+  .game_card_likes {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-05);
+    white-space: nowrap;
+  }
+}
