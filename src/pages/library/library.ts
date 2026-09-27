@@ -60,8 +60,8 @@ export function initLibrary(): void {
   const games = database.data as Game[];
   const filterTypeBtns =
     document.querySelector<HTMLDivElement>('.filter_card_types');
-  const ratingSelect = document.getElementById(
-    'rating_select',
+  const ratingSelect = document.querySelector(
+    '#rating_select',
   ) as HTMLSelectElement;
   let activeType = 'all games';
   let selectedRating: GameRating = 'name-asc';
