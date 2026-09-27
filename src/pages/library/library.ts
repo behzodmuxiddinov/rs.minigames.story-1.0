@@ -77,21 +77,24 @@ export function initLibrary(): void {
     filteredGames = [...filteredGames];
 
     switch (selectedRating) {
-      case 'name-asc':
+      case 'name-asc': {
         filteredGames.sort((a, b) => a.name.localeCompare(b.name));
         break;
-
-      case 'name-desc':
+      }
+      case 'name-desc': {
         filteredGames.sort((a, b) => b.name.localeCompare(a.name));
         break;
+      }
 
-      case 'rating-asc':
+      case 'rating-asc': {
         filteredGames.sort((a, b) => a.rating - b.rating);
         break;
+      }
 
-      case 'rating-desc':
+      case 'rating-desc': {
         filteredGames.sort((a, b) => b.rating - a.rating);
         break;
+      }
     }
 
     renderGames(filteredGames);
