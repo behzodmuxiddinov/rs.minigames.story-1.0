@@ -1,0 +1,71 @@
+@use './tokens';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-family-inter);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg);
+}
+
+body.is_locked {
+  overflow: hidden;
+}
+
+.main_content {
+  flex: 1;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.container {
+  max-width: 1680px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.btn {
+  padding: var(--size-1) var(--size-3);
+  font-family: var(--font-family-inter);
+  font-size: var(--font-size-label-extra-large);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.5;
+  color: var(--on-primary);
+  border: 2px solid var(--on-primary);
+  border-radius: var(--corner-medium);
+  cursor: pointer;
+}
+
+.btn_ghost {
+  background-color: var(--surface-low);
+
+  &:hover {
+    background-color: var(--surface);
+  }
+}
+
+.btn_primary {
+  background-color: var(--primary-low);
+
+  &:hover {
+    background-color: var(--primary);
+  }
+}
+
+.btn_outline {
+  background-color: transparent;
+  color: var(--white);
+  border-color: var(--white);
+
+  &:hover {
+    background-color: var(--bg-footer-low);
+  }
+}

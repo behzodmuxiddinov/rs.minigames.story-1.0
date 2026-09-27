@@ -1,0 +1,36 @@
+@use '../../styles/mixins.scss' as *;
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: var(--size-1);
+
+  .pagination_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-4);
+    height: var(--size-4);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+    background-color: var(--white);
+    border: 2px solid var(--on-primary);
+    border-radius: var(--corner-full);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--surface);
+    }
+
+    &.is_active {
+      color: var(--white);
+      background-color: var(--on-primary);
+    }
+
+    &:disabled {
+      border-color: var(--outline);
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
