@@ -1,0 +1,192 @@
+@use '../../styles/mixins' as *;
+
+.library_game_card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--white);
+  border: 2.5px solid var(--on-primary);
+  border-radius: var(--corner-large);
+  box-shadow: calc(var(--size-05)) var(--size-05) var(--on-primary);
+
+  @include tablet {
+    flex-direction: row;
+  }
+
+  .library_game_card_media {
+    flex-shrink: 0;
+    aspect-ratio: 2 / 1;
+    background-color: var(--secondary);
+    border-bottom: 2.5px solid var(--on-primary);
+
+    @include tablet {
+      width: 40%;
+      aspect-ratio: auto;
+      border-bottom: none;
+    }
+  }
+
+  .library_game_card_img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .library_game_card_body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--size-2);
+    min-width: 0;
+    padding: var(--size-2);
+  }
+  .library_game_card_header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--size-2);
+  }
+  .game_name_category {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--size-1) var(--size-2);
+    min-width: 0;
+  }
+
+  .library_game_card_name {
+    font-size: var(--font-size-body-large);
+    font-weight: var(--font-weight-extra-bold);
+    color: var(--on-primary);
+    line-height: 1.2;
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+
+    @include desktop {
+      font-size: var(--font-size-headline-medium);
+    }
+  }
+
+  .library_game_card_category {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    padding: var(--size-05) var(--size-1);
+    font-size: var(--font-size-label-medium);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+    text-transform: capitalize;
+    background-color: var(--secondary);
+    border: calc(var(--size-05) / 2) solid var(--on-primary);
+    border-radius: var(--corner-full);
+
+    @include desktop {
+      font-size: var(--font-size-label-large);
+    }
+  }
+
+  .library_game_card_price {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: var(--font-size-body-large);
+    font-weight: var(--font-weight-extra-bold);
+    color: var(--on-primary);
+
+    @include desktop {
+      font-size: var(--font-size-headline-medium);
+    }
+
+    &.is_free {
+      color: var(--price-free);
+    }
+  }
+
+  .library_game_card_description {
+    font-size: var(--font-size-body-small);
+    color: var(--on-bg);
+    line-height: 1.5;
+
+    @include desktop {
+      font-size: var(--font-size-body-medium);
+    }
+  }
+
+  .library_game_card_footer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: var(--size-2);
+
+    @include tablet {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .library_game_card_meta {
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+
+    @include desktop {
+      gap: var(--size-3);
+    }
+  }
+
+  .library_game_card_stat {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-05);
+    font-size: var(--font-size-label-medium);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+    white-space: nowrap;
+
+    @include desktop {
+      gap: var(--size-1);
+      font-size: var(--font-size-label-large);
+    }
+  }
+
+  .library_game_card_icon {
+    width: var(--size-2);
+    height: var(--size-2);
+    flex-shrink: 0;
+
+    @include desktop {
+      width: var(--size-3);
+      height: var(--size-3);
+    }
+  }
+
+  .library_game_card_btn {
+    flex-shrink: 0;
+    padding: var(--size-1) var(--size-2);
+    font-size: var(--font-size-label-large);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+    background-color: var(--primary);
+    border: 2px solid var(--on-primary);
+    border-radius: var(--corner-small);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    @include desktop {
+      padding: var(--size-1) var(--size-3);
+      font-size: var(--font-size-label-extra-large);
+      border-radius: var(--corner-medium);
+    }
+
+    &:hover {
+      background-color: var(--primary-high);
+    }
+  }
+}
