@@ -1,13 +1,13 @@
 @use '../../styles/mixins' as *;
 .library_content {
   .library_inner_content {
-    padding: var(--size-2) var(--size-3);
+    padding: var(--size-2) var(--size-2);
 
     @include tablet {
       padding: var(--size-3) var(--size-5);
     }
     @include desktop {
-      padding: var(--size-5) var(--size-15);
+      padding: var(--size-5) var(--size-11);
     }
   }
   .library_header_content {
@@ -51,5 +51,25 @@
     @include desktop {
       flex-direction: row;
     }
+  }
+  .games_container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-2);
+    &.no_games {
+      grid-template-columns: 1fr;
+    }
+    @include desktop {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--size-2);
+    }
+  }
+  .no_games_content {
+    width: 100%;
+    padding: var(--size-3) var(--size-2);
+    text-align: center;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-body-large);
+    color: var(--error);
   }
 }

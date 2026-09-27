@@ -8,6 +8,9 @@ import {
 } from '@/components/filter/rating/filter-card-ratings';
 import { GAME_FILTERS } from '@/constants';
 import './library.scss';
+import db from '../../../public/db.json';
+import type { Game, GameRating } from '@/types';
+import { LibraryGameCard } from '@/components/library-game-card/library-game-card';
 export function Library(): string {
   return `
         <div class="library_content">
@@ -25,13 +28,87 @@ export function Library(): string {
                             ${FilterCardRatings()}
                         </div>
                     </div>
+                    <div class="games_container">
+                    </div>
                 </div>
             </div>
         </div>
     `;
 }
 
+function renderGames(games: Game[]): void {
+  const gamesContainer = document.querySelector('.games_container');
+  if (!gamesContainer) return;
+  if (games.length === 0) {
+    gamesContainer.classList.add('no_games');
+    gamesContainer.innerHTML = `
+      <div class='no_games_content'>  
+        <p class="library_message">No games found</p>
+      </div>
+    `;
+    return;
+  }
+  gamesContainer.classList.remove('no_games');
+  gamesContainer.innerHTML = games
+    .map((game: Game) => LibraryGameCard(game))
+    .join('');
+}
+
 export function initLibrary(): void {
   initFilterCardTypes();
   initFilterCardRatings();
+  const games = db.data as Game[];
+  const filterTypeBtns =
+    document.querySelector<HTMLDivElement>('.filter_card_types');
+  const ratingSelect = document.getElementById(
+    'rating_select',
+  ) as HTMLSelectElement;
+  let activeType = 'all games';
+  let selectedRating: GameRating = 'name-asc';
+  function applyFilters(): void {
+    let filteredGames = games.filter((game) => {
+      if (activeType === 'all games') {
+        return true;
+      }
+
+      return game.category === activeType;
+    });
+
+    filteredGames = [...filteredGames];
+
+    switch (selectedRating) {
+      case 'name-asc':
+        filteredGames.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+
+      case 'name-desc':
+        filteredGames.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+
+      case 'rating-asc':
+        filteredGames.sort((a, b) => a.rating - b.rating);
+        break;
+
+      case 'rating-desc':
+        filteredGames.sort((a, b) => b.rating - a.rating);
+        break;
+    }
+
+    renderGames(filteredGames);
+  }
+  applyFilters();
+
+  filterTypeBtns?.addEventListener('click', (event) => {
+    if (!(event.target instanceof HTMLButtonElement)) return;
+
+    activeType = event.target.dataset.filterType ?? 'all games';
+
+    applyFilters();
+  });
+
+  ratingSelect?.addEventListener('change', () => {
+    selectedRating = ratingSelect.value as GameRating;
+
+    applyFilters();
+  });
 }
