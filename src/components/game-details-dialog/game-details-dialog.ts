@@ -23,6 +23,19 @@ type GameComment = {
   likes: number;
 };
 
+const MOCK_GAME: Game = {
+  slug: 'tukoni-forest-keepers',
+  name: 'Tukoni: Forest Keepers',
+  category: 'puzzle',
+  price: 'Free',
+  shortDescription:
+    'Tukoni: Forest Keepers — a cozy hand-drawn puzzle-adventure. You are Traveller, a little forest spirit on an important mission. Wander storybook meadows, visit mushroom villages, meet adorable inhabitants, solve gentle hand-crafted puzzles, brew herbal teas and help the Tukoni forest prepare peacefully for the coming winter.',
+  rating: 4.9,
+  likesCount: 31_200,
+  cardImage: '/assets/images/games/tukoni-forest-keepers-card.jpg',
+  featured: false,
+};
+
 const RECORDS: GameRecord[] = [
   { medal: '🥇', player: 'ForestSpirit', score: 356_700, date: '2 days ago' },
   { medal: '🥈', player: 'TeaBrewer', score: 332_400, date: '5 days ago' },
@@ -33,30 +46,22 @@ const COMMENTS: GameComment[] = [
   {
     author: 'ForestDweller',
     date: '3 hours ago',
-    text: 'The hand-drawn art is absolutely magical 💖 Every location feels like a page from a children’s storybook.',
+    text: 'The hand-drawn art is absolutely magical 💖 Every location feels like a page from a children’s storybook. The mushroom village made me cry happy tears!',
     likes: 12,
   },
   {
     author: 'HerbalTeaLover',
     date: '1 day ago',
-    text: 'Perfect cozy evening game — brew a cup of chamomile, wrap in a blanket and relax.',
+    text: 'Perfect cozy evening game — brew a cup of chamomile, wrap in a blanket and help the little Tukoni prepare for winter. The puzzles are gentle but satisfying.',
     likes: 5,
   },
   {
     author: 'CottageCoreMia',
     date: '3 days ago',
-    text: 'I want to live inside this game forever 🌿 The atmosphere is pure warmth and calm.',
+    text: 'I want to live inside this game forever 🌿 The NPCs are so charming, the tea recipes are real, and the atmosphere is pure warmth and calm.',
     likes: 8,
   },
 ];
-
-export function GameDetailsDialog(): string {
-  return `
-    <dialog class="game_details_dialog" id="${DIALOG_ID}" aria-labelledby="game_details_title">
-      <div class="game_details_inner"></div>
-    </dialog>
-  `;
-}
 
 function stat(label: string, value: string): string {
   return `
@@ -94,8 +99,10 @@ function commentItem(comment: GameComment): string {
   `;
 }
 
-function GameDetails(game: Game): string {
+export function GameDetailsDialog(game: Game = MOCK_GAME): string {
   return `
+    <dialog class="game_details_dialog" id="${DIALOG_ID}" aria-labelledby="game_details_title">
+      <div class="game_details_inner">
     <button class="game_details_close" type="button" aria-label="Close" data-details-close><img src="${closeIcon}" alt="" /></button>
     <img class="game_details_img" src="${game.cardImage}" alt="${game.name}" />
     <div class="game_details_body">
@@ -133,15 +140,16 @@ function GameDetails(game: Game): string {
         <ul class="game_details_comments">${COMMENTS.map((comment) => commentItem(comment)).join('')}</ul>
       </section>
     </div>
+      </div>
+    </dialog>
   `;
 }
 
-export function openGameDetails(game: Game): void {
+export function openGameDetails(): void {
   const dialog = document.querySelector<HTMLDialogElement>(`#${DIALOG_ID}`);
   const inner = dialog?.querySelector<HTMLElement>('.game_details_inner');
   if (!dialog || !inner) return;
 
-  inner.innerHTML = GameDetails(game);
   inner.scrollTop = 0;
   dialog.showModal();
   document.body.classList.add('is_locked');

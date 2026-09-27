@@ -137,11 +137,7 @@ export function initLibrary(): void {
   gamesContainer?.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
 
-    const button = event.target.closest<HTMLButtonElement>(
-      '.library_game_card_btn',
-    );
-    const game = games.find((item) => item.slug === button?.dataset.slug);
-    if (game) openGameDetails(game);
+    if (event.target.closest('.library_game_card_btn')) openGameDetails();
   });
   paginationContainer?.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
