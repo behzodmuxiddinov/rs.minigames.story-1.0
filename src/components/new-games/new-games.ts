@@ -73,10 +73,14 @@ export async function initNewGames(): Promise<void> {
 
   try {
     await renderCarousel();
-  } catch(error: unknown) {
+  } catch (error: unknown) {
     previousButton.disabled = true;
     nextButton.disabled = true;
-    showErrorBanner(track, error instanceof Error ? error.message : ERROR_MESSAGE, renderCarousel);
+    showErrorBanner(
+      track,
+      error instanceof Error ? error.message : ERROR_MESSAGE,
+      renderCarousel,
+    );
   }
 }
 
