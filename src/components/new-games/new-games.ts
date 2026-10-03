@@ -4,18 +4,13 @@ import arrowLeftIcon from '@/assets/icons/arrow_back.svg';
 import arrowRightIcon from '@/assets/icons/arrow_forward.svg';
 import starIcon from '@/assets/icons/star.svg';
 import heartIcon from '@/assets/icons/heart.svg';
+import type { Game } from '@/services/api';
+import { fetchGames } from '@/services/actions/games.actions';
+import { showErrorBanner } from '@/components/error/error-banner';
 
-type Game = {
-  slug: string;
-  name: string;
-  rating: number;
-  likesCount: number;
-  cardImage: string;
-  featured: boolean;
-};
-
-const DB_URL = '/db.json';
 const AUTO_SLIDE_DELAY = 4000;
+const ERROR_MESSAGE =
+  'We couldn’t load new games due to a network or server error. Please try again.';
 
 export function NewGames(): string {
   return `
@@ -57,18 +52,6 @@ function gameCard(game: Game, index: number, classes = ''): string {
   `;
 }
 
-async function fetchFeaturedGames(): Promise<Game[]> {
-  const response = await fetch(DB_URL);
-
-  if (!response.ok) {
-    throw new Error(`Failed to load games: ${response.status}`);
-  }
-
-  const { data }: { data: Game[] } = await response.json();
-
-  return data.filter((game) => game.featured);
-}
-
 export async function initNewGames(): Promise<void> {
   const track = document.querySelector<HTMLElement>('.new_games_track');
   const previousButton = document.querySelector<HTMLButtonElement>(
@@ -82,17 +65,27 @@ export async function initNewGames(): Promise<void> {
     return;
   }
 
-  let games: Game[];
+  const renderCarousel = async (): Promise<void> => {
+    const games = await fetchGames();
+    track.innerHTML = '';
+    setupCarousel(games, track, previousButton, nextButton);
+  };
 
   try {
-    games = await fetchFeaturedGames();
-  } catch {
-    track.innerHTML = `<p class="new_games_message">Games are taking a break. Please try again later.</p>`;
+    await renderCarousel();
+  } catch(error: unknown) {
     previousButton.disabled = true;
     nextButton.disabled = true;
-    return;
+    showErrorBanner(track, error instanceof Error ? error.message : ERROR_MESSAGE, renderCarousel);
   }
+}
 
+function setupCarousel(
+  games: Game[],
+  track: HTMLElement,
+  previousButton: HTMLButtonElement,
+  nextButton: HTMLButtonElement,
+): void {
   const getMaxCount = (): number => (window.innerWidth >= 1024 ? 5 : 3);
 
   let maxCount = getMaxCount();
@@ -103,8 +96,6 @@ export async function initNewGames(): Promise<void> {
     ((index % games.length) + games.length) % games.length;
 
   function render(): void {
-    if (!track) return;
-
     const visibleCount = Math.min(maxCount, games.length);
     const offsets = Array.from(
       { length: visibleCount },
