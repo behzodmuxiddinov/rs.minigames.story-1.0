@@ -94,3 +94,7 @@ export type GameCommentsResponse = {
   data: GameComment[];
   meta: GameCommentsMeta;
 };
+
+export type GameCommentResponse = {
+  data: GameComment;
+};

@@ -6,7 +6,11 @@ import heartOutlineIcon from '@/assets/icons/outlineHeart.svg';
 import closeIcon from '@/assets/icons/primaryClose.svg';
 import sendIcon from '@/assets/icons/sendIcon.svg';
 import type { GameComment, GameDetails, GameRecord } from '@/services/api';
-import { fetchGame, fetchGameComments } from '@/services/actions/games.actions';
+import {
+  fetchGame,
+  fetchGameComments,
+  postGameComment,
+} from '@/services/actions/games.actions';
 import { showErrorBanner } from '../error/error-banner';
 
 export const GAME_URL_PARAMETER = 'game';
@@ -14,7 +18,11 @@ export const GAME_URL_PARAMETER = 'game';
 const DIALOG_SELECTOR = '.game_details_dialog';
 const BODY_SELECTOR = '.game_details_body';
 const MEDIA_SELECTOR = '.game_details_media';
+const COMMENTS_SELECTOR = '.game_details_comments';
+const COMMENT_INPUT_SELECTOR = '.game_details_comment_input';
+const COMMENT_ERROR_SELECTOR = '.game_details_comment_error';
 const ERROR_MESSAGE = 'Failed to load the game details.';
+const COMMENT_ERROR_MESSAGE = 'Failed to post the comment. Try again.';
 const MEDALS = ['🥇', '🥈', '🥉'];
 const SKELETON_STAT_COUNT = 4;
 const SKELETON_RECORD_COUNT = 3;
@@ -282,6 +290,37 @@ export function openGameDetails(slug: string): void {
   showDialog(slug);
 }
 
+async function submitComment(
+  form: HTMLFormElement,
+  slug: string | undefined,
+): Promise<void> {
+  const input = form.querySelector<HTMLInputElement>(COMMENT_INPUT_SELECTOR);
+  const list = form
+    .closest('section')
+    ?.querySelector<HTMLElement>(COMMENTS_SELECTOR);
+  const text = input?.value.trim();
+  if (!slug || !input || !list || !text) return;
+
+  input.disabled = true;
+
+  form.parentElement?.querySelector(COMMENT_ERROR_SELECTOR)?.remove();
+
+  try {
+    const comment = await postGameComment(slug, text);
+
+    list.insertAdjacentHTML('afterbegin', commentItem(comment));
+    input.value = '';
+  } catch {
+    form.insertAdjacentHTML(
+      'afterend',
+      `<p class="game_details_comment_error" role="alert">${COMMENT_ERROR_MESSAGE}</p>`,
+    );
+  } finally {
+    input.disabled = false;
+    input.focus();
+  }
+}
+
 export function initGameDetailsDialog(): void {
   const dialog = document.querySelector<HTMLDialogElement>(DIALOG_SELECTOR);
   if (!dialog) return;
@@ -298,6 +337,11 @@ export function initGameDetailsDialog(): void {
 
   dialog.addEventListener('submit', (event) => {
     event.preventDefault();
+
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement)) return;
+
+    void submitComment(form, dialog.dataset.slug);
   });
 
   dialog.addEventListener('close', () => {

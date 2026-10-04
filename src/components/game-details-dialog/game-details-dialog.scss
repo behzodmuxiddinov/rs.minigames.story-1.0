@@ -262,6 +262,12 @@
     margin-bottom: var(--size-2);
   }
 
+  .game_details_comment_error {
+    margin-bottom: var(--size-2);
+    font-size: var(--font-size-label-medium);
+    color: var(--error);
+  }
+
   .game_details_avatar {
     display: flex;
     flex-shrink: 0;
