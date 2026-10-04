@@ -362,3 +362,77 @@
     }
   }
 }
+
+.game_details_body.is_skeleton {
+  pointer-events: none;
+
+  .game_details_description {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-05);
+  }
+
+  .skeleton_line {
+    height: var(--size-2);
+    border-radius: var(--corner-extra-small);
+
+    &.is_title {
+      width: 55%;
+      height: var(--size-4);
+    }
+
+    &.is_meta {
+      width: var(--size-6);
+    }
+
+    &.is_short {
+      width: 40%;
+    }
+
+    &.is_section_title {
+      width: 35%;
+      height: var(--size-3);
+      margin-bottom: var(--size-1);
+    }
+
+    &.is_label {
+      width: 50%;
+      height: var(--size-1);
+    }
+
+    &.is_value {
+      width: 70%;
+    }
+
+    &.is_medal {
+      flex-shrink: 0;
+      width: var(--size-3);
+    }
+
+    &.is_player {
+      flex: 1;
+    }
+
+    &.is_score {
+      width: 25%;
+    }
+
+    &.is_author {
+      flex: 1;
+      max-width: 35%;
+    }
+  }
+
+  .skeleton_avatar {
+    flex-shrink: 0;
+    width: var(--size-3);
+    height: var(--size-3);
+    border-radius: var(--corner-full);
+  }
+
+  .skeleton_button {
+    flex: 1;
+    min-height: var(--size-5);
+    border-radius: var(--corner-small);
+  }
+}
