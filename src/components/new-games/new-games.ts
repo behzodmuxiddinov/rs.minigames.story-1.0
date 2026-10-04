@@ -65,23 +65,58 @@ export async function initNewGames(): Promise<void> {
     return;
   }
 
-  const renderCarousel = async (): Promise<void> => {
-    const games = await fetchGames();
-    track.innerHTML = '';
-    setupCarousel(games, track, previousButton, nextButton);
-  };
-
-  try {
-    await renderCarousel();
-  } catch (error: unknown) {
+  const loadGames = async (): Promise<void> => {
     previousButton.disabled = true;
     nextButton.disabled = true;
-    showErrorBanner(
-      track,
-      error instanceof Error ? error.message : ERROR_MESSAGE,
-      renderCarousel,
-    );
-  }
+
+    renderSkeleton(track);
+
+    try {
+      const games = await fetchGames();
+
+      track.innerHTML = '';
+      track.removeAttribute('aria-busy');
+
+      setupCarousel(games, track, previousButton, nextButton);
+    } catch (error: unknown) {
+      track.removeAttribute('aria-busy');
+
+      showErrorBanner(
+        track,
+        ERROR_MESSAGE,
+        loadGames,
+      );
+    }
+  };
+
+  await loadGames();
+}
+
+function renderSkeleton(track: HTMLElement): void {
+  const count = window.innerWidth >= 1024 ? 5 : 3;
+
+  track.setAttribute('aria-busy', 'true');
+
+  track.innerHTML = Array.from(
+    { length: count },
+    (_, index) => `
+    <article
+      class="game_card skeleton_card ${
+        index === Math.floor((count - 1) / 2) ? 'is_active' : 'non_active'
+      }"
+      aria-hidden="true"
+    >
+      <div class="skeleton_img"></div>
+      <div class="skeleton_info">
+        <div class="skeleton_text"></div>
+        <div class="skeleton_meta">
+          <div class="skeleton_rating"></div>
+          <div class="skeleton_likes"></div>
+        </div>
+      </div>
+    </article>
+  `,
+  ).join('');
 }
 
 function setupCarousel(
