@@ -19,3 +19,29 @@ export type TopPlayer = {
   favoriteGameName: string;
   favoriteGameSlug: string;
 };
+
+export type GameCategories = {
+  slug: string;
+  label: string;
+  isDefault: boolean;
+};
+
+export type GamesQuery = {
+  category?: string;
+  sort?: string;
+  page?: number;
+  limit?: number;
+  featured?: boolean;
+};
+
+export type GamesMeta = {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+};
+
+export type GamesResponse = {
+  data: Game[];
+  meta: GamesMeta;
+};
