@@ -8,10 +8,9 @@ import type { Game } from '@/services/api';
 import { fetchGames } from '@/services/actions/games.actions';
 import { showErrorBanner } from '@/components/error/error-banner';
 import { EmptyState } from '@/components/empty-state/empty-state';
+import { ERROR_MESSAGE } from '@/constants';
 
 const AUTO_SLIDE_DELAY = 4000;
-const ERROR_MESSAGE =
-  'We couldn’t load new games due to a network or server error. Please try again.';
 
 export function NewGames(): string {
   return `
