@@ -69,3 +69,23 @@ body.is_locked {
     background-color: var(--bg-footer-low);
   }
 }
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--scrim) 25%,
+    var(--on-bg-low) 50%,
+    var(--scrim) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite linear;
+}
+
+@keyframes skeleton-loading {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
