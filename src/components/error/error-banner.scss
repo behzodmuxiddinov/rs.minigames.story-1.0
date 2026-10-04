@@ -1,0 +1,101 @@
+@use '../../styles/mixins' as *;
+
+.error_banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--size-2);
+  width: 100%;
+  padding: var(--size-3);
+  background-color: color-mix(in srgb, var(--error) 8%, var(--white));
+  border: var(--border-width-thin) solid
+    color-mix(in srgb, var(--error) 45%, var(--white));
+  border-radius: var(--corner-large);
+
+  @include tablet {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--size-3);
+    padding: var(--size-3) var(--size-4);
+    border-radius: var(--corner-extra-large);
+  }
+
+  .error_banner_icon {
+    width: var(--size-4);
+    height: var(--size-4);
+
+    @include tablet {
+      width: var(--size-5);
+      height: var(--size-5);
+    }
+  }
+
+  .error_banner_text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--size-05);
+  }
+
+  .error_banner_title {
+    font-size: var(--font-size-headline-small);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+
+    @include tablet {
+      font-size: var(--font-size-headline-medium);
+    }
+  }
+
+  .error_banner_message {
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-regular);
+    color: var(--on-bg);
+
+    @include tablet {
+      font-size: var(--font-size-body-medium);
+    }
+  }
+
+  .error_banner_retry {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    gap: var(--size-1);
+    width: 100%;
+    padding: var(--size-1) var(--size-3);
+    color: var(--white);
+    background-color: var(--tertiary);
+    border-color: var(--tertiary);
+
+    @include tablet {
+      width: auto;
+    }
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--tertiary) 85%, var(--black));
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: progress;
+    }
+
+    &.is_loading .error_banner_retry_icon {
+      animation: error_banner_spin 0.8s linear infinite;
+    }
+  }
+
+  .error_banner_retry_icon {
+    display: block;
+    width: var(--size-3);
+    height: var(--size-3);
+  }
+}
+
+@keyframes error_banner_spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,50 @@
+@use '../../styles/mixins' as *;
+
+.empty_state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-1);
+  width: 100%;
+  padding: var(--size-5) var(--size-3);
+  text-align: center;
+  background-color: var(--surface);
+  border-radius: var(--corner-large);
+  border: calc(var(--size-05) / 2) solid var(--black);
+
+  @include tablet {
+    gap: var(--size-2);
+    padding: var(--size-8) var(--size-5);
+    border-radius: var(--corner-extra-large);
+  }
+
+  .empty_state_icon {
+    width: var(--size-5);
+    height: var(--size-5);
+
+    @include tablet {
+      width: var(--size-6);
+      height: var(--size-6);
+    }
+  }
+
+  .empty_state_title {
+    font-size: var(--font-size-headline-small);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-primary);
+
+    @include tablet {
+      font-size: var(--font-size-headline-medium);
+    }
+  }
+
+  .empty_state_message {
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-regular);
+    color: var(--on-bg);
+
+    @include tablet {
+      font-size: var(--font-size-body-medium);
+    }
+  }
+}

@@ -2,7 +2,8 @@ import './home.scss';
 import { NewGames, initNewGames } from '@/components/new-games/new-games';
 import {
   TopPlayers,
-  initTopPlayers,
+  initLeaderboard,
+  markTopPlayers,
 } from '@/components/top-players/top-players';
 import { DeveloperCta } from '@/components/developer-cta/developer-cta';
 
@@ -23,9 +24,9 @@ export function Home(): string {
             <p class="hero_descr hero_descr_short">
               Discover hundreds of curated casual mini-games right in your browser.
             </p>
-            <button class="hero_card_btn">
+            <a class="hero_card_btn" href="/library">
               <span>Browse Library</span>
-            </button>
+            </a>
           </div>
         </div>
         </section>
@@ -42,5 +43,6 @@ export function Home(): string {
 
 export function initMainContent(): void {
   void initNewGames();
-  initTopPlayers();
+  initLeaderboard();
+  markTopPlayers();
 }

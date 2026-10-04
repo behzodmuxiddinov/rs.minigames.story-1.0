@@ -4,17 +4,12 @@ import arrowLeftIcon from '@/assets/icons/arrow_back.svg';
 import arrowRightIcon from '@/assets/icons/arrow_forward.svg';
 import starIcon from '@/assets/icons/star.svg';
 import heartIcon from '@/assets/icons/heart.svg';
+import type { Game } from '@/services/api';
+import { fetchGames } from '@/services/actions/games.actions';
+import { showErrorBanner } from '@/components/error/error-banner';
+import { EmptyState } from '@/components/empty-state/empty-state';
+import { ERROR_MESSAGE } from '@/constants';
 
-type Game = {
-  slug: string;
-  name: string;
-  rating: number;
-  likesCount: number;
-  cardImage: string;
-  featured: boolean;
-};
-
-const DB_URL = '/db.json';
 const AUTO_SLIDE_DELAY = 4000;
 
 export function NewGames(): string {
@@ -57,18 +52,6 @@ function gameCard(game: Game, index: number, classes = ''): string {
   `;
 }
 
-async function fetchFeaturedGames(): Promise<Game[]> {
-  const response = await fetch(DB_URL);
-
-  if (!response.ok) {
-    throw new Error(`Failed to load games: ${response.status}`);
-  }
-
-  const { data }: { data: Game[] } = await response.json();
-
-  return data.filter((game) => game.featured);
-}
-
 export async function initNewGames(): Promise<void> {
   const track = document.querySelector<HTMLElement>('.new_games_track');
   const previousButton = document.querySelector<HTMLButtonElement>(
@@ -82,17 +65,70 @@ export async function initNewGames(): Promise<void> {
     return;
   }
 
-  let games: Game[];
-
-  try {
-    games = await fetchFeaturedGames();
-  } catch {
-    track.innerHTML = `<p class="new_games_message">Games are taking a break. Please try again later.</p>`;
+  const loadGames = async (): Promise<void> => {
     previousButton.disabled = true;
     nextButton.disabled = true;
-    return;
-  }
 
+    renderSkeleton(track);
+
+    try {
+      const { data: games } = await fetchGames({ featured: true });
+
+      track.innerHTML = '';
+      track.removeAttribute('aria-busy');
+      if ((games ?? []).length === 0) {
+        track.innerHTML = EmptyState();
+        return;
+      }
+
+      setupCarousel(games, track, previousButton, nextButton);
+    } catch (error: unknown) {
+      track.removeAttribute('aria-busy');
+
+      showErrorBanner(
+        track,
+        error instanceof Error ? error.message : ERROR_MESSAGE,
+        loadGames,
+      );
+    }
+  };
+
+  await loadGames();
+}
+
+function renderSkeleton(track: HTMLElement): void {
+  const count = window.innerWidth >= 1024 ? 5 : 3;
+
+  track.setAttribute('aria-busy', 'true');
+
+  track.innerHTML = Array.from(
+    { length: count },
+    (_, index) => `
+    <article
+      class="game_card skeleton_card ${
+        index === Math.floor((count - 1) / 2) ? 'is_active' : 'non_active'
+      }"
+      aria-hidden="true"
+    >
+      <div class="skeleton_img"></div>
+      <div class="skeleton_info">
+        <div class="skeleton_text"></div>
+        <div class="skeleton_meta">
+          <div class="skeleton_rating"></div>
+          <div class="skeleton_likes"></div>
+        </div>
+      </div>
+    </article>
+  `,
+  ).join('');
+}
+
+function setupCarousel(
+  games: Game[],
+  track: HTMLElement,
+  previousButton: HTMLButtonElement,
+  nextButton: HTMLButtonElement,
+): void {
   const getMaxCount = (): number => (window.innerWidth >= 1024 ? 5 : 3);
 
   let maxCount = getMaxCount();
@@ -103,8 +139,6 @@ export async function initNewGames(): Promise<void> {
     ((index % games.length) + games.length) % games.length;
 
   function render(): void {
-    if (!track) return;
-
     const visibleCount = Math.min(maxCount, games.length);
     const offsets = Array.from(
       { length: visibleCount },
@@ -152,12 +186,6 @@ export async function initNewGames(): Promise<void> {
     setActive(index);
     startAutoSlide();
   };
-
-  if (games.length === 0) {
-    previousButton.disabled = true;
-    nextButton.disabled = true;
-    return;
-  }
 
   previousButton.disabled = games.length < 2;
   nextButton.disabled = games.length < 2;

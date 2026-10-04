@@ -20,27 +20,27 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: 'Explore',
     links: [
-      { href: '#/home', label: 'Home' },
-      { href: '#/library', label: 'Library' },
-      { href: '#/categories', label: 'Categories' },
-      { href: '#/tournaments', label: 'Tournaments' },
+      { href: '/home', label: 'Home' },
+      { href: '/library', label: 'Library' },
+      { href: '/library', label: 'Categories' },
+      { href: '/tournaments', label: 'Tournaments' },
     ],
   },
   {
     title: 'Company',
     links: [
-      { href: '#/about', label: 'About Us' },
-      { href: '#/contact', label: 'Contact' },
-      { href: '#/privacy', label: 'Privacy Policy' },
-      { href: '#/terms', label: 'Terms of Service' },
+      { href: '/home', label: 'About Us' },
+      { href: '/community', label: 'Contact' },
+      { href: '/home', label: 'Privacy Policy' },
+      { href: '/home', label: 'Terms of Service' },
     ],
   },
 ];
 
 const SOCIAL_LINKS: FooterLink[] = [
-  { href: '#/community', label: 'Share' },
-  { href: '#/community', label: 'Discussions' },
-  { href: '#/community', label: 'Blog' },
+  { href: '/community', label: 'Share' },
+  { href: '/community', label: 'Discussions' },
+  { href: '/community', label: 'Blog' },
 ];
 
 const SOCIAL_ICONS = [shareIcon, chatIcon, rssIcon];
@@ -70,7 +70,7 @@ export function Footer(): string {
         <div class="container">
           <div class="footer_inner_content">
             <div class="footer_brand">
-              <a href="#/home" class="logo_link" aria-label="MiniGames home">
+              <a href="/home" class="logo_link" aria-label="MiniGames home">
                 <img src="${logoUrl}" alt="MiniGames" width="150" height="32" />
               </a>
               <p class="footer_text">

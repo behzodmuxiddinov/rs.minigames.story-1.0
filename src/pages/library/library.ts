@@ -1,18 +1,43 @@
 import {
   FilterCardTypes,
+  FilterCardTypesSkeleton,
   initFilterCardTypes,
+  setActiveFilterType,
 } from '@/components/filter/card-types/filter-card-types';
 import {
   FilterCardRatings,
   initFilterCardRatings,
 } from '@/components/filter/rating/filter-card-ratings';
-import { GAME_FILTERS } from '@/constants';
 import './library.scss';
-import database from '../../../public/db.json';
 import type { Game, GameRating } from '@/types';
-import { LibraryGameCard } from '@/components/library-game-card/library-game-card';
+import {
+  LibraryGameCard,
+  LibraryGameCardSkeleton,
+} from '@/components/library-game-card/library-game-card';
 import { Pagination } from '@/components/pagination/pagination';
 import { openGameDetails } from '@/components/game-details-dialog/game-details-dialog';
+import { fetchCategories } from '@/services/actions/categories';
+import { fetchGames } from '@/services/actions/games.actions';
+import { EmptyState } from '@/components/empty-state/empty-state';
+import { showErrorBanner } from '@/components/error/error-banner';
+import { DEFAULT_GAME_SORT, ERROR_MESSAGE, isGameRating } from '@/constants';
+
+const PAGE_SIZE = 6;
+
+function readPositiveNumber(
+  query: URLSearchParams,
+  key: string,
+  fallback: number,
+): number {
+  const parsed = Number(query.get(key));
+
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function toSort(value: unknown): GameRating {
+  return isGameRating(value) ? value : DEFAULT_GAME_SORT;
+}
+
 export function Library(): string {
   return `
         <div class="library_content">
@@ -23,11 +48,9 @@ export function Library(): string {
                 </div>
                 <div class="games_section">
                     <div class="library_filter_content">
-                        <div class="sort_by_type_section">
-                            ${FilterCardTypes(GAME_FILTERS)}
-                        </div>
+                        <div class="sort_by_type_section"></div>
                         <div class="sort_by_type_ratings">
-                            ${FilterCardRatings()}
+                            ${FilterCardRatings(toSort(new URLSearchParams(globalThis.location.search).get('sort')))}
                         </div>
                     </div>
                     <div class="games_container">
@@ -39,114 +62,158 @@ export function Library(): string {
     `;
 }
 
-function renderGames(games: Game[]): void {
-  const gamesContainer = document.querySelector('.games_container');
-  if (!gamesContainer) return;
+function renderGames(container: HTMLElement, games: Game[]): void {
   if (games.length === 0) {
-    gamesContainer.classList.add('no_games');
-    gamesContainer.innerHTML = `
-      <div class='no_games_content'>  
-        <p class="library_message">No games found</p>
-      </div>
-    `;
+    container.classList.add('no_games');
+    container.innerHTML = EmptyState({
+      title: 'No games found',
+      message: 'Try another category or sorting option.',
+    });
     return;
   }
-  gamesContainer.classList.remove('no_games');
-  gamesContainer.innerHTML = games
+
+  container.classList.remove('no_games');
+  container.innerHTML = games
     .map((game: Game) => LibraryGameCard(game))
     .join('');
 }
 
-function renderPagination(page: number, totalPages: number): void {
-  const paginationContainer = document.querySelector('.games_pagination');
-  if (!paginationContainer) return;
-  paginationContainer.innerHTML = Pagination({ page, totalPages });
+function renderGamesSkeleton(container: HTMLElement): void {
+  container.classList.remove('no_games');
+  container.setAttribute('aria-busy', 'true');
+  container.innerHTML = Array.from({ length: PAGE_SIZE }, () =>
+    LibraryGameCardSkeleton(),
+  ).join('');
 }
 
 export function initLibrary(): void {
-  initFilterCardTypes();
   initFilterCardRatings();
-  const games = database.data as Game[];
-  const filterTypeBtns =
-    document.querySelector<HTMLDivElement>('.filter_card_types');
-  const ratingSelect = document.querySelector(
-    '#rating_select',
-  ) as HTMLSelectElement;
-  const paginationContainer = document.querySelector('.games_pagination');
-  const gamesContainer = document.querySelector('.games_container');
-  let activeType = 'all games';
-  let selectedRating: GameRating = 'name-asc';
-  const PAGE_SIZE = 6;
-  let currentPage = 1;
 
-  function applyFilters(): void {
-    let filteredGames = games.filter((game) => {
-      if (activeType === 'all games') {
-        return true;
-      }
+  const categoryContainer = document.querySelector<HTMLElement>(
+    '.sort_by_type_section',
+  );
+  const gamesContainer =
+    document.querySelector<HTMLElement>('.games_container');
+  const paginationContainer =
+    document.querySelector<HTMLElement>('.games_pagination');
+  const ratingSelect =
+    document.querySelector<HTMLSelectElement>('#rating_select');
+  if (!categoryContainer || !gamesContainer || !paginationContainer) return;
 
-      return game.category === activeType;
-    });
-    filteredGames = [...filteredGames];
+  const parameters = new URLSearchParams(globalThis.location.search);
+  let activeType = parameters.get('category') ?? '';
+  let selectedRating = toSort(parameters.get('sort'));
+  let currentPage = readPositiveNumber(parameters, 'page', 1);
+  const limit = readPositiveNumber(parameters, 'limit', PAGE_SIZE);
 
-    switch (selectedRating) {
-      case 'name-asc': {
-        filteredGames.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      }
-      case 'name-desc': {
-        filteredGames.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      }
+  const loadGames = async (): Promise<void> => {
+    renderGamesSkeleton(gamesContainer);
+    paginationContainer.innerHTML = '';
 
-      case 'rating-asc': {
-        filteredGames.sort((a, b) => a.rating - b.rating);
-        break;
-      }
+    try {
+      const { data: games, meta } = await fetchGames({
+        category: activeType,
+        sort: selectedRating,
+        page: currentPage,
+        limit,
+      });
 
-      case 'rating-desc': {
-        filteredGames.sort((a, b) => b.rating - a.rating);
-        break;
-      }
+      renderGames(gamesContainer, games);
+      paginationContainer.innerHTML = Pagination({
+        page: meta.page,
+        totalPages: meta.totalPages,
+      });
+    } catch (error: unknown) {
+      paginationContainer.innerHTML = '';
+      showErrorBanner(
+        gamesContainer,
+        error instanceof Error ? error.message : ERROR_MESSAGE,
+        loadGames,
+      );
+    } finally {
+      gamesContainer.removeAttribute('aria-busy');
     }
-    const totalPages = Math.ceil(filteredGames.length / PAGE_SIZE);
+  };
 
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    const endIndex = startIndex + PAGE_SIZE;
+  const loadCategories = async (): Promise<void> => {
+    categoryContainer.innerHTML = FilterCardTypesSkeleton();
 
-    const paginatedGames = filteredGames.slice(startIndex, endIndex);
+    try {
+      const categories = await fetchCategories();
 
-    renderGames(paginatedGames);
-    renderPagination(currentPage, totalPages);
-  }
-  applyFilters();
+      if (categories.length === 0) {
+        categoryContainer.innerHTML = EmptyState({
+          title: 'No categories',
+          message: 'Categories are unavailable right now.',
+        });
+        return;
+      }
 
-  filterTypeBtns?.addEventListener('click', (event) => {
-    if (!(event.target instanceof HTMLButtonElement)) return;
+      if (!categories.some((category) => category.slug === activeType)) {
+        activeType =
+          categories.find((category) => category.isDefault)?.slug ??
+          categories[0].slug;
+      }
 
-    activeType = event.target.dataset.filterType ?? 'all games';
-    currentPage = 1;
-    applyFilters();
-  });
+      categoryContainer.innerHTML = FilterCardTypes(categories);
+      setActiveFilterType(activeType);
+      initFilterCardTypes((type) => {
+        setActiveFilterType(type);
+        activeType = type;
+        currentPage = 1;
+        parameters.set('category', type);
+        globalThis.history.replaceState(
+          {},
+          '',
+          `${globalThis.location.pathname}?${parameters}`,
+        );
+        loadGames();
+      });
+    } catch (error: unknown) {
+      showErrorBanner(
+        categoryContainer,
+        error instanceof Error ? error.message : ERROR_MESSAGE,
+        loadCategories,
+      );
+    }
+  };
+
+  loadCategories();
+  loadGames();
 
   ratingSelect?.addEventListener('change', () => {
-    selectedRating = ratingSelect.value as GameRating;
+    selectedRating = toSort(ratingSelect.value);
+    parameters.set('sort', selectedRating);
+    globalThis.history.replaceState(
+      {},
+      '',
+      `${globalThis.location.pathname}?${parameters}`,
+    );
     currentPage = 1;
-    applyFilters();
+    loadGames();
   });
-  gamesContainer?.addEventListener('click', (event) => {
-    if (!(event.target instanceof Element)) return;
 
-    if (event.target.closest('.library_game_card_btn')) openGameDetails();
+  gamesContainer.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const slug = event.target.attributes.getNamedItem('data-slug')?.value;
+    if (event.target.closest('.library_game_card_btn') && slug) {
+      openGameDetails(slug);
+    }
   });
-  paginationContainer?.addEventListener('click', (event) => {
+
+  paginationContainer.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
 
     const button = event.target.closest<HTMLButtonElement>('.pagination_btn');
     if (!button || button.disabled) return;
 
     currentPage = Number(button.dataset.page);
-
-    applyFilters();
+    parameters.set('page', String(currentPage));
+    globalThis.history.replaceState(
+      {},
+      '',
+      `${globalThis.location.pathname}?${parameters}`,
+    );
+    loadGames();
   });
 }

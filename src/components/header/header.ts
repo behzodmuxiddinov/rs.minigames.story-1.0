@@ -13,7 +13,7 @@ export function Header(): string {
       <div class="header_container">
         <div class="header_inner_content">
           <div class="logo_content">
-            <a href="#/home" class="logo_link" aria-label="MiniGames home">
+            <a href="/home" class="logo_link" aria-label="MiniGames home">
               <img src="${logoUrl}" alt="MiniGames" width="172" height="32" />
             </a>
           </div>

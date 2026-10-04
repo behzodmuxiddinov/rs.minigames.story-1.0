@@ -190,3 +190,27 @@
     }
   }
 }
+
+.library_game_card.is_skeleton {
+  pointer-events: none;
+
+  .library_game_card_body {
+    justify-content: flex-start;
+    gap: var(--size-1);
+  }
+
+  .skeleton_line {
+    height: var(--size-2);
+    border-radius: var(--corner-extra-small);
+
+    &.is_title {
+      width: 60%;
+      height: var(--size-3);
+      margin-bottom: var(--size-1);
+    }
+
+    &.is_short {
+      width: 40%;
+    }
+  }
+}

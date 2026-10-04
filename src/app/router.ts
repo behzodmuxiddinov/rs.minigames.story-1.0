@@ -12,28 +12,28 @@ interface Route {
   init?: () => void;
 }
 
-const DEFAULT_HASH = '#/home';
+const DEFAULT_PATH = '/home';
 
 const ROUTES: Record<string, Route> = {
-  '#/home': {
+  '/home': {
     label: 'Home',
     title: 'MiniGames',
     render: Home,
     init: initMainContent,
   },
-  '#/library': {
+  '/library': {
     label: 'Library',
     title: 'Library | MiniGames',
     render: Library,
     init: initLibrary,
   },
-  '#/tournaments': {
+  '/tournaments': {
     label: 'Tournaments',
     title: 'Tournaments | MiniGames',
     render: Home,
     init: initMainContent,
   },
-  '#/community': {
+  '/community': {
     label: 'Community',
     title: 'Community | MiniGames',
     render: Home,
@@ -45,40 +45,91 @@ export const NAV_LINKS: NavLink[] = Object.entries(ROUTES).map(
   ([href, { label }]) => ({ href, label }),
 );
 
-function resolveHash(rawHash: string): string {
-  const hash = ['', '#', '#/'].includes(rawHash) ? DEFAULT_HASH : rawHash;
+let currentPath: string | undefined;
+let queryHandler: (() => void) | undefined;
 
-  return Object.hasOwn(ROUTES, hash) ? hash : DEFAULT_HASH;
+export function onQueryChange(handler: () => void): void {
+  queryHandler = handler;
 }
 
-function syncActiveLinks(hash: string): void {
+function resolvePath(rawPath: string): string {
+  const path = rawPath.replace(/\/+$/, '');
+
+  return Object.hasOwn(ROUTES, path) ? path : DEFAULT_PATH;
+}
+
+function syncActiveLinks(path: string): void {
   const links = document.querySelectorAll<HTMLAnchorElement>('.nav_items a');
+
   for (const link of links) {
-    link.classList.toggle('is_active', link.hash === hash);
+    const linkPath = resolvePath(
+      new URL(link.href, globalThis.location.href).pathname,
+    );
+
+    link.classList.toggle('is_active', linkPath === path);
   }
 }
 
 function renderRoute(): void {
   const main = document.querySelector<HTMLElement>('.main_content');
-  if (!main) {
+  if (!main) return;
+
+  const path = resolvePath(globalThis.location.pathname);
+
+  if (path === currentPath) {
+    queryHandler?.();
     return;
   }
 
-  const hash = resolveHash(globalThis.location.hash);
-  const route = ROUTES[hash];
+  const isFirstRender = currentPath === undefined;
+  const route = ROUTES[path];
 
+  currentPath = path;
+  queryHandler = undefined;
   main.innerHTML = route.render();
   route.init?.();
   document.title = route.title;
-  syncActiveLinks(hash);
+  syncActiveLinks(path);
+
+  if (!isFirstRender) {
+    globalThis.scrollTo({ top: 0 });
+    main.focus();
+  }
+}
+
+export function navigate(to: string, replace = false): void {
+  if (to === `${globalThis.location.pathname}${globalThis.location.search}`) {
+    return;
+  }
+
+  if (replace) globalThis.history.replaceState({}, '', to);
+  else globalThis.history.pushState({}, '', to);
+
+  renderRoute();
+}
+
+function handleLinkClick(event: MouseEvent): void {
+  if (event.defaultPrevented || event.button !== 0) return;
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (!(event.target instanceof Element)) return;
+
+  const link = event.target.closest('a');
+  if (!link || link.target === '_blank') return;
+
+  const url = new URL(link.href, globalThis.location.href);
+  if (url.origin !== globalThis.location.origin) return;
+
+  event.preventDefault();
+  navigate(`${url.pathname}${url.search}`);
 }
 
 export function initRouter(): void {
-  renderRoute();
+  if (globalThis.location.hash.startsWith('#/')) {
+    globalThis.history.replaceState({}, '', globalThis.location.hash.slice(1));
+  }
 
-  globalThis.addEventListener('hashchange', () => {
-    renderRoute();
-    globalThis.scrollTo({ top: 0 });
-    document.querySelector<HTMLElement>('.main_content')?.focus();
-  });
+  document.addEventListener('click', handleLinkClick);
+  globalThis.addEventListener('popstate', renderRoute);
+
+  renderRoute();
 }

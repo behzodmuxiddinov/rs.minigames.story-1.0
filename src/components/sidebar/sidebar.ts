@@ -13,7 +13,7 @@ export function Sidebar(): string {
     <aside id="sidebar" aria-label="Mobile navigation">
       <header>
         <div class="logo_content">
-          <a href="#/home" class="logo_link" aria-label="MiniGames home">
+          <a href="/home" class="logo_link" aria-label="MiniGames home">
             <img src="${logoUrl}" alt="MiniGames" width="172" height="32" />
           </a>
         </div>

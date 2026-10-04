@@ -20,3 +20,10 @@
     }
   }
 }
+
+.filter_card_type_skeleton {
+  flex-shrink: 0;
+  width: var(--size-11);
+  height: var(--size-5);
+  border-radius: var(--corner-extra-large);
+}

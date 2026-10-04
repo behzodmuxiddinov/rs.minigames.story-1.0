@@ -1,61 +1,22 @@
+import { fetchTopPlayers } from '@/services/actions/leaderboard';
 import './top-players.scss';
 import { formatNumber } from '@/utils/format-number.utilities';
+import { EmptyState } from '../empty-state/empty-state';
+import type { TopPlayer } from '@/services/api';
+import { showErrorBanner } from '../error/error-banner';
+import { ERROR_MESSAGE } from '@/constants';
 
-type TableData = {
-  rank: number;
-  player: string;
-  gamesPlayed: number;
-  totalScore: number;
-  streak: number;
-  favoriteGame: string;
-};
-
-const TABLE_DATA: TableData[] = [
-  {
-    rank: 1,
-    player: 'Alex_Pro99',
-    gamesPlayed: 142,
-    totalScore: 94_250,
-    streak: 12,
-    favoriteGame: 'Heartopia',
-  },
-  {
-    rank: 2,
-    player: 'CozyGamer_x',
-    gamesPlayed: 118,
-    totalScore: 81_400,
-    streak: 8,
-    favoriteGame: 'Cat Mail Co.',
-  },
-  {
-    rank: 3,
-    player: 'MatchMaster',
-    gamesPlayed: 98,
-    totalScore: 72_110,
-    streak: 5,
-    favoriteGame: 'Tiny Glade',
-  },
-  {
-    rank: 4,
-    player: 'BubblePop',
-    gamesPlayed: 87,
-    totalScore: 65_900,
-    streak: 3,
-    favoriteGame: 'Whisper of the House',
-  },
-  {
-    rank: 5,
-    player: 'SudokuGod',
-    gamesPlayed: 74,
-    totalScore: 59_320,
-    streak: 2,
-    favoriteGame: 'Cat Chess',
-  },
+const TABLE_COLUMNS = [
+  'rank',
+  'player',
+  'games played',
+  'total score',
+  'streak',
+  'favorite game',
 ];
+const SKELETON_ROW_COUNT = 5;
 
 export function TopPlayers(): string {
-  const tableBody = TABLE_DATA.map((item) => playerRow(item)).join('');
-
   return `
     <section class="top_players_content" aria-label="Top players this week">
       <div class="top_players_header">
@@ -66,16 +27,12 @@ export function TopPlayers(): string {
         <table class="top_players_table">
           <thead>
             <tr>
-              <th scope="col">rank</th>
-              <th scope="col">player</th>
-              <th scope="col">games played</th>
-              <th scope="col">total score</th>
-              <th scope="col">streak</th>
-              <th scope="col">favorite game</th>
+              ${TABLE_COLUMNS.map(
+                (column) => `<th scope="col">${column}</th>`,
+              ).join('')}
             </tr>
           </thead>
-          <tbody>
-            ${tableBody}
+          <tbody class="leaderboard_table_body">
           </tbody>
         </table>
       </div>
@@ -83,22 +40,50 @@ export function TopPlayers(): string {
   `;
 }
 
-function playerRow(item: TableData): string {
+function playerRow(item: TopPlayer): string {
   return `
     <tr>
       <td class="cell_rank">#${item.rank}</td>
       <td class="cell_player">
         <div class="player_avatar">
-          ${getInitials(item.player)}
+          ${getInitials(item.playerName)}
         </div>
-        ${item.player}
+        ${item.playerName}
       </td>
       <td>${item.gamesPlayed}</td>
       <td>${formatNumber(item.totalScore)}</td>
-      <td>&#x1F525 ${item.streak}</td>
-      <td><span class="badge">${item.favoriteGame}</span></td>
+      <td>&#x1F525 ${item.streakDays}</td>
+      <td><span class="badge">${item.favoriteGameName}</span></td>
     </tr>
   `;
+}
+
+function emptyRow(): string {
+  return `
+    <tr class="is_empty">
+      <td class="cell_empty" colspan="${TABLE_COLUMNS.length}">${EmptyState()}</td>
+    </tr>
+  `;
+}
+
+function errorRow(): string {
+  return `
+    <tr class="is_error">
+      <td class="cell_error" colspan="${TABLE_COLUMNS.length}">${ERROR_MESSAGE}</td>
+    </tr>
+  `;
+}
+
+function skeletonRows(): string {
+  const cells = TABLE_COLUMNS.map(
+    () =>
+      '<td class="cell_skeleton"><div class="skeleton skeleton_line"></div></td>',
+  ).join('');
+
+  return Array.from(
+    { length: SKELETON_ROW_COUNT },
+    () => `<tr class="is_skeleton" aria-hidden="true">${cells}</tr>`,
+  ).join('');
 }
 
 function getInitials(name: string): string {
@@ -116,7 +101,7 @@ function getColors(index: number): string {
   return '';
 }
 
-export function initTopPlayers(): void {
+export function markTopPlayers(): void {
   const rows = document.querySelectorAll('.top_players_table tbody tr');
 
   for (const [index, row] of rows.entries()) {
@@ -127,4 +112,41 @@ export function initTopPlayers(): void {
     row.querySelector('.cell_rank')?.classList.toggle('is_gold', index === 0);
     row.querySelector('.player_avatar')?.classList.add(getColors(index));
   }
+}
+
+export async function initLeaderboard(): Promise<void> {
+  const tableBody = document.querySelector<HTMLElement>(
+    '.leaderboard_table_body',
+  );
+  if (!tableBody) return;
+  const loadLeaderBoard = async (): Promise<void> => {
+    tableBody.setAttribute('aria-busy', 'true');
+    tableBody.innerHTML = skeletonRows();
+
+    try {
+      const response = await fetchTopPlayers();
+      if ((response ?? []).length === 0) {
+        tableBody.innerHTML = emptyRow();
+        return;
+      }
+      tableBody.innerHTML = response
+        .map((item: TopPlayer) => playerRow(item))
+        .join('');
+      markTopPlayers();
+    } catch (error) {
+      tableBody.innerHTML = errorRow();
+      const errorBody = tableBody.querySelector<HTMLElement>('.cell_error');
+      if (errorBody) {
+        showErrorBanner(
+          errorBody,
+          error instanceof Error ? error.message : ERROR_MESSAGE,
+          loadLeaderBoard,
+        );
+      }
+    } finally {
+      tableBody.removeAttribute('aria-busy');
+    }
+  };
+
+  loadLeaderBoard();
 }

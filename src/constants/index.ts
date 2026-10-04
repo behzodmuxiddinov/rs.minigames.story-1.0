@@ -1,1 +1,2 @@
-export { GAME_FILTERS, GAME_RATINGS, DEFAULT_GAME_SORT } from './game-filters';
+export { GAME_RATINGS, DEFAULT_GAME_SORT, isGameRating } from './game-filters';
+export { ERROR_MESSAGE } from './common';
