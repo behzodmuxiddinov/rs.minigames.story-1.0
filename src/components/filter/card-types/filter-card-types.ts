@@ -47,3 +47,14 @@ export function initFilterCardTypes(
     onChange(type);
   });
 }
+
+export function FilterCardTypesSkeleton(count = 5): string {
+  return `
+        <div class="filter_card_types" aria-hidden="true">
+            ${Array.from(
+              { length: count },
+              () => '<div class="skeleton filter_card_type_skeleton"></div>',
+            ).join('')}
+        </div>
+    `;
+}
