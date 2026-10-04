@@ -83,7 +83,7 @@ export async function initNewGames(): Promise<void> {
 
       showErrorBanner(
         track,
-        ERROR_MESSAGE,
+        error instanceof Error ? error.message : ERROR_MESSAGE,
         loadGames,
       );
     }
