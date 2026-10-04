@@ -16,34 +16,30 @@ export function FilterCardTypes(types: GameCategories[]): string {
     `;
 }
 
-export function initFilterCardTypes(
-  activeType: string,
-  onChange: (type: string) => void,
-): void {
+export function setActiveFilterType(type: string): void {
+  const buttons = document.querySelectorAll<HTMLButtonElement>(
+    '.filter_card_types .filter_card_type_btn',
+  );
+
+  for (const button of buttons) {
+    button.classList.toggle('is_active', button.dataset.filterType === type);
+  }
+}
+
+export function initFilterCardTypes(onChange: (type: string) => void): void {
   const filterContainer =
     document.querySelector<HTMLDivElement>('.filter_card_types');
   if (!filterContainer) return;
 
-  const setActive = (type: string): void => {
-    const buttons = filterContainer.querySelectorAll<HTMLButtonElement>(
-      '.filter_card_type_btn',
-    );
-
-    for (const button of buttons) {
-      button.classList.toggle('is_active', button.dataset.filterType === type);
-    }
-  };
-
-  setActive(activeType);
-
   filterContainer.addEventListener('click', (event: MouseEvent) => {
-    const target = (event.target as HTMLElement).closest<HTMLButtonElement>(
+    if (!(event.target instanceof Element)) return;
+
+    const target = event.target.closest<HTMLButtonElement>(
       '.filter_card_type_btn',
     );
     const type = target?.dataset.filterType;
     if (!type || target.classList.contains('is_active')) return;
 
-    setActive(type);
     onChange(type);
   });
 }
