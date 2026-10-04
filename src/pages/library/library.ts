@@ -181,8 +181,8 @@ export function initLibrary(): void {
     const slug = event.target.attributes.getNamedItem('data-slug')?.value;
     if (event.target.closest('.library_game_card_btn') && slug) {
       globalThis.history.pushState({}, '', `/game/${slug}`);
-      openGameDetails(slug)
-    };
+      openGameDetails(slug);
+    }
   });
 
   paginationContainer.addEventListener('click', (event) => {
