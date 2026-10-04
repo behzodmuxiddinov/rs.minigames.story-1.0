@@ -72,7 +72,7 @@ export async function initNewGames(): Promise<void> {
     renderSkeleton(track);
 
     try {
-      const games = await fetchGames();
+      const { data: games } = await fetchGames({ featured: true });
 
       track.innerHTML = '';
       track.removeAttribute('aria-busy');
