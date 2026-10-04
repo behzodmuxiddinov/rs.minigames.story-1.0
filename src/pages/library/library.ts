@@ -1,5 +1,6 @@
 import {
   FilterCardTypes,
+  FilterCardTypesSkeleton,
   initFilterCardTypes,
 } from '@/components/filter/card-types/filter-card-types';
 import {
@@ -8,7 +9,10 @@ import {
 } from '@/components/filter/rating/filter-card-ratings';
 import './library.scss';
 import type { Game, GameRating } from '@/types';
-import { LibraryGameCard } from '@/components/library-game-card/library-game-card';
+import {
+  LibraryGameCard,
+  LibraryGameCardSkeleton,
+} from '@/components/library-game-card/library-game-card';
 import { Pagination } from '@/components/pagination/pagination';
 import { openGameDetails } from '@/components/game-details-dialog/game-details-dialog';
 import { fetchCategories } from '@/services/actions/categories';
@@ -46,11 +50,10 @@ export function Library(): string {
 function renderGames(container: HTMLElement, games: Game[]): void {
   if (games.length === 0) {
     container.classList.add('no_games');
-    container.innerHTML = `
-      <div class='no_games_content'>  
-        <p class="library_message">No games found</p>
-      </div>
-    `;
+    container.innerHTML = EmptyState({
+      title: 'No games found',
+      message: 'Try another category or sorting option.',
+    });
     return;
   }
 
@@ -58,6 +61,14 @@ function renderGames(container: HTMLElement, games: Game[]): void {
   container.innerHTML = games
     .map((game: Game) => LibraryGameCard(game))
     .join('');
+}
+
+function renderGamesSkeleton(container: HTMLElement): void {
+  container.classList.remove('no_games');
+  container.setAttribute('aria-busy', 'true');
+  container.innerHTML = Array.from({ length: PAGE_SIZE }, () =>
+    LibraryGameCardSkeleton(),
+  ).join('');
 }
 
 export function initLibrary(): void {
@@ -80,6 +91,9 @@ export function initLibrary(): void {
   let currentPage = 1;
 
   const loadGames = async (): Promise<void> => {
+    renderGamesSkeleton(gamesContainer);
+    paginationContainer.innerHTML = '';
+
     try {
       const { data: games, meta } = await fetchGames({
         category: activeType,
@@ -100,15 +114,22 @@ export function initLibrary(): void {
         error instanceof Error ? error.message : ERROR_MESSAGE,
         loadGames,
       );
+    } finally {
+      gamesContainer.removeAttribute('aria-busy');
     }
   };
 
   const loadCategories = async (): Promise<void> => {
+    categoryContainer.innerHTML = FilterCardTypesSkeleton();
+
     try {
       const categories = await fetchCategories();
 
       if (categories.length === 0) {
-        categoryContainer.innerHTML = EmptyState();
+        categoryContainer.innerHTML = EmptyState({
+          title: 'No categories',
+          message: 'Categories are unavailable right now.',
+        });
         return;
       }
 
