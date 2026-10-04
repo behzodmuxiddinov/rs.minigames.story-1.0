@@ -87,8 +87,9 @@ export function initLibrary(): void {
 
   const parameters = new URLSearchParams(globalThis.location.search);
   let activeType = parameters.get('category') ?? '';
-  let selectedRating: GameRating = DEFAULT_GAME_SORT;
-  let currentPage = 1;
+  let selectedRating = parameters.get('sort') ?? DEFAULT_GAME_SORT;
+  let currentPage = parameters.get('page') ?? 1;
+  const limit = parameters.get('limit') ?? PAGE_SIZE;
 
   const loadGames = async (): Promise<void> => {
     renderGamesSkeleton(gamesContainer);
@@ -98,8 +99,8 @@ export function initLibrary(): void {
       const { data: games, meta } = await fetchGames({
         category: activeType,
         sort: selectedRating,
-        page: currentPage,
-        limit: PAGE_SIZE,
+        page: Number.isNaN(currentPage) ? 1 : Number(currentPage),
+        limit: Number.isNaN(limit) ? PAGE_SIZE : Number(limit),
       });
 
       renderGames(gamesContainer, games);
@@ -165,6 +166,12 @@ export function initLibrary(): void {
 
   ratingSelect?.addEventListener('change', () => {
     selectedRating = ratingSelect.value as GameRating;
+    parameters.set('sort', selectedRating);
+    globalThis.history.replaceState(
+      {},
+      '',
+      `${globalThis.location.pathname}?${parameters}`,
+    );
     currentPage = 1;
     loadGames();
   });
@@ -182,6 +189,12 @@ export function initLibrary(): void {
     if (!button || button.disabled) return;
 
     currentPage = Number(button.dataset.page);
+    parameters.set('page', String(currentPage));
+    globalThis.history.replaceState(
+      {},
+      '',
+      `${globalThis.location.pathname}?${parameters}`,
+    );
     loadGames();
   });
 }
