@@ -7,6 +7,7 @@ import heartIcon from '@/assets/icons/heart.svg';
 import type { Game } from '@/services/api';
 import { fetchGames } from '@/services/actions/games.actions';
 import { showErrorBanner } from '@/components/error/error-banner';
+import { EmptyState } from '@/components/empty-state/empty-state';
 
 const AUTO_SLIDE_DELAY = 4000;
 const ERROR_MESSAGE =
@@ -76,6 +77,10 @@ export async function initNewGames(): Promise<void> {
 
       track.innerHTML = '';
       track.removeAttribute('aria-busy');
+      if ((games ?? []).length === 0) {
+        track.innerHTML = EmptyState();
+        return;
+      }
 
       setupCarousel(games, track, previousButton, nextButton);
     } catch (error: unknown) {
@@ -182,12 +187,6 @@ function setupCarousel(
     setActive(index);
     startAutoSlide();
   };
-
-  if (games.length === 0) {
-    previousButton.disabled = true;
-    nextButton.disabled = true;
-    return;
-  }
 
   previousButton.disabled = games.length < 2;
   nextButton.disabled = games.length < 2;
