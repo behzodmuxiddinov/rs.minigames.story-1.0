@@ -37,3 +37,16 @@ export function LibraryGameCard(game: Game): string {
     </article>
   `;
 }
+
+export function LibraryGameCardSkeleton(): string {
+  return `
+    <article class="library_game_card is_skeleton" aria-hidden="true">
+      <div class="library_game_card_media skeleton"></div>
+      <div class="library_game_card_body">
+        <div class="skeleton skeleton_line is_title"></div>
+        <div class="skeleton skeleton_line"></div>
+        <div class="skeleton skeleton_line is_short"></div>
+      </div>
+    </article>
+  `;
+}
