@@ -1,6 +1,11 @@
 import {
   API_BASE_URL,
+  buildPath,
   ENDPOINTS,
+  type GameComment,
+  type GameCommentsResponse,
+  type GameDetails,
+  type GameDetailsResponse,
   type GamesQuery,
   type GamesResponse,
 } from '../api';
@@ -26,4 +31,38 @@ export const fetchGames = async (
   }
 
   return (await response.json()) as GamesResponse;
+};
+
+export const fetchGame = async (gameSlug: string): Promise<GameDetails> => {
+  const response = await fetch(
+    API_BASE_URL + buildPath(ENDPOINTS.game, { gameSlug }),
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to load game: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const { data } = (await response.json()) as GameDetailsResponse;
+
+  return data;
+};
+
+export const fetchGameComments = async (
+  gameSlug: string,
+): Promise<GameComment[]> => {
+  const response = await fetch(
+    API_BASE_URL + buildPath(ENDPOINTS.gameComments, { gameSlug }),
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to load comments: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const { data } = (await response.json()) as GameCommentsResponse;
+
+  return data;
 };
