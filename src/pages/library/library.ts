@@ -2,6 +2,7 @@ import {
   FilterCardTypes,
   FilterCardTypesSkeleton,
   initFilterCardTypes,
+  setActiveFilterType,
 } from '@/components/filter/card-types/filter-card-types';
 import {
   FilterCardRatings,
@@ -19,9 +20,23 @@ import { fetchCategories } from '@/services/actions/categories';
 import { fetchGames } from '@/services/actions/games.actions';
 import { EmptyState } from '@/components/empty-state/empty-state';
 import { showErrorBanner } from '@/components/error/error-banner';
-import { DEFAULT_GAME_SORT, ERROR_MESSAGE } from '@/constants';
+import { DEFAULT_GAME_SORT, ERROR_MESSAGE, isGameRating } from '@/constants';
 
 const PAGE_SIZE = 6;
+
+function readPositiveNumber(
+  query: URLSearchParams,
+  key: string,
+  fallback: number,
+): number {
+  const parsed = Number(query.get(key));
+
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function toSort(value: unknown): GameRating {
+  return isGameRating(value) ? value : DEFAULT_GAME_SORT;
+}
 
 export function Library(): string {
   return `
@@ -35,7 +50,7 @@ export function Library(): string {
                     <div class="library_filter_content">
                         <div class="sort_by_type_section"></div>
                         <div class="sort_by_type_ratings">
-                            ${FilterCardRatings()}
+                            ${FilterCardRatings(toSort(new URLSearchParams(globalThis.location.search).get('sort')))}
                         </div>
                     </div>
                     <div class="games_container">
@@ -87,9 +102,9 @@ export function initLibrary(): void {
 
   const parameters = new URLSearchParams(globalThis.location.search);
   let activeType = parameters.get('category') ?? '';
-  let selectedRating = parameters.get('sort') ?? DEFAULT_GAME_SORT;
-  let currentPage = parameters.get('page') ?? 1;
-  const limit = parameters.get('limit') ?? PAGE_SIZE;
+  let selectedRating = toSort(parameters.get('sort'));
+  let currentPage = readPositiveNumber(parameters, 'page', 1);
+  const limit = readPositiveNumber(parameters, 'limit', PAGE_SIZE);
 
   const loadGames = async (): Promise<void> => {
     renderGamesSkeleton(gamesContainer);
@@ -99,8 +114,8 @@ export function initLibrary(): void {
       const { data: games, meta } = await fetchGames({
         category: activeType,
         sort: selectedRating,
-        page: Number.isNaN(currentPage) ? 1 : Number(currentPage),
-        limit: Number.isNaN(limit) ? PAGE_SIZE : Number(limit),
+        page: currentPage,
+        limit,
       });
 
       renderGames(gamesContainer, games);
@@ -141,7 +156,9 @@ export function initLibrary(): void {
       }
 
       categoryContainer.innerHTML = FilterCardTypes(categories);
-      initFilterCardTypes(activeType, (type) => {
+      setActiveFilterType(activeType);
+      initFilterCardTypes((type) => {
+        setActiveFilterType(type);
         activeType = type;
         currentPage = 1;
         parameters.set('category', type);
@@ -165,7 +182,7 @@ export function initLibrary(): void {
   loadGames();
 
   ratingSelect?.addEventListener('change', () => {
-    selectedRating = ratingSelect.value as GameRating;
+    selectedRating = toSort(ratingSelect.value);
     parameters.set('sort', selectedRating);
     globalThis.history.replaceState(
       {},
@@ -180,7 +197,6 @@ export function initLibrary(): void {
     if (!(event.target instanceof Element)) return;
     const slug = event.target.attributes.getNamedItem('data-slug')?.value;
     if (event.target.closest('.library_game_card_btn') && slug) {
-      globalThis.history.pushState({}, '', `/game/${slug}`);
       openGameDetails(slug);
     }
   });
