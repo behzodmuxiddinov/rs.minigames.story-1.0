@@ -85,6 +85,9 @@
     }
 
     .hero_card_btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       font-weight: var(--font-weight-bold);
       padding: var(--size-2) var(--size-3);
       background-color: var(--primary);
