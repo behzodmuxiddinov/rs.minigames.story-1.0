@@ -27,6 +27,12 @@ const MEDALS = ['🥇', '🥈', '🥉'];
 const SKELETON_STAT_COUNT = 4;
 const SKELETON_RECORD_COUNT = 3;
 const SKELETON_COMMENT_COUNT = 2;
+const MINUTE = 60_000;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+const WEEK = 7 * DAY;
+const MONTH = 30 * DAY;
+const YEAR = 365 * DAY;
 
 let loadedSlug: string | undefined;
 let requestId = 0;
@@ -38,20 +44,25 @@ function escapeHtml(value: string): string {
   return element.innerHTML;
 }
 
+function pluralAgo(value: number, unit: string): string {
+  return `${value} ${unit}${value === 1 ? '' : 's'} ago`;
+}
+
 function formatRelativeDate(isoDate: string): string {
   const timestamp = Date.parse(isoDate);
   if (Number.isNaN(timestamp)) return '';
 
-  const days = Math.floor((Date.now() - timestamp) / 86_400_000);
+  const elapsed = Date.now() - timestamp;
 
-  if (days <= 0) return 'today';
-  if (days === 1) return '1 day ago';
-  if (days < 7) return `${days} days ago`;
-  if (days < 14) return '1 week ago';
-  if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
-  if (days < 60) return '1 month ago';
+  if (elapsed < MINUTE) return 'just now';
+  if (elapsed < HOUR) return `${Math.floor(elapsed / MINUTE)} min ago`;
+  if (elapsed < DAY) return pluralAgo(Math.floor(elapsed / HOUR), 'hour');
+  if (elapsed < WEEK) return pluralAgo(Math.floor(elapsed / DAY), 'day');
+  if (elapsed < 4 * WEEK) return pluralAgo(Math.floor(elapsed / WEEK), 'week');
+  if (elapsed < 12 * MONTH)
+    return pluralAgo(Math.max(1, Math.floor(elapsed / MONTH)), 'month');
 
-  return `${Math.floor(days / 30)} months ago`;
+  return pluralAgo(Math.max(1, Math.floor(elapsed / YEAR)), 'year');
 }
 
 function stat(label: string, value: string): string {
