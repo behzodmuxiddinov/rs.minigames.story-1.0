@@ -9,3 +9,13 @@ export type Game = {
   cardImage: string;
   featured: boolean;
 };
+
+export type TopPlayer = {
+  rank: number;
+  playerName: string;
+  gamesPlayed: number;
+  totalScore: number;
+  streakDays: number;
+  favoriteGameName: string;
+  favoriteGameSlug: string;
+};
