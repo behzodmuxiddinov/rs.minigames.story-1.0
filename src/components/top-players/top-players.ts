@@ -6,6 +6,16 @@ import type { TopPlayer } from '@/services/api';
 import { showErrorBanner } from '../error/error-banner';
 import { ERROR_MESSAGE } from '@/constants';
 
+const TABLE_COLUMNS = [
+  'rank',
+  'player',
+  'games played',
+  'total score',
+  'streak',
+  'favorite game',
+];
+const SKELETON_ROW_COUNT = 5;
+
 export function TopPlayers(): string {
   return `
     <section class="top_players_content" aria-label="Top players this week">
@@ -17,12 +27,9 @@ export function TopPlayers(): string {
         <table class="top_players_table">
           <thead>
             <tr>
-              <th scope="col">rank</th>
-              <th scope="col">player</th>
-              <th scope="col">games played</th>
-              <th scope="col">total score</th>
-              <th scope="col">streak</th>
-              <th scope="col">favorite game</th>
+              ${TABLE_COLUMNS.map(
+                (column) => `<th scope="col">${column}</th>`,
+              ).join('')}
             </tr>
           </thead>
           <tbody class="leaderboard_table_body">
@@ -54,7 +61,7 @@ function playerRow(item: TopPlayer): string {
 function emptyRow(): string {
   return `
     <tr class="is_empty">
-      <td class="cell_empty" colspan="6">${EmptyState()}</td>
+      <td class="cell_empty" colspan="${TABLE_COLUMNS.length}">${EmptyState()}</td>
     </tr>
   `;
 }
@@ -62,9 +69,21 @@ function emptyRow(): string {
 function errorRow(): string {
   return `
     <tr class="is_error">
-      <td class="cell_error" colspan="6">${ERROR_MESSAGE}</td>
+      <td class="cell_error" colspan="${TABLE_COLUMNS.length}">${ERROR_MESSAGE}</td>
     </tr>
   `;
+}
+
+function skeletonRows(): string {
+  const cells = TABLE_COLUMNS.map(
+    () =>
+      '<td class="cell_skeleton"><div class="skeleton skeleton_line"></div></td>',
+  ).join('');
+
+  return Array.from(
+    { length: SKELETON_ROW_COUNT },
+    () => `<tr class="is_skeleton" aria-hidden="true">${cells}</tr>`,
+  ).join('');
 }
 
 function getInitials(name: string): string {
@@ -101,6 +120,9 @@ export async function initLeaderboard(): Promise<void> {
   );
   if (!tableBody) return;
   const loadLeaderBoard = async (): Promise<void> => {
+    tableBody.setAttribute('aria-busy', 'true');
+    tableBody.innerHTML = skeletonRows();
+
     try {
       const response = await fetchTopPlayers();
       if ((response ?? []).length === 0) {
@@ -121,6 +143,8 @@ export async function initLeaderboard(): Promise<void> {
           loadLeaderBoard,
         );
       }
+    } finally {
+      tableBody.removeAttribute('aria-busy');
     }
   };
 

@@ -107,6 +107,19 @@
         padding: 0;
         white-space: normal;
       }
+
+      .is_skeleton {
+        pointer-events: none;
+
+        &:hover {
+          background-color: transparent;
+        }
+      }
+
+      .skeleton_line {
+        height: var(--size-2);
+        border-radius: var(--corner-extra-small);
+      }
     }
 
     .cell_rank {
