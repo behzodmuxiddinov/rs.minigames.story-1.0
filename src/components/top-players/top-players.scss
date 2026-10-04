@@ -75,13 +75,37 @@
       }
     }
 
-    tbody {
+    .leaderboard_table_body {
+      width: 100%;
       tr {
-        border-top: 1.5px solid var(--outline);
+        border-top: calc(var(--size-05) / 4) solid var(--outline);
 
         &:hover {
           background-color: var(--surface);
         }
+      }
+
+      .is_empty:hover {
+        background-color: transparent;
+      }
+
+      .cell_empty {
+        padding: 0;
+        white-space: normal;
+
+        .empty_state {
+          border: none;
+          border-radius: 0;
+          background-color: transparent;
+        }
+      }
+      .is_error:hover {
+        background-color: transparent;
+      }
+
+      .cell_error {
+        padding: 0;
+        white-space: normal;
       }
     }
 

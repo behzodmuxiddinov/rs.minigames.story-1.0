@@ -2,7 +2,8 @@ import './home.scss';
 import { NewGames, initNewGames } from '@/components/new-games/new-games';
 import {
   TopPlayers,
-  initTopPlayers,
+  initLeaderboard,
+  markTopPlayers,
 } from '@/components/top-players/top-players';
 import { DeveloperCta } from '@/components/developer-cta/developer-cta';
 
@@ -42,5 +43,6 @@ export function Home(): string {
 
 export function initMainContent(): void {
   void initNewGames();
-  initTopPlayers();
+  initLeaderboard();
+  markTopPlayers();
 }
