@@ -1,4 +1,8 @@
-import { login, register } from '@/services/actions/auth.actions';
+import {
+  login,
+  loginWithGoogle,
+  register,
+} from '@/services/actions/auth.actions';
 import './auth-dialog.scss';
 import { LoginForm, RegisterForm } from './auth-form';
 import { eyeIcon, eyeOffIcon } from './icons';
@@ -103,6 +107,7 @@ export function initAuthDialog(): void {
   const tabs = dialog.querySelectorAll<HTMLButtonElement>('[data-auth-tab]');
   let mode: AuthMode = 'login';
   let pending = false;
+  let googlePending = false;
 
   const validate = (form: HTMLFormElement): FieldErrors =>
     mode === 'login'
@@ -146,6 +151,34 @@ export function initAuthDialog(): void {
     );
   };
 
+  const signInWithGoogle = async (button: HTMLButtonElement): Promise<void> => {
+    const label = button.querySelector<HTMLElement>('span');
+    const labelText = label?.textContent ?? '';
+
+    googlePending = true;
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+
+    if (label) {
+      label.textContent = 'Loading...';
+    }
+
+    try {
+      await loginWithGoogle();
+      dialog.close();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      googlePending = false;
+      button.disabled = false;
+      button.removeAttribute('aria-busy');
+
+      if (label) {
+        label.textContent = labelText;
+      }
+    }
+  };
+
   document.body.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) {
       return;
@@ -183,6 +216,17 @@ export function initAuthDialog(): void {
 
     if (toggle) {
       togglePassword(toggle);
+      return;
+    }
+
+    const googleButton =
+      event.target.closest<HTMLButtonElement>('.auth_google');
+
+    if (googleButton) {
+      if (!googlePending) {
+        void signInWithGoogle(googleButton);
+      }
+
       return;
     }
 
@@ -246,6 +290,7 @@ export function initAuthDialog(): void {
   });
 
   dialog.addEventListener('close', () => {
+    googlePending = false;
     document.body.classList.remove('is_locked');
   });
 }
