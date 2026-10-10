@@ -4,13 +4,13 @@ import {
   signInWithPopup,
   signOut,
   GoogleAuthProvider,
-  updateProfile
+  updateProfile,
 } from 'firebase/auth';
 import { auth } from '../firebaseauth';
 import type { TLogin, TRegister } from '@/types';
 
 export async function register(data: TRegister) {
-  if(!data.username || !data.email || !data.password) {
+  if (!data.username || !data.email || !data.password) {
     throw new Error('Missing username, email or password');
   }
   const userCredential = await createUserWithEmailAndPassword(
@@ -22,14 +22,14 @@ export async function register(data: TRegister) {
   const user = userCredential.user;
 
   await updateProfile(user, {
-    displayName: data.username
-  })
+    displayName: data.username,
+  });
 
   return user;
 }
 
 export async function login(data: TLogin) {
-  if(!data.email || !data.password) {
+  if (!data.email || !data.password) {
     throw new Error('Missing email or password');
   }
   const userCredential = await signInWithEmailAndPassword(
