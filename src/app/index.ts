@@ -8,6 +8,7 @@ import {
   initGameDetailsDialog,
 } from '../components/game-details-dialog/game-details-dialog';
 import { initRouter } from './router';
+import { initAuthActions } from '@/features/auth/auth-actions';
 
 export function initApp(): void {
   document.body.innerHTML = `
@@ -22,6 +23,7 @@ export function initApp(): void {
     ${Footer()}
   `;
 
+  initAuthActions();
   initSidebar();
   initRouter();
   initAuthDialog();
