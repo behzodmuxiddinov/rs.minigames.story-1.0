@@ -1,3 +1,8 @@
+import {
+  login,
+  loginWithGoogle,
+  register,
+} from '@/services/actions/auth.actions';
 import './auth-dialog.scss';
 import { LoginForm, RegisterForm } from './auth-form';
 import { eyeIcon, eyeOffIcon } from './icons';
@@ -10,6 +15,13 @@ import {
 const DIALOG_ID = 'auth_dialog';
 
 type AuthMode = 'login' | 'register';
+
+type TSubmitProperties = {
+  formData: FormData;
+  mode: AuthMode;
+  onSuccess: () => void;
+  authDialog: HTMLDialogElement;
+};
 
 export function AuthDialog(): string {
   return `
@@ -50,6 +62,40 @@ function setFieldError(input: HTMLInputElement, message: string): void {
   }
 }
 
+const submitForm = async ({
+  formData,
+  mode,
+  onSuccess,
+  authDialog,
+}: TSubmitProperties): Promise<void> => {
+  const email = String(formData.get('email') ?? '');
+  const password = String(formData.get('password') ?? '');
+  const username = String(formData.get('username') ?? '');
+  const authSubmitButton =
+    document.querySelector<HTMLButtonElement>('.auth_submit');
+  const authSubmitText = authSubmitButton?.textContent;
+  authDialog.setAttribute('inert', 'true');
+  if (authSubmitButton) {
+    authSubmitButton.textContent = 'Loading...';
+    authSubmitButton.setAttribute('aria-busy', 'true');
+  }
+  try {
+    await (mode === 'login'
+      ? login({ email, password })
+      : register({ email, password, username }));
+
+    onSuccess();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    authDialog.removeAttribute('inert');
+    if (authSubmitButton) {
+      authSubmitButton.textContent = authSubmitText?.trim() ?? 'Submit';
+      authSubmitButton.removeAttribute('aria-busy');
+    }
+  }
+};
+
 export function initAuthDialog(): void {
   const dialog = document.querySelector<HTMLDialogElement>(`#${DIALOG_ID}`);
   const dialogBody = dialog?.querySelector<HTMLElement>('.auth_dialog_body');
@@ -60,6 +106,8 @@ export function initAuthDialog(): void {
 
   const tabs = dialog.querySelectorAll<HTMLButtonElement>('[data-auth-tab]');
   let mode: AuthMode = 'login';
+  let pending = false;
+  let googlePending = false;
 
   const validate = (form: HTMLFormElement): FieldErrors =>
     mode === 'login'
@@ -103,8 +151,36 @@ export function initAuthDialog(): void {
     );
   };
 
+  const signInWithGoogle = async (button: HTMLButtonElement): Promise<void> => {
+    const label = button.querySelector<HTMLElement>('span');
+    const labelText = label?.textContent ?? '';
+
+    googlePending = true;
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+
+    if (label) {
+      label.textContent = 'Loading...';
+    }
+
+    try {
+      await loginWithGoogle();
+      dialog.close();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      googlePending = false;
+      button.disabled = false;
+      button.removeAttribute('aria-busy');
+
+      if (label) {
+        label.textContent = labelText;
+      }
+    }
+  };
+
   document.body.addEventListener('click', (event) => {
-    if (!(event.target instanceof HTMLElement)) {
+    if (!(event.target instanceof Element)) {
       return;
     }
 
@@ -116,7 +192,7 @@ export function initAuthDialog(): void {
   });
 
   dialog.addEventListener('click', (event) => {
-    if (!(event.target instanceof HTMLElement)) {
+    if (!(event.target instanceof Element)) {
       return;
     }
 
@@ -143,7 +219,18 @@ export function initAuthDialog(): void {
       return;
     }
 
-    if (event.target === dialog) {
+    const googleButton =
+      event.target.closest<HTMLButtonElement>('.auth_google');
+
+    if (googleButton) {
+      if (!googlePending) {
+        void signInWithGoogle(googleButton);
+      }
+
+      return;
+    }
+
+    if (event.target === dialog && !pending) {
       dialog.close();
     }
   });
@@ -184,10 +271,26 @@ export function initAuthDialog(): void {
       return;
     }
 
-    dialog.close();
+    pending = true;
+
+    void submitForm({
+      formData: new FormData(form),
+      mode,
+      onSuccess: () => dialog.close(),
+      authDialog: dialog,
+    }).finally(() => {
+      pending = false;
+    });
+  });
+
+  dialog.addEventListener('cancel', (event) => {
+    if (pending) {
+      event.preventDefault();
+    }
   });
 
   dialog.addEventListener('close', () => {
+    googlePending = false;
     document.body.classList.remove('is_locked');
   });
 }
