@@ -43,7 +43,7 @@ export async function login(data: TLogin) {
 
 export async function loginWithGoogle() {
   const provider = new GoogleAuthProvider();
-
+  provider.setCustomParameters({ prompt: 'select_account' });
   const userCredential = await signInWithPopup(auth, provider);
 
   return userCredential.user;
