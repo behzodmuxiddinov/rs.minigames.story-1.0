@@ -147,7 +147,7 @@ export function initAuthDialog(): void {
   };
 
   document.body.addEventListener('click', (event) => {
-    if (!(event.target instanceof HTMLElement)) {
+    if (!(event.target instanceof Element)) {
       return;
     }
 
@@ -159,7 +159,7 @@ export function initAuthDialog(): void {
   });
 
   dialog.addEventListener('click', (event) => {
-    if (!(event.target instanceof HTMLElement)) {
+    if (!(event.target instanceof Element)) {
       return;
     }
 
