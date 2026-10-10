@@ -1,4 +1,5 @@
-import { Home, Library, initMainContent, initLibrary } from '@/pages';
+import { Home, Library, Profile, initMainContent, initLibrary } from '@/pages';
+import { getCurrentUser } from '@/services/auth-store';
 
 export interface NavLink {
   href: string;
@@ -10,6 +11,8 @@ interface Route {
   title: string;
   render: () => string;
   init?: () => void;
+  hidden?: boolean;
+  protected?: boolean;
 }
 
 const DEFAULT_PATH = '/home';
@@ -39,11 +42,18 @@ const ROUTES: Record<string, Route> = {
     render: Home,
     init: initMainContent,
   },
+  '/profile': {
+    label: 'Profile',
+    title: 'Profile | MiniGames',
+    render: Profile,
+    hidden: true,
+    protected: true,
+  },
 };
 
-export const NAV_LINKS: NavLink[] = Object.entries(ROUTES).map(
-  ([href, { label }]) => ({ href, label }),
-);
+export const NAV_LINKS: NavLink[] = Object.entries(ROUTES)
+  .filter(([, route]) => !route.hidden)
+  .map(([href, { label }]) => ({ href, label }));
 
 let currentPath: string | undefined;
 let queryHandler: (() => void) | undefined;
@@ -76,6 +86,11 @@ function renderRoute(): void {
 
   const path = resolvePath(globalThis.location.pathname);
 
+  if (ROUTES[path].protected && !getCurrentUser()) {
+    navigate(DEFAULT_PATH, true);
+    return;
+  }
+
   if (path === currentPath) {
     queryHandler?.();
     return;
@@ -106,6 +121,14 @@ export function navigate(to: string, replace = false): void {
   else globalThis.history.pushState({}, '', to);
 
   renderRoute();
+}
+
+export function enforceRouteAccess(): void {
+  const path = resolvePath(globalThis.location.pathname);
+
+  if (ROUTES[path].protected && !getCurrentUser()) {
+    navigate(DEFAULT_PATH, true);
+  }
 }
 
 function handleLinkClick(event: MouseEvent): void {
