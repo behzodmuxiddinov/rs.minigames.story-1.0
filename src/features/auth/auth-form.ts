@@ -122,6 +122,13 @@ export function RegisterForm(): string {
             autocomplete="new-password"
             aria-describedby="auth_password_error"
           />
+          <button
+            class="auth_toggle"
+            type="button"
+            data-auth-toggle
+            aria-label="Show password"
+            aria-pressed="false"
+          >${eyeIcon}</button>
         </div>
         <p class="auth_error" id="auth_password_error" role="alert"></p>
       </div>
@@ -141,6 +148,13 @@ export function RegisterForm(): string {
             autocomplete="new-password"
             aria-describedby="auth_confirm_password_error"
           />
+          <button
+            class="auth_toggle"
+            type="button"
+            data-auth-toggle
+            aria-label="Show confirm password"
+            aria-pressed="false"
+          >${eyeIcon}</button>
         </div>
         <p class="auth_error" id="auth_confirm_password_error" role="alert"></p>
       </div>
