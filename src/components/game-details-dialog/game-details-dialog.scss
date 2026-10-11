@@ -359,8 +359,16 @@
     display: inline-flex;
     align-items: center;
     gap: var(--size-05);
+    padding: 0;
+    border: none;
+    background: none;
     font-size: var(--font-size-label-small);
     color: var(--on-primary);
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+    }
 
     img {
       width: var(--size-2);

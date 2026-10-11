@@ -3,7 +3,7 @@
 .header_content {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--layer-header);
   padding: var(--size-2);
   background-color: var(--bg);
   border-bottom: 2px solid var(--on-primary);
@@ -115,7 +115,7 @@
     top: 100%;
     right: 0;
     left: 0;
-    z-index: 10;
+    z-index: var(--layer-header);
     display: none;
     flex-direction: column;
     align-items: stretch;

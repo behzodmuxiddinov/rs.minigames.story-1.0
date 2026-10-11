@@ -1,0 +1,66 @@
+.auth_menu {
+  position: relative;
+}
+
+.auth_menu_trigger {
+  display: block;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.auth_avatar {
+  display: grid;
+  place-items: center;
+  width: var(--size-4);
+  height: var(--size-4);
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-bold);
+  color: var(--on-primary);
+  background-color: var(--primary-low);
+  border: var(--border-width-medium) solid var(--on-primary);
+  border-radius: var(--corner-full);
+  object-fit: cover;
+}
+
+.auth_menu_list {
+  position: absolute;
+  top: calc(100% + var(--size-1));
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-low);
+  border: var(--border-width-medium) solid var(--on-primary);
+  border-radius: var(--corner-medium);
+  box-shadow: var(--shadow-level-1);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.auth_menu_item {
+  padding: var(--size-1) var(--size-3);
+  font-family: var(--font-family-inter);
+  font-size: var(--font-size-label-extra-large);
+  font-weight: var(--font-weight-medium);
+  color: var(--on-primary);
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  border-radius: var(--corner-medium);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--surface);
+  }
+}
+
+.sidebar_actions a.btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}

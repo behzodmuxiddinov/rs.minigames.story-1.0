@@ -17,12 +17,21 @@ import {
 import { Pagination } from '@/components/pagination/pagination';
 import { openGameDetails } from '@/components/game-details-dialog/game-details-dialog';
 import { fetchCategories } from '@/services/actions/categories';
-import { fetchGames } from '@/services/actions/games.actions';
+import {
+  fetchGames,
+  toggleFavoriteGame,
+} from '@/services/actions/games.actions';
 import { EmptyState } from '@/components/empty-state/empty-state';
 import { showErrorBanner } from '@/components/error/error-banner';
+import { showSnackbar } from '@/components/snackbar/snackbar';
+import { getCurrentUser } from '@/services/auth-store';
+import { formatCompact } from '@/utils/format-number.utilities';
+import heartIcon from '@/assets/icons/heart.svg';
+import heartOutlineIcon from '@/assets/icons/outlineHeart.svg';
 import { DEFAULT_GAME_SORT, ERROR_MESSAGE, isGameRating } from '@/constants';
 
 const PAGE_SIZE = 6;
+const FAVORITE_ERROR = 'Failed to update favorites. Try again.';
 
 function readPositiveNumber(
   query: URLSearchParams,
@@ -84,6 +93,42 @@ function renderGamesSkeleton(container: HTMLElement): void {
   container.innerHTML = Array.from({ length: PAGE_SIZE }, () =>
     LibraryGameCardSkeleton(),
   ).join('');
+}
+
+async function toggleFavorite(button: HTMLButtonElement): Promise<void> {
+  const slug = button.dataset.slug;
+  const icon = button.querySelector('img');
+  const likes = button.querySelector<HTMLElement>('.library_game_card_likes');
+  const user = getCurrentUser();
+  if (!slug || !icon || !likes) return;
+  if (!user?.email) {
+    showSnackbar('You need to be logged in to add favorites', {
+      status: 'info',
+    });
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+    const { isFavorited, likesCount } = await toggleFavoriteGame(slug, {
+      userEmail: user.email,
+    });
+
+    button.setAttribute('aria-pressed', String(isFavorited));
+    button.setAttribute(
+      'aria-label',
+      isFavorited ? 'Remove from Favorites' : 'Add to Favorites',
+    );
+    icon.src = isFavorited ? heartIcon : heartOutlineIcon;
+    likes.textContent = formatCompact(likesCount);
+  } catch (error: unknown) {
+    showSnackbar(error instanceof Error ? error.message : FAVORITE_ERROR, {
+      status: 'error',
+    });
+  } finally {
+    button.disabled = false;
+  }
 }
 
 export function initLibrary(): void {
@@ -195,6 +240,14 @@ export function initLibrary(): void {
 
   gamesContainer.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
+
+    const favoriteButton =
+      event.target.closest<HTMLButtonElement>('[data-favorite]');
+    if (favoriteButton) {
+      void toggleFavorite(favoriteButton);
+      return;
+    }
+
     const slug = event.target.attributes.getNamedItem('data-slug')?.value;
     if (event.target.closest('.library_game_card_btn') && slug) {
       openGameDetails(slug);

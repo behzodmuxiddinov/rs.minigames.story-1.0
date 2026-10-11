@@ -42,8 +42,6 @@ export function initSidebar(): void {
   const overlay = document.querySelector<HTMLDivElement>('.overlay');
   const closeButton =
     document.querySelector<HTMLButtonElement>('.sidebar_close_btn');
-  const authButtons =
-    document.querySelectorAll<HTMLButtonElement>('[data-auth]');
   if (!sidebar || !burger || !closeButton || !overlay) {
     return;
   }
@@ -78,11 +76,14 @@ export function initSidebar(): void {
     setOpen(false);
   });
 
-  for (const authButton of authButtons) {
-    authButton.addEventListener('click', () => {
+  document.addEventListener('click', (event) => {
+    if (
+      event.target instanceof Element &&
+      event.target.closest('[data-auth], [data-auth-logout]')
+    ) {
       setOpen(false);
-    });
-  }
+    }
+  });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && sidebar.classList.contains('is_open')) {

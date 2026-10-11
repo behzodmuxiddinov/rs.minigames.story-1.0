@@ -9,9 +9,13 @@ import type { GameComment, GameDetails, GameRecord } from '@/services/api';
 import {
   fetchGame,
   fetchGameComments,
+  likeComment,
   postGameComment,
+  toggleFavoriteGame,
 } from '@/services/actions/games.actions';
+import { getCurrentUser } from '@/services/auth-store';
 import { showErrorBanner } from '../error/error-banner';
+import { showSnackbar } from '../snackbar/snackbar';
 
 export const GAME_URL_PARAMETER = 'game';
 
@@ -21,8 +25,12 @@ const MEDIA_SELECTOR = '.game_details_media';
 const COMMENTS_SELECTOR = '.game_details_comments';
 const COMMENT_INPUT_SELECTOR = '.game_details_comment_input';
 const COMMENT_ERROR_SELECTOR = '.game_details_comment_error';
+const COMMENT_LIKE_SELECTOR = '[data-comment-like]';
+const FAVORITE_SELECTOR = '.game_details_favorite';
+const FAVORITE_LIKES_SELECTOR = '.game_details_meta_likes';
 const ERROR_MESSAGE = 'Failed to load the game details.';
 const COMMENT_ERROR_MESSAGE = 'Failed to post the comment. Try again.';
+const FAVORITE_ERROR = 'Failed to update favorites. Try again.';
 const MEDALS = ['🥇', '🥈', '🥉'];
 const SKELETON_STAT_COUNT = 4;
 const SKELETON_RECORD_COUNT = 3;
@@ -94,11 +102,23 @@ function commentItem(comment: GameComment): string {
         <span class="game_details_comment_date">${formatRelativeDate(comment.createdAt)}</span>
       </div>
       <p class="game_details_comment_text">${escapeHtml(comment.text)}</p>
-      <span class="game_details_comment_likes">
-        <img src="${heartIcon}" alt="Likes" />${comment.likesCount}
-      </span>
+      <button
+        class="game_details_comment_likes"
+        type="button"
+        data-comment-like
+        aria-label="Like the comment"
+        aria-pressed="${comment.isLikedByCurrentUser}"
+        data-comment-id="${escapeHtml(comment.commentId)}"
+      >
+        <img src="${comment.isLikedByCurrentUser ? heartIcon : heartOutlineIcon}" alt="" />
+        <span class="game_details_comment_likes_count">${comment.likesCount}</span>
+      </button>
     </li>
   `;
+}
+
+function favoriteLabel(isFavorited: boolean): string {
+  return isFavorited ? 'Remove from Favorites' : 'Add to Favorites';
 }
 
 function gameDetailsBody(game: GameDetails, comments: GameComment[]): string {
@@ -107,7 +127,7 @@ function gameDetailsBody(game: GameDetails, comments: GameComment[]): string {
       <h2 class="game_details_title" id="game_details_title">${escapeHtml(game.name)}</h2>
       <div class="game_details_meta">
         <span class="game_details_meta_item"><img src="${starIcon}" alt="Rating" />${game.rating}</span>
-        <span class="game_details_meta_item"><img src="${heartIcon}" alt="Likes" />${formatCompact(game.likesCount)}</span>
+        <span class="game_details_meta_item game_details_meta_likes"><img src="${heartIcon}" alt="Likes" />${formatCompact(game.likesCount)}</span>
       </div>
     </div>
     <p class="game_details_description">${escapeHtml(game.fullDescription)}</p>
@@ -119,8 +139,8 @@ function gameDetailsBody(game: GameDetails, comments: GameComment[]): string {
     </div>
     <div class="game_details_actions">
       <button class="game_details_play" type="button">Play Now</button>
-      <button class="game_details_favorite" type="button" aria-label="Add to Favorites" aria-pressed="${game.isLikedByCurrentUser}">
-        <img src="${game.isLikedByCurrentUser ? heartIcon : heartOutlineIcon}" alt="" /><span>Add to Favorites</span>
+      <button class="game_details_favorite" type="button" aria-label="${favoriteLabel(game.isLikedByCurrentUser)}" aria-pressed="${game.isLikedByCurrentUser}">
+        <img src="${game.isLikedByCurrentUser ? heartIcon : heartOutlineIcon}" alt="" /><span>${favoriteLabel(game.isLikedByCurrentUser)}</span>
       </button>
     </div>
     <section>
@@ -253,7 +273,7 @@ async function loadGame(slug: string): Promise<void> {
 
   try {
     const [game, comments] = await Promise.all([
-      fetchGame(slug),
+      fetchGame(slug, getCurrentUser()?.email ?? undefined),
       fetchGameComments(slug),
     ]);
 
@@ -310,14 +330,23 @@ async function submitComment(
     .closest('section')
     ?.querySelector<HTMLElement>(COMMENTS_SELECTOR);
   const text = input?.value.trim();
+  const user = getCurrentUser();
   if (!slug || !input || !list || !text) return;
+  if (!user?.email) {
+    showSnackbar('You need to be logged in to comment', { status: 'info' });
+    return;
+  }
 
   input.disabled = true;
 
   form.parentElement?.querySelector(COMMENT_ERROR_SELECTOR)?.remove();
 
   try {
-    const comment = await postGameComment(slug, text);
+    const comment = await postGameComment(slug, {
+      userEmail: user.email,
+      authorName: user.displayName ?? 'Anonymous',
+      text,
+    });
 
     list.insertAdjacentHTML('afterbegin', commentItem(comment));
     input.value = '';
@@ -332,6 +361,81 @@ async function submitComment(
   }
 }
 
+async function toggleCommentLike(button: HTMLButtonElement): Promise<void> {
+  const commentId = button.dataset.commentId;
+  const count = button.querySelector<HTMLElement>(
+    '.game_details_comment_likes_count',
+  );
+  const icon = button.querySelector('img');
+  const user = getCurrentUser();
+  if (!commentId || !count || !icon) return;
+  if (!user?.email) {
+    showSnackbar('You need to be logged in to like a comment', {
+      status: 'info',
+    });
+    return;
+  }
+
+  const isLiked = button.getAttribute('aria-pressed') === 'true';
+  const likesCount = Number(count.textContent);
+
+  button.disabled = true;
+  button.setAttribute('aria-pressed', String(!isLiked));
+  count.textContent = String(isLiked ? likesCount - 1 : likesCount + 1);
+  icon.src = isLiked ? heartOutlineIcon : heartIcon;
+
+  try {
+    await likeComment(commentId, { userEmail: user.email });
+  } catch {
+    button.setAttribute('aria-pressed', String(isLiked));
+    count.textContent = String(likesCount);
+    icon.src = isLiked ? heartIcon : heartOutlineIcon;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function toggleFavorite(
+  button: HTMLButtonElement,
+  slug: string | undefined,
+): Promise<void> {
+  const icon = button.querySelector('img');
+  const label = button.querySelector('span');
+  const user = getCurrentUser();
+  if (!slug || !icon || !label) return;
+  if (!user?.email) {
+    showSnackbar('You need to be logged in to add favorites', {
+      status: 'info',
+    });
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+    const { isFavorited, likesCount } = await toggleFavoriteGame(slug, {
+      userEmail: user.email,
+    });
+
+    button.setAttribute('aria-pressed', String(isFavorited));
+    button.setAttribute('aria-label', favoriteLabel(isFavorited));
+    label.textContent = favoriteLabel(isFavorited);
+    icon.src = isFavorited ? heartIcon : heartOutlineIcon;
+
+    const likes = button
+      .closest(BODY_SELECTOR)
+      ?.querySelector<HTMLElement>(FAVORITE_LIKES_SELECTOR);
+    const likesText = likes?.lastChild;
+    if (likesText) likesText.textContent = formatCompact(likesCount);
+  } catch (error: unknown) {
+    showSnackbar(error instanceof Error ? error.message : FAVORITE_ERROR, {
+      status: 'error',
+    });
+  } finally {
+    button.disabled = false;
+  }
+}
+
 export function initGameDetailsDialog(): void {
   const dialog = document.querySelector<HTMLDialogElement>(DIALOG_SELECTOR);
   if (!dialog) return;
@@ -343,7 +447,21 @@ export function initGameDetailsDialog(): void {
       event.target.closest('[data-details-close]')
     ) {
       dialog.close();
+      return;
     }
+
+    const likeButton = event.target.closest<HTMLButtonElement>(
+      COMMENT_LIKE_SELECTOR,
+    );
+    if (likeButton) {
+      void toggleCommentLike(likeButton);
+      return;
+    }
+
+    const favoriteButton =
+      event.target.closest<HTMLButtonElement>(FAVORITE_SELECTOR);
+    if (favoriteButton)
+      void toggleFavorite(favoriteButton, dialog.dataset.slug);
   });
 
   dialog.addEventListener('submit', (event) => {
