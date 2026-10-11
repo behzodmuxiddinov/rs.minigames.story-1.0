@@ -9,6 +9,7 @@ import {
 } from '../components/game-details-dialog/game-details-dialog';
 import { initRouter } from './router';
 import { initAuthActions } from '@/features/auth/auth-actions';
+import { initAutoLogout } from '@/features/auth/auto-logout';
 
 export function initApp(): void {
   document.body.innerHTML = `
@@ -24,6 +25,7 @@ export function initApp(): void {
   `;
 
   initAuthActions();
+  initAutoLogout();
   initSidebar();
   initRouter();
   initAuthDialog();
