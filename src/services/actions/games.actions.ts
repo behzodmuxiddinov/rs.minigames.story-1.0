@@ -9,6 +9,8 @@ import {
   type GameCommentsResponse,
   type GameDetails,
   type GameDetailsResponse,
+  type GameFavorite,
+  type GameFavoriteResponse,
   type GamesQuery,
   type GamesResponse,
 } from '../api';
@@ -36,9 +38,14 @@ export const fetchGames = async (
   return (await response.json()) as GamesResponse;
 };
 
-export const fetchGame = async (gameSlug: string): Promise<GameDetails> => {
+export const fetchGame = async (
+  gameSlug: string,
+  userEmail?: string,
+): Promise<GameDetails> => {
+  const query = userEmail ? '?' + new URLSearchParams({ userEmail }) : '';
+
   const response = await fetch(
-    API_BASE_URL + buildPath(ENDPOINTS.game, { gameSlug }),
+    API_BASE_URL + buildPath(ENDPOINTS.game, { gameSlug }) + query,
   );
 
   if (!response.ok) {
@@ -103,4 +110,28 @@ export const likeComment = async (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
+};
+
+export const toggleFavoriteGame = async (
+  gameSlug: string,
+  payload: CommentLikePayload,
+): Promise<GameFavorite> => {
+  const response = await fetch(
+    API_BASE_URL + buildPath(ENDPOINTS.gameFavorite, { gameSlug }),
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to update favorites: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const { data } = (await response.json()) as GameFavoriteResponse;
+
+  return data;
 };

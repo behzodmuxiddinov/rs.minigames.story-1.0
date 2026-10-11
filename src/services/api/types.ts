@@ -108,3 +108,13 @@ export type GameCommentPayload = {
 export type CommentLikePayload = {
   userEmail: string;
 };
+
+export type GameFavorite = {
+  gameSlug: string;
+  isFavorited: boolean;
+  likesCount: number;
+};
+
+export type GameFavoriteResponse = {
+  data: GameFavorite;
+};
