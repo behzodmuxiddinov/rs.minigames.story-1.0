@@ -11,7 +11,9 @@ import {
   fetchGameComments,
   postGameComment,
 } from '@/services/actions/games.actions';
+import { getCurrentUser } from '@/services/auth-store';
 import { showErrorBanner } from '../error/error-banner';
+import { showSnackbar } from '../snackbar/snackbar';
 
 export const GAME_URL_PARAMETER = 'game';
 
@@ -310,14 +312,23 @@ async function submitComment(
     .closest('section')
     ?.querySelector<HTMLElement>(COMMENTS_SELECTOR);
   const text = input?.value.trim();
+  const user = getCurrentUser();
   if (!slug || !input || !list || !text) return;
+  if(!user?.email){
+    showSnackbar('You need to be logged in to comment', { status: 'info' });
+    return;
+  }
 
   input.disabled = true;
 
   form.parentElement?.querySelector(COMMENT_ERROR_SELECTOR)?.remove();
 
   try {
-    const comment = await postGameComment(slug, text);
+    const comment = await postGameComment(slug, {
+      userEmail: user.email,
+      authorName: user.displayName ?? 'Anonymous',
+      text,
+    });
 
     list.insertAdjacentHTML('afterbegin', commentItem(comment));
     input.value = '';
