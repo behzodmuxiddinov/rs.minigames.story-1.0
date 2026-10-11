@@ -4,6 +4,7 @@ import { logout } from '@/services/actions/auth.actions';
 import { getCurrentUser, subscribe } from '@/services/auth-store';
 import { enforceRouteAccess } from '@/app/router';
 import { escapeHtml } from '@/utils/escape-html.utilities';
+import { showSnackbar } from '@/components/snackbar/snackbar';
 
 const MENU_ID = 'auth_menu_list';
 
@@ -100,7 +101,7 @@ export function initAuthActions(): void {
 
     if (event.target.closest('[data-auth-logout]')) {
       void logout().catch((error: unknown) => {
-        console.error(error);
+        showSnackbar(String(error), { status: 'error' });
       });
       return;
     }

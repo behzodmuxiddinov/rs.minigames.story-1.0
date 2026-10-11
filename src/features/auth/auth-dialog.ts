@@ -11,6 +11,7 @@ import {
   validateLogin,
   validateRegister,
 } from './validation';
+import { showSnackbar } from '@/components/snackbar/snackbar';
 
 const DIALOG_ID = 'auth_dialog';
 
@@ -86,7 +87,7 @@ const submitForm = async ({
 
     onSuccess();
   } catch (error) {
-    console.error(error);
+    showSnackbar(String(error), { status: 'error' });
   } finally {
     authDialog.removeAttribute('inert');
     if (authSubmitButton) {
@@ -167,7 +168,7 @@ export function initAuthDialog(): void {
       await loginWithGoogle();
       dialog.close();
     } catch (error) {
-      console.error(error);
+      showSnackbar(String(error), { status: 'error' });
     } finally {
       googlePending = false;
       button.disabled = false;
