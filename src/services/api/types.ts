@@ -98,3 +98,9 @@ export type GameCommentsResponse = {
 export type GameCommentResponse = {
   data: GameComment;
 };
+
+export type GameCommentPayload = {
+  userEmail: string;
+  authorName: string;
+  text: string;
+};
