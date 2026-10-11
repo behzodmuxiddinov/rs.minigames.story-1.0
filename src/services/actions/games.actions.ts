@@ -3,6 +3,7 @@ import {
   buildPath,
   ENDPOINTS,
   type GameComment,
+  type GameCommentPayload,
   type GameCommentResponse,
   type GameCommentsResponse,
   type GameDetails,
@@ -70,14 +71,14 @@ export const fetchGameComments = async (
 
 export const postGameComment = async (
   gameSlug: string,
-  text: string,
+  payload: GameCommentPayload,
 ): Promise<GameComment> => {
   const response = await fetch(
     API_BASE_URL + buildPath(ENDPOINTS.gameComments, { gameSlug }),
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify(payload),
     },
   );
 
