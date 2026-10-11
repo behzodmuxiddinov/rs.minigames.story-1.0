@@ -24,14 +24,34 @@ const ICONS: Record<SnackbarStatus, string> = {
   warning: '<path d="M12 4 21 19.5H3L12 4Z" /><path d="M12 10v4M12 17v.01" />',
 };
 
+function getHost(): HTMLElement {
+  const dialogs = [...document.querySelectorAll('dialog')];
+
+  return (
+    dialogs.findLast((dialog) => dialog.matches(':modal')) ?? document.body
+  );
+}
+
 function getContainer(position: SnackbarPosition): HTMLElement {
   const className = `snackbars_${position}`;
   const existing = document.querySelector<HTMLElement>(`.${className}`);
-  if (existing) return existing;
-
-  const container = document.createElement('div');
+  const container = existing ?? document.createElement('div');
   container.className = `snackbars ${className}`;
-  document.body.append(container);
+
+  const host = getHost();
+  if (container.parentElement !== host) {
+    host.append(container);
+
+    if (host !== document.body) {
+      host.addEventListener(
+        'close',
+        () => {
+          if (container.isConnected) document.body.append(container);
+        },
+        { once: true },
+      );
+    }
+  }
 
   return container;
 }
