@@ -9,6 +9,7 @@ import type { GameComment, GameDetails, GameRecord } from '@/services/api';
 import {
   fetchGame,
   fetchGameComments,
+  likeComment,
   postGameComment,
 } from '@/services/actions/games.actions';
 import { getCurrentUser } from '@/services/auth-store';
@@ -23,6 +24,7 @@ const MEDIA_SELECTOR = '.game_details_media';
 const COMMENTS_SELECTOR = '.game_details_comments';
 const COMMENT_INPUT_SELECTOR = '.game_details_comment_input';
 const COMMENT_ERROR_SELECTOR = '.game_details_comment_error';
+const COMMENT_LIKE_SELECTOR = '[data-comment-like]';
 const ERROR_MESSAGE = 'Failed to load the game details.';
 const COMMENT_ERROR_MESSAGE = 'Failed to post the comment. Try again.';
 const MEDALS = ['🥇', '🥈', '🥉'];
@@ -96,9 +98,17 @@ function commentItem(comment: GameComment): string {
         <span class="game_details_comment_date">${formatRelativeDate(comment.createdAt)}</span>
       </div>
       <p class="game_details_comment_text">${escapeHtml(comment.text)}</p>
-      <span class="game_details_comment_likes">
-        <img src="${heartIcon}" alt="Likes" />${comment.likesCount}
-      </span>
+      <button
+        class="game_details_comment_likes"
+        type="button"
+        data-comment-like
+        aria-label="Like the comment"
+        aria-pressed="${comment.isLikedByCurrentUser}"
+        data-comment-id="${escapeHtml(comment.commentId)}"
+      >
+        <img src="${comment.isLikedByCurrentUser ? heartIcon : heartOutlineIcon}" alt="" />
+        <span class="game_details_comment_likes_count">${comment.likesCount}</span>
+      </button>
     </li>
   `;
 }
@@ -314,7 +324,7 @@ async function submitComment(
   const text = input?.value.trim();
   const user = getCurrentUser();
   if (!slug || !input || !list || !text) return;
-  if(!user?.email){
+  if (!user?.email) {
     showSnackbar('You need to be logged in to comment', { status: 'info' });
     return;
   }
@@ -343,6 +353,40 @@ async function submitComment(
   }
 }
 
+async function toggleCommentLike(button: HTMLButtonElement): Promise<void> {
+  const commentId = button.dataset.commentId;
+  const count = button.querySelector<HTMLElement>(
+    '.game_details_comment_likes_count',
+  );
+  const icon = button.querySelector('img');
+  const user = getCurrentUser();
+  if (!commentId || !count || !icon) return;
+  if (!user?.email) {
+    showSnackbar('You need to be logged in to like a comment', {
+      status: 'info',
+    });
+    return;
+  }
+
+  const isLiked = button.getAttribute('aria-pressed') === 'true';
+  const likesCount = Number(count.textContent);
+
+  button.disabled = true;
+  button.setAttribute('aria-pressed', String(!isLiked));
+  count.textContent = String(isLiked ? likesCount - 1 : likesCount + 1);
+  icon.src = isLiked ? heartOutlineIcon : heartIcon;
+
+  try {
+    await likeComment(commentId, { userEmail: user.email });
+  } catch {
+    button.setAttribute('aria-pressed', String(isLiked));
+    count.textContent = String(likesCount);
+    icon.src = isLiked ? heartIcon : heartOutlineIcon;
+  } finally {
+    button.disabled = false;
+  }
+}
+
 export function initGameDetailsDialog(): void {
   const dialog = document.querySelector<HTMLDialogElement>(DIALOG_SELECTOR);
   if (!dialog) return;
@@ -354,7 +398,13 @@ export function initGameDetailsDialog(): void {
       event.target.closest('[data-details-close]')
     ) {
       dialog.close();
+      return;
     }
+
+    const likeButton = event.target.closest<HTMLButtonElement>(
+      COMMENT_LIKE_SELECTOR,
+    );
+    if (likeButton) void toggleCommentLike(likeButton);
   });
 
   dialog.addEventListener('submit', (event) => {

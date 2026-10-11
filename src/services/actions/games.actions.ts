@@ -2,6 +2,7 @@ import {
   API_BASE_URL,
   buildPath,
   ENDPOINTS,
+  type CommentLikePayload,
   type GameComment,
   type GameCommentPayload,
   type GameCommentResponse,
@@ -91,4 +92,15 @@ export const postGameComment = async (
   const { data } = (await response.json()) as GameCommentResponse;
 
   return data;
+};
+
+export const likeComment = async (
+  commentId: string,
+  payload: CommentLikePayload,
+): Promise<void> => {
+  await fetch(API_BASE_URL + buildPath(ENDPOINTS.commentLike, { commentId }), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
 };

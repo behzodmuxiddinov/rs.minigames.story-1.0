@@ -104,3 +104,7 @@ export type GameCommentPayload = {
   authorName: string;
   text: string;
 };
+
+export type CommentLikePayload = {
+  userEmail: string;
+};
