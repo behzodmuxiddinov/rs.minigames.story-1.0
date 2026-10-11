@@ -2,12 +2,18 @@
 
 .snackbars {
   position: fixed;
-  z-index: 100;
+  inset: auto;
+  z-index: var(--layer-snackbar);
   display: flex;
   flex-direction: column;
   gap: var(--size-1);
   width: calc(100% - var(--size-4));
-  max-width: 400px;
+  max-width: var(--snackbar-width-max);
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  background: none;
+  border: none;
   pointer-events: none;
 
   @include tablet {
@@ -43,19 +49,19 @@
   width: 100%;
   padding: var(--size-2);
   background-color: var(--white);
-  border: var(--border-width-thin) solid var(--outline);
-  border-left: 4px solid var(--on-bg);
+  border: var(--border-width-medium) solid var(--on-primary);
+  border-left-width: var(--border-width-thick);
   border-radius: var(--corner-medium);
-  box-shadow: 0 8px 24px rgb(36 33 69 / 15%);
+  box-shadow: var(--shadow-level-1);
   pointer-events: auto;
-  animation: snackbar_enter 0.2s ease-out;
+  animation: snackbar_enter var(--duration-short) ease-out;
 
   @include tablet {
-    min-width: 320px;
+    min-width: var(--snackbar-width-min);
   }
 
   &.is_leaving {
-    animation: snackbar_leave 0.2s ease-in forwards;
+    animation: snackbar_leave var(--duration-short) ease-in forwards;
   }
 
   .snackbar_icon {
@@ -64,17 +70,16 @@
     height: var(--size-3);
     fill: none;
     stroke: currentcolor;
-    stroke-width: 2;
+    stroke-width: var(--border-width-medium);
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
   .snackbar_message {
     flex: 1;
-    padding-top: 2px;
     font-size: var(--font-size-body-small);
     font-weight: var(--font-weight-medium);
-    line-height: 1.4;
+    line-height: var(--line-height-text);
     color: var(--on-primary);
     overflow-wrap: anywhere;
 
@@ -107,7 +112,7 @@
       height: var(--size-2);
       fill: none;
       stroke: currentcolor;
-      stroke-width: 2;
+      stroke-width: var(--border-width-medium);
       stroke-linecap: round;
     }
   }
@@ -148,13 +153,12 @@
 @keyframes snackbar_enter {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(calc(var(--size-1) * -1));
   }
 }
 
 @keyframes snackbar_leave {
   to {
     opacity: 0;
-    transform: scale(0.97);
   }
 }
