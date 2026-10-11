@@ -1,7 +1,7 @@
 import './library-game-card.scss';
 import { formatCompact } from '@/utils/format-number.utilities';
 import starIcon from '@/assets/icons/star.svg';
-import heartIcon from '@/assets/icons/heart.svg';
+import heartOutlineIcon from '@/assets/icons/outlineHeart.svg';
 import type { Game } from '@/types';
 const FREE_PRICE = 'Free';
 
@@ -27,9 +27,17 @@ export function LibraryGameCard(game: Game): string {
             <span class="library_game_card_stat">
               <img class="library_game_card_icon" src="${starIcon}" alt="Rating" />${game.rating}
             </span>
-            <span class="library_game_card_stat">
-              <img class="library_game_card_icon" src="${heartIcon}" alt="Likes" />${formatCompact(game.likesCount)}
-            </span>
+            <button
+              class="library_game_card_stat library_game_card_favorite"
+              type="button"
+              data-favorite
+              data-slug="${game.slug}"
+              aria-label="Add to Favorites"
+              aria-pressed="false"
+            >
+              <img class="library_game_card_icon" src="${heartOutlineIcon}" alt="" />
+              <span class="library_game_card_likes">${formatCompact(game.likesCount)}</span>
+            </button>
           </div>
           <button class="library_game_card_btn" type="button" data-slug="${game.slug}">Details</button>
         </div>
