@@ -2,9 +2,9 @@ import type { User } from 'firebase/auth';
 import { logout } from '@/services/actions/auth.actions';
 import { getCurrentUser, subscribe } from '@/services/auth-store';
 import { showSnackbar } from '@/components/snackbar/snackbar';
+import { t } from '@/features/i18n';
 
 const SESSION_LIMIT = 5 * 60 * 1000;
-const EXPIRED_MESSAGE = 'Your session expired. Please log in again.';
 
 let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -20,7 +20,7 @@ function expire(): void {
 
   void logout()
     .then(() => {
-      showSnackbar(EXPIRED_MESSAGE, { status: 'info' });
+      showSnackbar(t('auth.sessionExpired'), { status: 'info' });
     })
     .catch((error: unknown) => {
       showSnackbar(String(error), { status: 'error' });

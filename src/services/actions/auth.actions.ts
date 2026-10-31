@@ -8,10 +8,11 @@ import {
 } from 'firebase/auth';
 import { auth } from '../firebaseauth';
 import type { TLogin, TRegister } from '@/types';
+import { t } from '@/features/i18n';
 
 export async function register(data: TRegister) {
   if (!data.username || !data.email || !data.password) {
-    throw new Error('Missing username, email or password');
+    throw new Error(t('auth.missingRegisterFields'));
   }
   const userCredential = await createUserWithEmailAndPassword(
     auth,
@@ -30,7 +31,7 @@ export async function register(data: TRegister) {
 
 export async function login(data: TLogin) {
   if (!data.email || !data.password) {
-    throw new Error('Missing email or password');
+    throw new Error(t('auth.missingCredentials'));
   }
   const userCredential = await signInWithEmailAndPassword(
     auth,

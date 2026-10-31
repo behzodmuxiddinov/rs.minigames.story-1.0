@@ -1,6 +1,7 @@
 import './developer-cta.scss';
 import illustrationUrl from '@/assets/images/illustration-side.png';
 import uploadIcon from '@/assets/icons/upload.svg';
+import { t } from '@/features/i18n';
 
 const CONTACT_EMAIL = 'developers@minigames.com';
 
@@ -10,22 +11,18 @@ export function DeveloperCta(): string {
       <img
         class="developer_cta_img"
         src="${illustrationUrl}"
-        alt="Developer workspace with a mini game on screen"
+        alt="${t('developer.image')}"
         loading="lazy"
       />
       <div class="developer_cta_card">
-        <h2 class="developer_cta_title" id="developer_cta_title">Are You a Game Developer?</h2>
-        <p class="developer_cta_descr">
-          Want to see your game on MiniGames? We're always looking for fun,
-          engaging mini games to add to our platform. Submit your game
-          and reach thousands of players!
-        </p>
+        <h2 class="developer_cta_title" id="developer_cta_title">${t('developer.title')}</h2>
+        <p class="developer_cta_descr">${t('developer.description')}</p>
         <button class="developer_cta_btn">
           <img class="developer_cta_btn_icon" src="${uploadIcon}" alt="upload" />
-          <span>Submit Form</span>
+          <span>${t('developer.submit')}</span>
         </button>
         <p class="developer_cta_contact">
-          or contact us at
+          ${t('developer.contact')}
           <a class="developer_cta_mail" href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>
         </p>
       </div>

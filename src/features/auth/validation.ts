@@ -1,3 +1,5 @@
+import { t } from '@/features/i18n';
+
 export const USERNAME_MIN_LENGTH = 3;
 export const PASSWORD_MIN_LENGTH = 8;
 
@@ -9,11 +11,11 @@ export function validateUsername(value: string): string | undefined {
   const username = value.trim();
 
   if (!username) {
-    return 'Username is required.';
+    return t('validation.usernameRequired');
   }
 
   if (username.length < USERNAME_MIN_LENGTH) {
-    return `Username must be at least ${USERNAME_MIN_LENGTH} characters.`;
+    return t('validation.usernameMin', { count: USERNAME_MIN_LENGTH });
   }
 
   return undefined;
@@ -23,11 +25,11 @@ export function validateEmail(value: string): string | undefined {
   const email = value.trim();
 
   if (!email) {
-    return 'Email address is required.';
+    return t('validation.emailRequired');
   }
 
   if (!EMAIL_PATTERN.test(email)) {
-    return 'Enter a valid email address.';
+    return t('validation.emailInvalid');
   }
 
   return undefined;
@@ -35,11 +37,11 @@ export function validateEmail(value: string): string | undefined {
 
 export function validatePassword(value: string): string | undefined {
   if (!value) {
-    return 'Password is required.';
+    return t('validation.passwordRequired');
   }
 
   if (value.length < PASSWORD_MIN_LENGTH) {
-    return `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`;
+    return t('validation.passwordMin', { count: PASSWORD_MIN_LENGTH });
   }
 
   return undefined;
@@ -50,11 +52,11 @@ export function validateConfirmPassword(
   password: string,
 ): string | undefined {
   if (!value) {
-    return 'Please repeat your password.';
+    return t('validation.confirmRequired');
   }
 
   if (value !== password) {
-    return 'Passwords do not match.';
+    return t('validation.confirmMismatch');
   }
 
   return undefined;

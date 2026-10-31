@@ -6,6 +6,7 @@ import {
   markTopPlayers,
 } from '@/components/top-players/top-players';
 import { DeveloperCta } from '@/components/developer-cta/developer-cta';
+import { t } from '@/features/i18n';
 
 export function Home(): string {
   return `
@@ -14,18 +15,17 @@ export function Home(): string {
         <div class="hero_container container">
           <div class="hero_card">
             <h1 class="hero_title">
-              Take a Short Break <br />
-              & Have Fun
+              ${t('home.heroTitleTop')} <br />
+              ${t('home.heroTitleBottom')}
             </h1>
             <p class="hero_descr hero_descr_large">
-              Discover hundreds of curated casual mini-games. Play instantly in your
-              browser — puzzle, match 3, farm, and board classics.
+              ${t('home.heroDescriptionLong')}
             </p>
             <p class="hero_descr hero_descr_short">
-              Discover hundreds of curated casual mini-games right in your browser.
+              ${t('home.heroDescriptionShort')}
             </p>
             <a class="hero_card_btn" href="/library">
-              <span>Browse Library</span>
+              <span>${t('home.browseLibrary')}</span>
             </a>
           </div>
         </div>

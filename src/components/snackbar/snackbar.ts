@@ -1,4 +1,5 @@
 import './snackbar.scss';
+import { t } from '@/features/i18n';
 
 export type SnackbarStatus = 'success' | 'error' | 'info' | 'warning';
 
@@ -15,7 +16,6 @@ const DEFAULT_STATUS: SnackbarStatus = 'info';
 const DEFAULT_POSITION: SnackbarPosition = 'top-right';
 const DEFAULT_DURATION = 5000;
 const LEAVE_DURATION = 200;
-const CLOSE_LABEL = 'Close notification';
 
 const ICONS: Record<SnackbarStatus, string> = {
   success: '<path d="M5 12.5 10 17.5 19 7" />',
@@ -74,7 +74,7 @@ export function showSnackbar(
       ${ICONS[status]}
     </svg>
     <p class="snackbar_message">${message}</p>
-    <button class="snackbar_close" type="button" aria-label="${CLOSE_LABEL}">
+    <button class="snackbar_close" type="button" aria-label="${t('snackbar.close')}">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M6 6 18 18M18 6 6 18" />
       </svg>
