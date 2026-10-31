@@ -5,54 +5,58 @@ import chatIcon from '@/assets/icons/chatIcon.svg?raw';
 import shareIcon from '@/assets/icons/shareIcon.svg?raw';
 import rssIcon from '@/assets/icons/rssIcon.svg?raw';
 import rsSchoolIcon from '@/assets/icons/rsSchoolIcon.svg?raw';
+import { t, type TranslationKey } from '@/features/i18n';
 
 interface FooterLink {
   href: string;
-  label: string;
+  labelKey: TranslationKey;
 }
 
 interface FooterColumn {
-  title: string;
+  titleKey: TranslationKey;
   links: FooterLink[];
 }
 
 const FOOTER_COLUMNS: FooterColumn[] = [
   {
-    title: 'Explore',
+    titleKey: 'footer.explore',
     links: [
-      { href: '/home', label: 'Home' },
-      { href: '/library', label: 'Library' },
-      { href: '/library', label: 'Categories' },
-      { href: '/tournaments', label: 'Tournaments' },
+      { href: '/home', labelKey: 'nav.home' },
+      { href: '/library', labelKey: 'nav.library' },
+      { href: '/library', labelKey: 'footer.categories' },
+      { href: '/tournaments', labelKey: 'nav.tournaments' },
     ],
   },
   {
-    title: 'Company',
+    titleKey: 'footer.company',
     links: [
-      { href: '/home', label: 'About Us' },
-      { href: '/community', label: 'Contact' },
-      { href: '/home', label: 'Privacy Policy' },
-      { href: '/home', label: 'Terms of Service' },
+      { href: '/home', labelKey: 'footer.about' },
+      { href: '/community', labelKey: 'footer.contact' },
+      { href: '/home', labelKey: 'footer.privacy' },
+      { href: '/home', labelKey: 'footer.terms' },
     ],
   },
 ];
 
 const SOCIAL_LINKS: FooterLink[] = [
-  { href: '/community', label: 'Share' },
-  { href: '/community', label: 'Discussions' },
-  { href: '/community', label: 'Blog' },
+  { href: '/community', labelKey: 'footer.share' },
+  { href: '/community', labelKey: 'footer.discussions' },
+  { href: '/community', labelKey: 'footer.blog' },
 ];
 
 const SOCIAL_ICONS = [shareIcon, chatIcon, rssIcon];
 
 export function Footer(): string {
   const columns = FOOTER_COLUMNS.map(
-    ({ title, links }) => `
+    ({ titleKey, links }) => `
       <div class="footer_column">
-        <h2 class="footer_title">${title}</h2>
+        <h2 class="footer_title">${t(titleKey)}</h2>
         <ul class="footer_links">
           ${links
-            .map(({ href, label }) => `<li><a href="${href}">${label}</a></li>`)
+            .map(
+              ({ href, labelKey }) =>
+                `<li><a href="${href}">${t(labelKey)}</a></li>`,
+            )
             .join('')}
         </ul>
       </div>
@@ -60,8 +64,8 @@ export function Footer(): string {
   ).join('');
 
   const socials = SOCIAL_LINKS.map(
-    ({ href, label }, index) =>
-      `<a href="${href}" class="footer_social" aria-label="${label}">${SOCIAL_ICONS[index]}</a>`,
+    ({ href, labelKey }, index) =>
+      `<a href="${href}" class="footer_social" aria-label="${t(labelKey)}">${SOCIAL_ICONS[index]}</a>`,
   ).join('');
 
   return `
@@ -70,18 +74,15 @@ export function Footer(): string {
         <div class="container">
           <div class="footer_inner_content">
             <div class="footer_brand">
-              <a href="/home" class="logo_link" aria-label="MiniGames home">
+              <a href="/home" class="logo_link" aria-label="${t('common.brandHome')}">
                 <img src="${logoUrl}" alt="MiniGames" width="150" height="32" />
               </a>
-              <p class="footer_text">
-                Take a short break and have fun. Hundreds of curated casual
-                mini-games right in your web browser. No download required.
-              </p>
+              <p class="footer_text">${t('footer.description')}</p>
             </div>
             <div class="footer_columns">
               ${columns}
               <div class="footer_column">
-                <h2 class="footer_title">Community</h2>
+                <h2 class="footer_title">${t('footer.community')}</h2>
                 <div class="footer_socials">${socials}</div>
               </div>
             </div>
@@ -91,7 +92,7 @@ export function Footer(): string {
       <div class="footer_bottom_wrap">
         <div class="container">
           <div class="footer_bottom">
-            <p>&copy; 2026 MiniGames. All rights reserved.</p>
+            <p>${t('footer.rights')}</p>
             <a href="https://rs.school" class="footer_credit" target="_blank" rel="noreferrer">
               <div class="footer_credit_icon">${rsSchoolIcon}</div>
               RS School
@@ -100,7 +101,7 @@ export function Footer(): string {
               <span class="footer_credit_icon footer_credit_icon_mono">${codeIcon}</span>
               @student-nickname
             </a>
-            <p class="footer_note">Designed with love</p>
+            <p class="footer_note">${t('footer.designed')}</p>
           </div>
         </div>
       </div>
