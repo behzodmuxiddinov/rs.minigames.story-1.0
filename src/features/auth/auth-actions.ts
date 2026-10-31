@@ -5,27 +5,36 @@ import { getCurrentUser, subscribe } from '@/services/auth-store';
 import { enforceRouteAccess } from '@/app/router';
 import { escapeHtml } from '@/utils/escape-html.utilities';
 import { showSnackbar } from '@/components/snackbar/snackbar';
+import { t } from '@/features/i18n';
 
 const MENU_ID = 'auth_menu_list';
 
-const GUEST_HEADER = `
-  <button class="btn btn_ghost" type="button" data-auth="login">Log in</button>
-  <button class="btn btn_primary" type="button" data-auth="register">Sign up</button>
-`;
+function GuestHeader(): string {
+  return `
+    <button class="btn btn_ghost" type="button" data-auth="login">${t('auth.logInAction')}</button>
+    <button class="btn btn_primary" type="button" data-auth="register">${t('auth.register')}</button>
+  `;
+}
 
-const GUEST_TABLET = `
-  <button class="btn btn_primary" type="button" data-auth="register">Sign up</button>
-`;
+function GuestTablet(): string {
+  return `
+    <button class="btn btn_primary" type="button" data-auth="register">${t('auth.register')}</button>
+  `;
+}
 
-const GUEST_SIDEBAR = `
-  <button class="btn btn_outline" type="button" data-auth="login">Log In</button>
-  <button class="btn btn_primary" type="button" data-auth="register">Sign Up</button>
-`;
+function GuestSidebar(): string {
+  return `
+    <button class="btn btn_outline" type="button" data-auth="login">${t('auth.logInAction')}</button>
+    <button class="btn btn_primary" type="button" data-auth="register">${t('auth.register')}</button>
+  `;
+}
 
-const ACCOUNT_SIDEBAR = `
-  <a class="btn btn_outline" href="/profile">Profile</a>
-  <button class="btn btn_primary" type="button" data-auth-logout>Log out</button>
-`;
+function AccountSidebar(): string {
+  return `
+    <a class="btn btn_outline" href="/profile">${t('auth.profile')}</a>
+    <button class="btn btn_primary" type="button" data-auth-logout>${t('auth.logout')}</button>
+  `;
+}
 
 export function Avatar(user: User, className: string): string {
   if (user.photoURL) {
@@ -43,7 +52,7 @@ function ProfileMenu(user: User): string {
       <button
         class="auth_menu_trigger"
         type="button"
-        aria-label="Account menu"
+        aria-label="${t('auth.accountMenu')}"
         aria-haspopup="true"
         aria-expanded="false"
         aria-controls="${MENU_ID}"
@@ -51,9 +60,9 @@ function ProfileMenu(user: User): string {
         ${Avatar(user, 'auth_avatar')}
       </button>
       <div class="auth_menu_list" id="${MENU_ID}" hidden>
-        <a class="auth_menu_item" href="/profile">Profile</a>
+        <a class="auth_menu_item" href="/profile">${t('auth.profile')}</a>
         <button class="auth_menu_item" type="button" data-auth-logout>
-          Log out
+          ${t('auth.logout')}
         </button>
       </div>
     </div>
@@ -68,10 +77,12 @@ function setRegion(selector: string, html: string): void {
   }
 }
 
-function render(user: User | null): void {
-  setRegion('.header_actions', user ? ProfileMenu(user) : GUEST_HEADER);
-  setRegion('.tablet_actions', user ? '' : GUEST_TABLET);
-  setRegion('.sidebar_actions', user ? ACCOUNT_SIDEBAR : GUEST_SIDEBAR);
+export function renderAuthActions(): void {
+  const user = getCurrentUser();
+
+  setRegion('.header_actions', user ? ProfileMenu(user) : GuestHeader());
+  setRegion('.tablet_actions', user ? '' : GuestTablet());
+  setRegion('.sidebar_actions', user ? AccountSidebar() : GuestSidebar());
 }
 
 function setMenuOpen(open: boolean): void {
@@ -87,10 +98,10 @@ function setMenuOpen(open: boolean): void {
 }
 
 export function initAuthActions(): void {
-  render(getCurrentUser());
+  renderAuthActions();
 
-  subscribe((user) => {
-    render(user);
+  subscribe(() => {
+    renderAuthActions();
     enforceRouteAccess();
   });
 

@@ -1,17 +1,18 @@
 import { DEFAULT_GAME_SORT, GAME_RATINGS } from '@/constants';
 import type { GameRating } from '@/types';
 import './filter-card-ratings.scss';
+import { t } from '@/features/i18n';
 
 export const FilterCardRatings = (
   selected: GameRating = DEFAULT_GAME_SORT,
 ): string => {
   return `
     <div class="filter_card_rating">
-      <label for="rating_select" class="filter_card_rating_label">Sort by:</label>
+      <label for="rating_select" class="filter_card_rating_label">${t('library.sortLabel')}</label>
       <select id="rating_select" class="filter_card_rating_select">
         ${GAME_RATINGS.map(
-          ({ value, label }) =>
-            `<option value="${value}" ${value === selected ? 'selected' : ''}>${label}</option>`,
+          ({ value, labelKey }) =>
+            `<option value="${value}" ${value === selected ? 'selected' : ''}>${t(labelKey)}</option>`,
         ).join('')}
       </select>
     </div>

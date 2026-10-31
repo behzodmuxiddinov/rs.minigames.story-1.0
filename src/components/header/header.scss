@@ -26,7 +26,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: var(--size-4);
+    gap: var(--size-2);
+
+    @include tablet {
+      gap: var(--size-4);
+    }
   }
 
   .logo_content {
@@ -88,16 +92,20 @@
       }
     }
 
-    @include desktop {
+    @include wide {
       display: none;
     }
   }
 
   .tablet_nav {
     display: flex;
-    gap: var(--size-3);
+    gap: var(--size-2);
 
-    @include desktop {
+    @include tablet {
+      gap: var(--size-3);
+    }
+
+    @include wide {
       display: none;
     }
     .btn {
@@ -128,12 +136,12 @@
       display: flex;
     }
 
-    @include desktop {
+    @include wide {
       position: static;
       display: flex;
       flex-direction: row;
       align-items: center;
-      gap: var(--size-4);
+      gap: var(--size-3);
       padding: 0;
       background-color: transparent;
       border-bottom: none;
@@ -146,9 +154,9 @@
     gap: var(--size-2);
     list-style: none;
 
-    @include desktop {
+    @include wide {
       flex-direction: row;
-      gap: var(--size-5);
+      gap: var(--size-3);
     }
   }
 
@@ -159,6 +167,7 @@
       font-size: var(--font-size-body-medium);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
+      white-space: nowrap;
       text-decoration: none;
       transition: transform 0.2s ease;
 
@@ -175,6 +184,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--size-1);
+
+    .btn {
+      white-space: nowrap;
+    }
 
     @include tablet {
       flex-direction: row;

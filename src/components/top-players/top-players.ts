@@ -4,31 +4,31 @@ import { formatNumber } from '@/utils/format-number.utilities';
 import { EmptyState } from '../empty-state/empty-state';
 import type { TopPlayer } from '@/services/api';
 import { showErrorBanner } from '../error/error-banner';
-import { ERROR_MESSAGE } from '@/constants';
+import { t, type TranslationKey } from '@/features/i18n';
 
-const TABLE_COLUMNS = [
-  'rank',
-  'player',
-  'games played',
-  'total score',
-  'streak',
-  'favorite game',
+const TABLE_COLUMNS: TranslationKey[] = [
+  'leaderboard.rank',
+  'leaderboard.player',
+  'leaderboard.gamesPlayed',
+  'leaderboard.totalScore',
+  'leaderboard.streak',
+  'leaderboard.favoriteGame',
 ];
 const SKELETON_ROW_COUNT = 5;
 
 export function TopPlayers(): string {
   return `
-    <section class="top_players_content" aria-label="Top players this week">
+    <section class="top_players_content" aria-label="${t('leaderboard.section')}">
       <div class="top_players_header">
         <div class="top_players_stick"></div>
-        <p class="top_players_title">Top Players This Week</p>
+        <p class="top_players_title">${t('leaderboard.title')}</p>
       </div>
       <div class="top_players_table_wrap">
         <table class="top_players_table">
           <thead>
             <tr>
               ${TABLE_COLUMNS.map(
-                (column) => `<th scope="col">${column}</th>`,
+                (column) => `<th scope="col">${t(column)}</th>`,
               ).join('')}
             </tr>
           </thead>
@@ -69,7 +69,7 @@ function emptyRow(): string {
 function errorRow(): string {
   return `
     <tr class="is_error">
-      <td class="cell_error" colspan="${TABLE_COLUMNS.length}">${ERROR_MESSAGE}</td>
+      <td class="cell_error" colspan="${TABLE_COLUMNS.length}">${t('common.networkError')}</td>
     </tr>
   `;
 }
@@ -139,7 +139,7 @@ export async function initLeaderboard(): Promise<void> {
       if (errorBody) {
         showErrorBanner(
           errorBody,
-          error instanceof Error ? error.message : ERROR_MESSAGE,
+          error instanceof Error ? error.message : t('common.networkError'),
           loadLeaderBoard,
         );
       }

@@ -24,7 +24,7 @@ aside {
     transform: translateX(0);
   }
 
-  @include desktop {
+  @include wide {
     display: none;
   }
 
@@ -96,6 +96,10 @@ aside {
         @include active_link;
       }
     }
+  }
+
+  .sidebar_language .language_switcher {
+    width: 100%;
   }
 
   .sidebar_actions {

@@ -16,6 +16,7 @@ import {
 import { getCurrentUser } from '@/services/auth-store';
 import { showErrorBanner } from '../error/error-banner';
 import { showSnackbar } from '../snackbar/snackbar';
+import { getLocale, t } from '@/features/i18n';
 
 export const GAME_URL_PARAMETER = 'game';
 
@@ -28,9 +29,6 @@ const COMMENT_ERROR_SELECTOR = '.game_details_comment_error';
 const COMMENT_LIKE_SELECTOR = '[data-comment-like]';
 const FAVORITE_SELECTOR = '.game_details_favorite';
 const FAVORITE_LIKES_SELECTOR = '.game_details_meta_likes';
-const ERROR_MESSAGE = 'Failed to load the game details.';
-const COMMENT_ERROR_MESSAGE = 'Failed to post the comment. Try again.';
-const FAVORITE_ERROR = 'Failed to update favorites. Try again.';
 const MEDALS = ['🥇', '🥈', '🥉'];
 const SKELETON_STAT_COUNT = 4;
 const SKELETON_RECORD_COUNT = 3;
@@ -41,6 +39,14 @@ const DAY = 24 * HOUR;
 const WEEK = 7 * DAY;
 const MONTH = 30 * DAY;
 const YEAR = 365 * DAY;
+const RELATIVE_UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
+  ['year', YEAR],
+  ['month', MONTH],
+  ['week', WEEK],
+  ['day', DAY],
+  ['hour', HOUR],
+  ['minute', MINUTE],
+];
 
 let loadedSlug: string | undefined;
 let requestId = 0;
@@ -52,25 +58,20 @@ function escapeHtml(value: string): string {
   return element.innerHTML;
 }
 
-function pluralAgo(value: number, unit: string): string {
-  return `${value} ${unit}${value === 1 ? '' : 's'} ago`;
-}
-
 function formatRelativeDate(isoDate: string): string {
   const timestamp = Date.parse(isoDate);
   if (Number.isNaN(timestamp)) return '';
 
   const elapsed = Date.now() - timestamp;
+  const formatter = new Intl.RelativeTimeFormat(getLocale());
 
-  if (elapsed < MINUTE) return 'just now';
-  if (elapsed < HOUR) return `${Math.floor(elapsed / MINUTE)} min ago`;
-  if (elapsed < DAY) return pluralAgo(Math.floor(elapsed / HOUR), 'hour');
-  if (elapsed < WEEK) return pluralAgo(Math.floor(elapsed / DAY), 'day');
-  if (elapsed < 4 * WEEK) return pluralAgo(Math.floor(elapsed / WEEK), 'week');
-  if (elapsed < 12 * MONTH)
-    return pluralAgo(Math.max(1, Math.floor(elapsed / MONTH)), 'month');
+  for (const [unit, duration] of RELATIVE_UNITS) {
+    if (elapsed >= duration) {
+      return formatter.format(-Math.floor(elapsed / duration), unit);
+    }
+  }
 
-  return pluralAgo(Math.max(1, Math.floor(elapsed / YEAR)), 'year');
+  return t('time.justNow');
 }
 
 function stat(label: string, value: string): string {
@@ -87,7 +88,7 @@ function recordRow(record: GameRecord): string {
     <li class="game_details_record">
       <span class="game_details_record_medal">${MEDALS[record.position - 1] ?? record.position}</span>
       <span class="game_details_record_player">${escapeHtml(record.playerName)}</span>
-      <span class="game_details_record_score">${formatNumber(record.score)} pts</span>
+      <span class="game_details_record_score">${t('details.points', { score: formatNumber(record.score) })}</span>
       <span class="game_details_record_date">${formatRelativeDate(record.achievedAt)}</span>
     </li>
   `;
@@ -106,7 +107,7 @@ function commentItem(comment: GameComment): string {
         class="game_details_comment_likes"
         type="button"
         data-comment-like
-        aria-label="Like the comment"
+        aria-label="${t('details.likeComment')}"
         aria-pressed="${comment.isLikedByCurrentUser}"
         data-comment-id="${escapeHtml(comment.commentId)}"
       >
@@ -118,7 +119,7 @@ function commentItem(comment: GameComment): string {
 }
 
 function favoriteLabel(isFavorited: boolean): string {
-  return isFavorited ? 'Remove from Favorites' : 'Add to Favorites';
+  return t(isFavorited ? 'library.removeFavorite' : 'library.addFavorite');
 }
 
 function gameDetailsBody(game: GameDetails, comments: GameComment[]): string {
@@ -126,33 +127,33 @@ function gameDetailsBody(game: GameDetails, comments: GameComment[]): string {
     <div class="game_details_header">
       <h2 class="game_details_title" id="game_details_title">${escapeHtml(game.name)}</h2>
       <div class="game_details_meta">
-        <span class="game_details_meta_item"><img src="${starIcon}" alt="Rating" />${game.rating}</span>
-        <span class="game_details_meta_item game_details_meta_likes"><img src="${heartIcon}" alt="Likes" />${formatCompact(game.likesCount)}</span>
+        <span class="game_details_meta_item"><img src="${starIcon}" alt="${t('common.rating')}" />${game.rating}</span>
+        <span class="game_details_meta_item game_details_meta_likes"><img src="${heartIcon}" alt="${t('common.likes')}" />${formatCompact(game.likesCount)}</span>
       </div>
     </div>
     <p class="game_details_description">${escapeHtml(game.fullDescription)}</p>
     <div class="game_details_stats">
-      ${stat('Genre', escapeHtml(game.specs.genre))}
-      ${stat('Players', escapeHtml(game.specs.players))}
-      ${stat('Duration', escapeHtml(game.specs.duration))}
-      ${stat('Price', escapeHtml(game.specs.price))}
+      ${stat(t('details.genre'), escapeHtml(game.specs.genre))}
+      ${stat(t('details.players'), escapeHtml(game.specs.players))}
+      ${stat(t('details.duration'), escapeHtml(game.specs.duration))}
+      ${stat(t('details.price'), escapeHtml(game.specs.price))}
     </div>
     <div class="game_details_actions">
-      <button class="game_details_play" type="button">Play Now</button>
+      <button class="game_details_play" type="button">${t('details.play')}</button>
       <button class="game_details_favorite" type="button" aria-label="${favoriteLabel(game.isLikedByCurrentUser)}" aria-pressed="${game.isLikedByCurrentUser}">
         <img src="${game.isLikedByCurrentUser ? heartIcon : heartOutlineIcon}" alt="" /><span>${favoriteLabel(game.isLikedByCurrentUser)}</span>
       </button>
     </div>
     <section>
-      <h3 class="game_details_section_title">🏆 Top Records</h3>
+      <h3 class="game_details_section_title">${t('details.topRecords')}</h3>
       <ul class="game_details_records">${game.topRecords.map((record) => recordRow(record)).join('')}</ul>
     </section>
     <section>
-      <h3 class="game_details_section_title">Comments (${comments.length})</h3>
+      <h3 class="game_details_section_title">${t('details.comments', { count: comments.length })}</h3>
       <form class="game_details_comment_form">
         <span class="game_details_avatar">U</span>
-        <input class="game_details_comment_input" type="text" name="comment" placeholder="Write a comment..." />
-        <button class="game_details_send" type="submit" aria-label="Send"><img src="${sendIcon}" alt="" /></button>
+        <input class="game_details_comment_input" type="text" name="comment" placeholder="${t('details.commentPlaceholder')}" />
+        <button class="game_details_send" type="submit" aria-label="${t('details.send')}"><img src="${sendIcon}" alt="" /></button>
       </form>
       <ul class="game_details_comments">${comments.map((comment) => commentItem(comment)).join('')}</ul>
     </section>
@@ -235,7 +236,7 @@ export function GameDetailsDialog(): string {
   return `
     <dialog class="game_details_dialog" aria-labelledby="game_details_title">
       <div class="game_details_inner">
-        <button class="game_details_close" type="button" aria-label="Close" data-details-close><img src="${closeIcon}" alt="" /></button>
+        <button class="game_details_close" type="button" aria-label="${t('common.close')}" data-details-close><img src="${closeIcon}" alt="" /></button>
         <div class="game_details_media"></div>
         <div class="game_details_body"></div>
       </div>
@@ -294,7 +295,7 @@ async function loadGame(slug: string): Promise<void> {
     body.innerHTML = '';
     showErrorBanner(
       body,
-      error instanceof Error ? error.message : ERROR_MESSAGE,
+      error instanceof Error ? error.message : t('details.loadError'),
       () => loadGame(slug),
     );
   }
@@ -306,6 +307,9 @@ function showDialog(slug: string): void {
   if (!dialog || !inner) return;
 
   dialog.dataset.slug = slug;
+  dialog
+    .querySelector('.game_details_close')
+    ?.setAttribute('aria-label', t('common.close'));
 
   if (!dialog.open) {
     inner.scrollTop = 0;
@@ -333,7 +337,7 @@ async function submitComment(
   const user = getCurrentUser();
   if (!slug || !input || !list || !text) return;
   if (!user?.email) {
-    showSnackbar('You need to be logged in to comment', { status: 'info' });
+    showSnackbar(t('details.loginForComment'), { status: 'info' });
     return;
   }
 
@@ -344,7 +348,7 @@ async function submitComment(
   try {
     const comment = await postGameComment(slug, {
       userEmail: user.email,
-      authorName: user.displayName ?? 'Anonymous',
+      authorName: user.displayName ?? t('details.anonymous'),
       text,
     });
 
@@ -353,7 +357,7 @@ async function submitComment(
   } catch {
     form.insertAdjacentHTML(
       'afterend',
-      `<p class="game_details_comment_error" role="alert">${COMMENT_ERROR_MESSAGE}</p>`,
+      `<p class="game_details_comment_error" role="alert">${t('details.commentError')}</p>`,
     );
   } finally {
     input.disabled = false;
@@ -370,9 +374,7 @@ async function toggleCommentLike(button: HTMLButtonElement): Promise<void> {
   const user = getCurrentUser();
   if (!commentId || !count || !icon) return;
   if (!user?.email) {
-    showSnackbar('You need to be logged in to like a comment', {
-      status: 'info',
-    });
+    showSnackbar(t('details.loginForLike'), { status: 'info' });
     return;
   }
 
@@ -404,9 +406,7 @@ async function toggleFavorite(
   const user = getCurrentUser();
   if (!slug || !icon || !label) return;
   if (!user?.email) {
-    showSnackbar('You need to be logged in to add favorites', {
-      status: 'info',
-    });
+    showSnackbar(t('library.loginForFavorites'), { status: 'info' });
     return;
   }
 
@@ -428,9 +428,10 @@ async function toggleFavorite(
     const likesText = likes?.lastChild;
     if (likesText) likesText.textContent = formatCompact(likesCount);
   } catch (error: unknown) {
-    showSnackbar(error instanceof Error ? error.message : FAVORITE_ERROR, {
-      status: 'error',
-    });
+    showSnackbar(
+      error instanceof Error ? error.message : t('library.favoriteError'),
+      { status: 'error' },
+    );
   } finally {
     button.disabled = false;
   }

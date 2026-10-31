@@ -2,6 +2,7 @@ import './profile.scss';
 import { Avatar } from '@/features/auth/auth-actions';
 import { getCurrentUser } from '@/services/auth-store';
 import { escapeHtml } from '@/utils/escape-html.utilities';
+import { t } from '@/features/i18n';
 
 export function Profile(): string {
   const user = getCurrentUser();
@@ -12,10 +13,10 @@ export function Profile(): string {
 
   return `
     <section class="profile_page">
-      <h1>Profile</h1>
+      <h1>${t('profile.title')}</h1>
       <div class="profile_card">
         ${Avatar(user, 'profile_avatar')}
-        <p class="profile_name">${escapeHtml(user.displayName ?? 'Account')}</p>
+        <p class="profile_name">${escapeHtml(user.displayName ?? t('profile.account'))}</p>
       </div>
     </section>
   `;
