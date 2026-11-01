@@ -12,8 +12,7 @@
   overflow: visible;
 
   &::backdrop {
-    background-color: var(--on-bg);
-    opacity: 0.5;
+    background-color: var(--scrim);
   }
 
   .game_details_inner {
@@ -22,7 +21,7 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     background-color: var(--bg);
-    border: var(--border-width-medium) solid var(--on-primary);
+    border: var(--border-width-medium) solid var(--ink);
     border-radius: var(--corner-large);
     box-shadow: var(--shadow-level-2);
   }
@@ -37,16 +36,15 @@
     width: var(--size-4);
     height: var(--size-4);
     padding: var(--size-1);
-    color: var(--on-primary);
-    background-color: var(--white);
-    border: var(--border-width-medium) solid var(--on-primary);
+    color: var(--on-bg-high);
+    background-color: var(--surface-low);
+    border: var(--border-width-medium) solid var(--ink);
     border-radius: var(--corner-full);
     cursor: pointer;
 
-    img {
+    svg {
       width: 100%;
       height: 100%;
-      object-fit: contain;
     }
   }
 
@@ -55,7 +53,7 @@
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    border-bottom: var(--border-width-medium) solid var(--on-primary);
+    border-bottom: var(--border-width-medium) solid var(--ink);
 
     @include tablet {
       aspect-ratio: 5 / 2;
@@ -89,7 +87,7 @@
     font-size: var(--font-size-headline-medium);
     font-weight: var(--font-weight-extra-bold);
     line-height: 1.2;
-    color: var(--on-primary);
+    color: var(--on-bg-high);
 
     @include tablet {
       font-size: var(--font-size-headline-large);
@@ -107,7 +105,7 @@
     gap: var(--size-05);
     font-size: var(--font-size-label-large);
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     white-space: nowrap;
 
     img {
@@ -137,8 +135,8 @@
     flex-direction: column;
     gap: var(--size-05);
     padding: var(--size-1);
-    background-color: var(--white);
-    border: var(--border-width-medium) solid var(--on-primary);
+    background-color: var(--surface-low);
+    border: var(--border-width-medium) solid var(--ink);
     border-radius: var(--corner-small);
     box-shadow: var(--shadow-level-1);
   }
@@ -151,7 +149,7 @@
   .game_details_stat_value {
     font-size: var(--font-size-label-large);
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     text-transform: capitalize;
   }
 
@@ -168,8 +166,8 @@
       font-family: var(--font-family-inter);
       font-size: var(--font-size-label-large);
       font-weight: var(--font-weight-bold);
-      color: var(--on-primary);
-      border: var(--border-width-medium) solid var(--on-primary);
+      color: var(--on-bg-high);
+      border: var(--border-width-medium) solid var(--ink);
       border-radius: var(--corner-small);
       box-shadow: var(--shadow-level-1);
       cursor: pointer;
@@ -184,6 +182,7 @@
 
   .game_details_play {
     flex: 1;
+    color: var(--on-primary);
     background-color: var(--primary);
     transition: background-color 0.2s ease;
 
@@ -194,7 +193,7 @@
 
   .game_details_favorite {
     width: var(--size-5);
-    background-color: var(--white);
+    background-color: var(--surface-low);
 
     span {
       display: none;
@@ -216,7 +215,7 @@
     margin-bottom: var(--size-1);
     font-size: var(--font-size-label-large);
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
   }
 
   .game_details_records,
@@ -233,20 +232,20 @@
     gap: var(--size-1);
     padding: var(--size-1) var(--size-2);
     font-size: var(--font-size-label-medium);
-    background-color: var(--white);
+    background-color: var(--surface-low);
     border-radius: var(--corner-small);
   }
 
   .game_details_record_player {
     flex: 1;
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
   }
 
   .game_details_record_score {
     font-size: var(--font-size-label-large);
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
   }
 
   .game_details_record_date,
@@ -279,7 +278,7 @@
     font-weight: var(--font-weight-bold);
     color: var(--on-primary);
     background-color: var(--primary);
-    border: var(--border-width-medium) solid var(--on-primary);
+    border: var(--border-width-medium) solid var(--ink);
     border-radius: var(--corner-full);
 
     &.is_small {
@@ -298,9 +297,9 @@
     padding: 0 var(--size-1);
     font-family: var(--font-family-inter);
     font-size: var(--font-size-label-medium);
-    color: var(--on-primary);
-    background-color: var(--white);
-    border: var(--border-width-medium) solid var(--on-primary);
+    color: var(--on-bg-high);
+    background-color: var(--surface-low);
+    border: var(--border-width-medium) solid var(--ink);
     border-radius: var(--corner-small);
   }
 
@@ -313,7 +312,7 @@
     height: var(--size-4);
     padding: var(--size-1);
     color: var(--white);
-    background-color: var(--on-primary);
+    background-color: var(--inverse-surface);
     border: none;
     border-radius: var(--corner-small);
     cursor: pointer;
@@ -330,8 +329,8 @@
     flex-direction: column;
     gap: var(--size-1);
     padding: var(--size-1) var(--size-2);
-    background-color: var(--white);
-    border: var(--border-width-medium) solid var(--on-primary);
+    background-color: var(--surface-low);
+    border: var(--border-width-medium) solid var(--ink);
     border-radius: var(--corner-small);
     box-shadow: var(--shadow-level-1);
   }
@@ -346,13 +345,13 @@
     flex: 1;
     font-size: var(--font-size-label-medium);
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
   }
 
   .game_details_comment_text {
     font-size: var(--font-size-label-medium);
     line-height: 1.5;
-    color: var(--on-primary);
+    color: var(--on-bg-high);
   }
 
   .game_details_comment_likes {
@@ -363,7 +362,7 @@
     border: none;
     background: none;
     font-size: var(--font-size-label-small);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     cursor: pointer;
 
     &:disabled {
@@ -449,4 +448,8 @@
     min-height: var(--size-5);
     border-radius: var(--corner-small);
   }
+}
+
+[data-theme='dark'] .game_details_dialog .game_details_play {
+  color: var(--bg);
 }

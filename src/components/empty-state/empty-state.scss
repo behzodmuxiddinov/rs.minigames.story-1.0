@@ -10,7 +10,7 @@
   text-align: center;
   background-color: var(--surface);
   border-radius: var(--corner-large);
-  border: calc(var(--size-05) / 2) solid var(--black);
+  border: calc(var(--size-05) / 2) solid var(--ink);
 
   @include tablet {
     gap: var(--size-2);
@@ -31,7 +31,7 @@
   .empty_state_title {
     font-size: var(--font-size-headline-small);
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
 
     @include tablet {
       font-size: var(--font-size-headline-medium);

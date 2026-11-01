@@ -33,7 +33,7 @@
       max-width: calc(var(--size-15) * 5 + 40px);
       width: 100%;
       background-color: var(--bg);
-      border: calc(var(--size-05) - 1px) solid var(--on-primary);
+      border: calc(var(--size-05) - 1px) solid var(--ink);
       display: flex;
       flex-direction: column;
       gap: var(--size-2);
@@ -55,7 +55,7 @@
       font-size: var(--font-size-display-small);
       font-weight: var(--font-weight-bold);
       line-height: 1.2;
-      color: var(--on-primary);
+      color: var(--on-bg-high);
 
       @include tablet {
         font-size: var(--font-size-display-medium);
@@ -93,7 +93,7 @@
       background-color: var(--primary);
       color: var(--on-primary);
       text-decoration: none;
-      border: calc(var(--size-05) - 2px) solid var(--on-primary);
+      border: calc(var(--size-05) - 2px) solid var(--ink);
       border-radius: var(--size-1);
       width: max-content;
       line-height: 150%;
@@ -128,4 +128,8 @@
       }
     }
   }
+}
+
+[data-theme='dark'] .home_content .main_section {
+  background-color: var(--bg);
 }

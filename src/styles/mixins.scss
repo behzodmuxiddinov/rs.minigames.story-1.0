@@ -34,7 +34,7 @@ $breakpoint-desktop: 1920px;
     font-weight: var(--font-weight-bold);
 
     @include desktop {
-      color: var(--on-primary);
+      color: var(--on-bg-high);
     }
   }
 }

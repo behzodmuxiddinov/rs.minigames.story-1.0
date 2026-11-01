@@ -30,7 +30,7 @@
     gap: var(--size-3);
     padding: var(--size-5);
     background-color: var(--surface-low);
-    border: 2.5px solid var(--on-primary);
+    border: 2.5px solid var(--ink);
     border-radius: var(--corner-large);
 
     @include desktop {
@@ -42,7 +42,7 @@
     font-size: var(--font-size-headline-medium);
     font-weight: var(--font-weight-bold);
     line-height: 1.2;
-    color: var(--on-primary);
+    color: var(--on-bg-high);
 
     @include tablet {
       font-size: var(--font-size-headline-large);
@@ -73,7 +73,7 @@
     color: var(--on-primary);
     text-decoration: none;
     background-color: var(--primary);
-    border: 2px solid var(--on-primary);
+    border: 2px solid var(--ink);
     border-radius: var(--corner-small);
     cursor: pointer;
 
@@ -99,7 +99,7 @@
     text-decoration: none;
 
     &:hover {
-      color: var(--on-primary);
+      color: var(--on-bg-high);
       text-decoration: underline;
     }
   }

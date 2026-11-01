@@ -5,17 +5,18 @@
   overflow: auto;
   gap: var(--size-1);
   .filter_card_type_btn {
-    border: calc(var(--size-05) / 2) solid var(--on-primary);
+    border: calc(var(--size-05) / 2) solid var(--ink);
     border-radius: var(--corner-extra-large);
     padding: var(--size-1) var(--size-2);
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     cursor: pointer;
     text-transform: capitalize;
     &:hover {
       background-color: var(--surface);
     }
     &.is_active {
+      color: var(--on-primary);
       background-color: var(--primary);
     }
   }
@@ -26,4 +27,8 @@
   width: var(--size-11);
   height: var(--size-5);
   border-radius: var(--corner-extra-large);
+}
+
+[data-theme='dark'] .filter_card_type_btn {
+  background-color: transparent;
 }

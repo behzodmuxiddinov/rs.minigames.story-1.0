@@ -12,8 +12,7 @@
   overflow: visible;
 
   &::backdrop {
-    background-color: var(--on-bg);
-    opacity: 0.5;
+    background-color: var(--scrim);
   }
 
   &[open] {
@@ -26,7 +25,7 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     background-color: var(--surface-low);
-    border: 2px solid var(--on-primary);
+    border: 2px solid var(--ink);
     border-radius: var(--corner-large);
     box-shadow: var(--shadow-level-2);
 
@@ -39,8 +38,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     overflow: hidden;
-    background-color: var(--white);
-    border: 2px solid var(--on-primary);
+    background-color: var(--surface-low);
+    border: 2px solid var(--ink);
     border-radius: var(--corner-medium);
   }
 
@@ -51,7 +50,7 @@
     font-size: var(--font-size-body-medium);
     font-weight: var(--font-weight-bold);
     line-height: 1.5;
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -61,7 +60,7 @@
 
     &.is_active {
       color: var(--white);
-      background-color: var(--on-primary);
+      background-color: var(--inverse-surface);
     }
   }
 
@@ -70,7 +69,7 @@
     font-size: var(--font-size-headline-medium);
     font-weight: var(--font-weight-extra-bold);
     line-height: 1.2;
-    color: var(--on-primary);
+    color: var(--on-bg-high);
   }
 
   .auth_subtitle {
@@ -97,19 +96,19 @@
     font-size: var(--font-size-label-large);
     font-weight: var(--font-weight-bold);
     line-height: 1.5;
-    color: var(--on-primary);
+    color: var(--on-bg-high);
   }
 
   .auth_control {
     display: flex;
     align-items: center;
-    background-color: var(--white);
+    background-color: var(--surface-low);
     border: 2px solid var(--outline-variant);
     border-radius: var(--corner-medium);
     transition: border-color 0.2s ease;
 
     &:focus-within {
-      border-color: var(--on-primary);
+      border-color: var(--ink);
     }
 
     &:has(.is_invalid) {
@@ -138,7 +137,7 @@
     cursor: pointer;
 
     &:hover {
-      color: var(--on-primary);
+      color: var(--on-bg-high);
     }
   }
 
@@ -149,7 +148,7 @@
     font-family: var(--font-family-inter);
     font-size: var(--font-size-body-medium);
     line-height: 1.5;
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     background-color: transparent;
     border: none;
     outline: none;
@@ -173,7 +172,7 @@
     align-self: flex-end;
     font-size: var(--font-size-label-large);
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     text-decoration: underline;
   }
 
@@ -191,7 +190,7 @@
 
     &:active {
       transform: translate(2px, 2px);
-      box-shadow: 2px 2px var(--on-primary);
+      box-shadow: 2px 2px var(--ink);
     }
   }
 
@@ -221,7 +220,7 @@
     width: 100%;
     padding: 12px var(--size-2);
     font-size: var(--font-size-body-medium);
-    background-color: var(--white);
+    background-color: var(--surface-low);
 
     &:hover {
       background-color: var(--secondary);
@@ -244,7 +243,7 @@
     font-family: inherit;
     font-size: inherit;
     font-weight: var(--font-weight-bold);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     text-decoration: underline;
     background-color: transparent;
     border: none;

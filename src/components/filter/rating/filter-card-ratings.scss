@@ -4,12 +4,12 @@
   align-items: center;
   width: 100%;
   gap: var(--size-05);
-  border: calc(var(--size-05) / 2) solid var(--on-primary);
+  border: calc(var(--size-05) / 2) solid var(--ink);
   border-radius: var(--corner-full);
   padding: var(--size-1) var(--size-3);
   background-color: var(--surface);
   font-weight: var(--font-weight-bold);
-  color: var(--on-primary);
+  color: var(--on-bg-high);
   outline: none !important;
   cursor: pointer;
   @include tablet {
@@ -17,6 +17,7 @@
   }
 
   &:hover {
+    color: var(--on-primary);
     background-color: var(--primary-low);
   }
 
@@ -42,6 +43,7 @@
     }
 
     .filter_card_rating_select:hover {
+      color: var(--on-primary);
       background-color: var(--primary-low);
     }
 
@@ -51,10 +53,10 @@
 
     .filter_card_rating_select::picker(select) {
       margin-top: var(--size-1);
-      border: calc(var(--size-05) / 2) solid var(--on-primary);
+      border: calc(var(--size-05) / 2) solid var(--ink);
       border-radius: var(--corner-small);
       padding: 0;
-      background-color: var(--white);
+      background-color: var(--surface-low);
       box-shadow: var(--shadow-level-1);
     }
 
@@ -72,6 +74,7 @@
       }
 
       &:checked {
+        color: var(--on-primary);
         background-color: var(--primary-low);
         font-weight: var(--font-weight-bold);
       }
