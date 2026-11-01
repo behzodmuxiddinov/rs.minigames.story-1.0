@@ -2,11 +2,15 @@ import {
   API_BASE_URL,
   buildPath,
   ENDPOINTS,
+  type CommentLikePayload,
   type GameComment,
+  type GameCommentPayload,
   type GameCommentResponse,
   type GameCommentsResponse,
   type GameDetails,
   type GameDetailsResponse,
+  type GameFavorite,
+  type GameFavoriteResponse,
   type GamesQuery,
   type GamesResponse,
 } from '../api';
@@ -34,9 +38,14 @@ export const fetchGames = async (
   return (await response.json()) as GamesResponse;
 };
 
-export const fetchGame = async (gameSlug: string): Promise<GameDetails> => {
+export const fetchGame = async (
+  gameSlug: string,
+  userEmail?: string,
+): Promise<GameDetails> => {
+  const query = userEmail ? '?' + new URLSearchParams({ userEmail }) : '';
+
   const response = await fetch(
-    API_BASE_URL + buildPath(ENDPOINTS.game, { gameSlug }),
+    API_BASE_URL + buildPath(ENDPOINTS.game, { gameSlug }) + query,
   );
 
   if (!response.ok) {
@@ -70,14 +79,14 @@ export const fetchGameComments = async (
 
 export const postGameComment = async (
   gameSlug: string,
-  text: string,
+  payload: GameCommentPayload,
 ): Promise<GameComment> => {
   const response = await fetch(
     API_BASE_URL + buildPath(ENDPOINTS.gameComments, { gameSlug }),
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify(payload),
     },
   );
 
@@ -88,6 +97,41 @@ export const postGameComment = async (
   }
 
   const { data } = (await response.json()) as GameCommentResponse;
+
+  return data;
+};
+
+export const likeComment = async (
+  commentId: string,
+  payload: CommentLikePayload,
+): Promise<void> => {
+  await fetch(API_BASE_URL + buildPath(ENDPOINTS.commentLike, { commentId }), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+};
+
+export const toggleFavoriteGame = async (
+  gameSlug: string,
+  payload: CommentLikePayload,
+): Promise<GameFavorite> => {
+  const response = await fetch(
+    API_BASE_URL + buildPath(ENDPOINTS.gameFavorite, { gameSlug }),
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to update favorites: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const { data } = (await response.json()) as GameFavoriteResponse;
 
   return data;
 };

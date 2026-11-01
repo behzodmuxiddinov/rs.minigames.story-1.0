@@ -156,6 +156,17 @@
     }
   }
 
+  .library_game_card_favorite {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+
   .library_game_card_icon {
     width: var(--size-2);
     height: var(--size-2);

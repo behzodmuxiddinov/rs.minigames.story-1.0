@@ -1,8 +1,6 @@
 import './empty-state.scss';
 import emptyIcon from '@/assets/icons/alertCircle.svg';
-
-const DEFAULT_TITLE = 'Nothing here yet';
-const DEFAULT_MESSAGE = 'There is nothing to show right now. Try again later.';
+import { t } from '@/features/i18n';
 
 export interface EmptyStateProperties {
   title?: string;
@@ -10,8 +8,8 @@ export interface EmptyStateProperties {
 }
 
 export function EmptyState({
-  title = DEFAULT_TITLE,
-  message = DEFAULT_MESSAGE,
+  title = t('common.emptyTitle'),
+  message = t('common.emptyMessage'),
 }: EmptyStateProperties = {}): string {
   return `
     <div class="empty_state" role="status">

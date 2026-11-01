@@ -1,4 +1,6 @@
-import { Home, Library, initMainContent, initLibrary } from '@/pages';
+import { Home, Library, Profile, initMainContent, initLibrary } from '@/pages';
+import { getCurrentUser } from '@/services/auth-store';
+import { t, type TranslationKey } from '@/features/i18n';
 
 export interface NavLink {
   href: string;
@@ -6,44 +8,55 @@ export interface NavLink {
 }
 
 interface Route {
-  label: string;
-  title: string;
+  labelKey: TranslationKey;
+  titleKey: TranslationKey;
   render: () => string;
   init?: () => void;
+  hidden?: boolean;
+  protected?: boolean;
 }
 
 const DEFAULT_PATH = '/home';
 
 const ROUTES: Record<string, Route> = {
   '/home': {
-    label: 'Home',
-    title: 'MiniGames',
+    labelKey: 'nav.home',
+    titleKey: 'title.home',
     render: Home,
     init: initMainContent,
   },
   '/library': {
-    label: 'Library',
-    title: 'Library | MiniGames',
+    labelKey: 'nav.library',
+    titleKey: 'title.library',
     render: Library,
     init: initLibrary,
   },
   '/tournaments': {
-    label: 'Tournaments',
-    title: 'Tournaments | MiniGames',
+    labelKey: 'nav.tournaments',
+    titleKey: 'title.tournaments',
     render: Home,
     init: initMainContent,
   },
   '/community': {
-    label: 'Community',
-    title: 'Community | MiniGames',
+    labelKey: 'nav.community',
+    titleKey: 'title.community',
     render: Home,
     init: initMainContent,
   },
+  '/profile': {
+    labelKey: 'nav.profile',
+    titleKey: 'title.profile',
+    render: Profile,
+    hidden: true,
+    protected: true,
+  },
 };
 
-export const NAV_LINKS: NavLink[] = Object.entries(ROUTES).map(
-  ([href, { label }]) => ({ href, label }),
-);
+export function navLinks(): NavLink[] {
+  return Object.entries(ROUTES)
+    .filter(([, route]) => !route.hidden)
+    .map(([href, { labelKey }]) => ({ href, label: t(labelKey) }));
+}
 
 let currentPath: string | undefined;
 let queryHandler: (() => void) | undefined;
@@ -76,6 +89,11 @@ function renderRoute(): void {
 
   const path = resolvePath(globalThis.location.pathname);
 
+  if (ROUTES[path].protected && !getCurrentUser()) {
+    navigate(DEFAULT_PATH, true);
+    return;
+  }
+
   if (path === currentPath) {
     queryHandler?.();
     return;
@@ -88,13 +106,18 @@ function renderRoute(): void {
   queryHandler = undefined;
   main.innerHTML = route.render();
   route.init?.();
-  document.title = route.title;
+  document.title = t(route.titleKey);
   syncActiveLinks(path);
 
   if (!isFirstRender) {
     globalThis.scrollTo({ top: 0 });
     main.focus();
   }
+}
+
+export function rerenderRoute(): void {
+  currentPath = undefined;
+  renderRoute();
 }
 
 export function navigate(to: string, replace = false): void {
@@ -106,6 +129,14 @@ export function navigate(to: string, replace = false): void {
   else globalThis.history.pushState({}, '', to);
 
   renderRoute();
+}
+
+export function enforceRouteAccess(): void {
+  const path = resolvePath(globalThis.location.pathname);
+
+  if (ROUTES[path].protected && !getCurrentUser()) {
+    navigate(DEFAULT_PATH, true);
+  }
 }
 
 function handleLinkClick(event: MouseEvent): void {

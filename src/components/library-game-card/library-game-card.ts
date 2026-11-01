@@ -1,8 +1,10 @@
 import './library-game-card.scss';
 import { formatCompact } from '@/utils/format-number.utilities';
 import starIcon from '@/assets/icons/star.svg';
-import heartIcon from '@/assets/icons/heart.svg';
+import heartOutlineIcon from '@/assets/icons/outlineHeart.svg';
 import type { Game } from '@/types';
+import { t } from '@/features/i18n';
+
 const FREE_PRICE = 'Free';
 
 export function LibraryGameCard(game: Game): string {
@@ -25,13 +27,21 @@ export function LibraryGameCard(game: Game): string {
         <div class="library_game_card_footer">
           <div class="library_game_card_meta">
             <span class="library_game_card_stat">
-              <img class="library_game_card_icon" src="${starIcon}" alt="Rating" />${game.rating}
+              <img class="library_game_card_icon" src="${starIcon}" alt="${t('common.rating')}" />${game.rating}
             </span>
-            <span class="library_game_card_stat">
-              <img class="library_game_card_icon" src="${heartIcon}" alt="Likes" />${formatCompact(game.likesCount)}
-            </span>
+            <button
+              class="library_game_card_stat library_game_card_favorite"
+              type="button"
+              data-favorite
+              data-slug="${game.slug}"
+              aria-label="${t('library.addFavorite')}"
+              aria-pressed="false"
+            >
+              <img class="library_game_card_icon" src="${heartOutlineIcon}" alt="" />
+              <span class="library_game_card_likes">${formatCompact(game.likesCount)}</span>
+            </button>
           </div>
-          <button class="library_game_card_btn" type="button" data-slug="${game.slug}">Details</button>
+          <button class="library_game_card_btn" type="button" data-slug="${game.slug}">${t('library.details')}</button>
         </div>
       </div>
     </article>

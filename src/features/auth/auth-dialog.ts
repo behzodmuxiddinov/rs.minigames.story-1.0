@@ -1,3 +1,8 @@
+import {
+  login,
+  loginWithGoogle,
+  register,
+} from '@/services/actions/auth.actions';
 import './auth-dialog.scss';
 import { LoginForm, RegisterForm } from './auth-form';
 import { eyeIcon, eyeOffIcon } from './icons';
@@ -6,10 +11,39 @@ import {
   validateLogin,
   validateRegister,
 } from './validation';
+import { showSnackbar } from '@/components/snackbar/snackbar';
+import { t, type TranslationKey } from '@/features/i18n';
 
 const DIALOG_ID = 'auth_dialog';
 
 type AuthMode = 'login' | 'register';
+
+const TAB_LABEL_KEYS: Record<AuthMode, TranslationKey> = {
+  login: 'auth.login',
+  register: 'auth.register',
+};
+
+type TSubmitProperties = {
+  formData: FormData;
+  mode: AuthMode;
+  onSuccess: () => void;
+  authDialog: HTMLDialogElement;
+};
+
+function AuthTabs(mode: AuthMode): string {
+  return Object.entries(TAB_LABEL_KEYS)
+    .map(
+      ([tabMode, labelKey]) => `
+        <button
+          class="auth_tab ${tabMode === mode ? 'is_active' : ''}"
+          type="button"
+          data-auth-tab="${tabMode}"
+          aria-pressed="${tabMode === mode}"
+        >${t(labelKey)}</button>
+      `,
+    )
+    .join('');
+}
 
 export function AuthDialog(): string {
   return `
@@ -19,14 +53,7 @@ export function AuthDialog(): string {
       aria-labelledby="auth_dialog_title"
     >
       <div class="auth_dialog_inner">
-        <div class="auth_tabs">
-          <button class="auth_tab" type="button" data-auth-tab="login">
-            Login
-          </button>
-          <button class="auth_tab" type="button" data-auth-tab="register">
-            Register
-          </button>
-        </div>
+        <div class="auth_tabs">${AuthTabs('login')}</div>
         <div class="auth_dialog_body"></div>
       </div>
     </dialog>
@@ -50,6 +77,59 @@ function setFieldError(input: HTMLInputElement, message: string): void {
   }
 }
 
+const submitForm = async ({
+  formData,
+  mode,
+  onSuccess,
+  authDialog,
+}: TSubmitProperties): Promise<void> => {
+  const email = String(formData.get('email') ?? '');
+  const password = String(formData.get('password') ?? '');
+  const username = String(formData.get('username') ?? '');
+  const authSubmitButton =
+    document.querySelector<HTMLButtonElement>('.auth_submit');
+  const authSubmitText = authSubmitButton?.textContent;
+  authDialog.setAttribute('inert', 'true');
+  if (authSubmitButton) {
+    authSubmitButton.textContent = t('common.loading');
+    authSubmitButton.setAttribute('aria-busy', 'true');
+  }
+  try {
+    await (mode === 'login'
+      ? login({ email, password })
+      : register({ email, password, username }));
+
+    onSuccess();
+  } catch (error) {
+    showSnackbar(String(error), { status: 'error' });
+  } finally {
+    authDialog.removeAttribute('inert');
+    if (authSubmitButton) {
+      authSubmitButton.textContent = authSubmitText?.trim() ?? t('auth.submit');
+      authSubmitButton.removeAttribute('aria-busy');
+    }
+  }
+};
+
+function togglePassword(toggle: HTMLButtonElement): void {
+  const input = toggle
+    .closest('.auth_control')
+    ?.querySelector<HTMLInputElement>('.auth_input');
+
+  if (!input) {
+    return;
+  }
+
+  const willShow = input.type === 'password';
+  input.type = willShow ? 'text' : 'password';
+  toggle.innerHTML = willShow ? eyeOffIcon : eyeIcon;
+  toggle.setAttribute('aria-pressed', String(willShow));
+  toggle.setAttribute(
+    'aria-label',
+    t(willShow ? 'auth.hidePassword' : 'auth.showPassword'),
+  );
+}
+
 export function initAuthDialog(): void {
   const dialog = document.querySelector<HTMLDialogElement>(`#${DIALOG_ID}`);
   const dialogBody = dialog?.querySelector<HTMLElement>('.auth_dialog_body');
@@ -58,8 +138,10 @@ export function initAuthDialog(): void {
     return;
   }
 
-  const tabs = dialog.querySelectorAll<HTMLButtonElement>('[data-auth-tab]');
+  const tabsContainer = dialog.querySelector<HTMLElement>('.auth_tabs');
   let mode: AuthMode = 'login';
+  let pending = false;
+  let googlePending = false;
 
   const validate = (form: HTMLFormElement): FieldErrors =>
     mode === 'login'
@@ -70,10 +152,8 @@ export function initAuthDialog(): void {
     mode = next;
     dialogBody.innerHTML = mode === 'login' ? LoginForm() : RegisterForm();
 
-    for (const tab of tabs) {
-      const isActive = tab.dataset.authTab === mode;
-      tab.classList.toggle('is_active', isActive);
-      tab.setAttribute('aria-pressed', String(isActive));
+    if (tabsContainer) {
+      tabsContainer.innerHTML = AuthTabs(mode);
     }
   };
 
@@ -84,27 +164,36 @@ export function initAuthDialog(): void {
     document.body.classList.add('is_locked');
   };
 
-  const togglePassword = (toggle: HTMLButtonElement): void => {
-    const input = toggle
-      .closest('.auth_control')
-      ?.querySelector<HTMLInputElement>('.auth_input');
+  const signInWithGoogle = async (button: HTMLButtonElement): Promise<void> => {
+    const label = button.querySelector<HTMLElement>('span');
+    const labelText = label?.textContent ?? '';
 
-    if (!input) {
-      return;
+    googlePending = true;
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+
+    if (label) {
+      label.textContent = t('common.loading');
     }
 
-    const willShow = input.type === 'password';
-    input.type = willShow ? 'text' : 'password';
-    toggle.innerHTML = willShow ? eyeOffIcon : eyeIcon;
-    toggle.setAttribute('aria-pressed', String(willShow));
-    toggle.setAttribute(
-      'aria-label',
-      willShow ? 'Hide password' : 'Show password',
-    );
+    try {
+      await loginWithGoogle();
+      dialog.close();
+    } catch (error) {
+      showSnackbar(String(error), { status: 'error' });
+    } finally {
+      googlePending = false;
+      button.disabled = false;
+      button.removeAttribute('aria-busy');
+
+      if (label) {
+        label.textContent = labelText;
+      }
+    }
   };
 
   document.body.addEventListener('click', (event) => {
-    if (!(event.target instanceof HTMLElement)) {
+    if (!(event.target instanceof Element)) {
       return;
     }
 
@@ -116,7 +205,7 @@ export function initAuthDialog(): void {
   });
 
   dialog.addEventListener('click', (event) => {
-    if (!(event.target instanceof HTMLElement)) {
+    if (!(event.target instanceof Element)) {
       return;
     }
 
@@ -143,7 +232,18 @@ export function initAuthDialog(): void {
       return;
     }
 
-    if (event.target === dialog) {
+    const googleButton =
+      event.target.closest<HTMLButtonElement>('.auth_google');
+
+    if (googleButton) {
+      if (!googlePending) {
+        void signInWithGoogle(googleButton);
+      }
+
+      return;
+    }
+
+    if (event.target === dialog && !pending) {
       dialog.close();
     }
   });
@@ -184,10 +284,26 @@ export function initAuthDialog(): void {
       return;
     }
 
-    dialog.close();
+    pending = true;
+
+    void submitForm({
+      formData: new FormData(form),
+      mode,
+      onSuccess: () => dialog.close(),
+      authDialog: dialog,
+    }).finally(() => {
+      pending = false;
+    });
+  });
+
+  dialog.addEventListener('cancel', (event) => {
+    if (pending) {
+      event.preventDefault();
+    }
   });
 
   dialog.addEventListener('close', () => {
+    googlePending = false;
     document.body.classList.remove('is_locked');
   });
 }

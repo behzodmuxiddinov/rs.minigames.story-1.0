@@ -2,6 +2,7 @@ import type { TPagination } from '@/types';
 import chevronLeftIcon from '@/assets/icons/chevronLeft.svg';
 import chevronRightIcon from '@/assets/icons/chevronRight.svg';
 import './pagination.scss';
+import { t } from '@/features/i18n';
 
 export function Pagination({ page, totalPages }: TPagination): string {
   if (totalPages <= 1) return '';
@@ -17,7 +18,7 @@ export function Pagination({ page, totalPages }: TPagination): string {
   return `
     <nav class="pagination">
       <button class="pagination_btn" type="button" data-page="${page - 1}" ${page === 1 ? 'disabled' : ''}>
-        <img src="${chevronLeftIcon}" alt="Previous page" />
+        <img src="${chevronLeftIcon}" alt="${t('pagination.previous')}" />
       </button>
       ${pages
         .map(
@@ -26,7 +27,7 @@ export function Pagination({ page, totalPages }: TPagination): string {
         )
         .join('')}
       <button class="pagination_btn" type="button" data-page="${page + 1}" ${page === totalPages ? 'disabled' : ''}>
-        <img src="${chevronRightIcon}" alt="Next page" />
+        <img src="${chevronRightIcon}" alt="${t('pagination.next')}" />
       </button>
     </nav>
   `;

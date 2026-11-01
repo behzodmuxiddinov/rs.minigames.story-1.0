@@ -1,0 +1,36 @@
+.profile_page {
+  max-width: var(--dialog-width-large);
+  margin: 0 auto;
+  padding: var(--size-5) var(--size-2);
+}
+
+.profile_card {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-3);
+  background-color: var(--surface-low);
+  border: var(--border-width-medium) solid var(--on-primary);
+  border-radius: var(--corner-large);
+  box-shadow: var(--shadow-level-2);
+}
+
+.profile_avatar {
+  width: var(--size-8);
+  height: var(--size-8);
+  display: grid;
+  place-items: center;
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-bold);
+  color: var(--on-primary);
+  background-color: var(--primary-low);
+  border: var(--border-width-medium) solid var(--on-primary);
+  border-radius: var(--corner-full);
+  object-fit: cover;
+}
+
+.profile_name {
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-bold);
+  color: var(--on-primary);
+}

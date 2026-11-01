@@ -1,26 +1,32 @@
 import './sidebar.scss';
 import logoUrl from '../../assets/images/brand-logo-white.svg';
 import closeIconUrl from '../../assets/icons/close.svg';
-import { NAV_LINKS } from '../../app/router';
+import { navLinks } from '../../app/router';
+import { LanguageSwitcher, t } from '@/features/i18n';
+
+const CLOSE_TRIGGERS =
+  '.sidebar_close_btn, .overlay, #sidebar a, [data-auth], [data-auth-logout]';
 
 export function Sidebar(): string {
-  const navItems = NAV_LINKS.map(
-    ({ href, label }) =>
-      `<li class="nav_item"><a href="${href}">${label}</a></li>`,
-  ).join('');
+  const navItems = navLinks()
+    .map(
+      ({ href, label }) =>
+        `<li class="nav_item"><a href="${href}">${label}</a></li>`,
+    )
+    .join('');
 
   return `
-    <aside id="sidebar" aria-label="Mobile navigation">
+    <aside id="sidebar" aria-label="${t('sidebar.nav')}">
       <header>
         <div class="logo_content">
-          <a href="/home" class="logo_link" aria-label="MiniGames home">
+          <a href="/home" class="logo_link" aria-label="${t('common.brandHome')}">
             <img src="${logoUrl}" alt="MiniGames" width="172" height="32" />
           </a>
         </div>
         <button
           class="sidebar_close_btn"
           type="button"
-          aria-label="Close navigation"
+          aria-label="${t('sidebar.close')}"
         >
           <img src="${closeIconUrl}" alt="" class="sidebar_close_img" />
         </button>
@@ -28,65 +34,57 @@ export function Sidebar(): string {
       <nav class="sidebar_nav">
         <ul class="nav_items">${navItems}</ul>
       </nav>
-      <div class="sidebar_actions">
-        <button class="btn btn_outline" type="button" data-auth="login">Log In</button>
-        <button class="btn btn_primary" type="button" data-auth="register">Sign Up</button>
-      </div>
+      <div class="sidebar_language">${LanguageSwitcher()}</div>
+      <div class="sidebar_actions"></div>
     </aside>
   `;
 }
 
-export function initSidebar(): void {
+function isSidebarOpen(): boolean {
+  return Boolean(
+    document.querySelector('#sidebar')?.classList.contains('is_open'),
+  );
+}
+
+function setSidebarOpen(open: boolean): void {
   const sidebar = document.querySelector<HTMLElement>('#sidebar');
+  const overlay = document.querySelector<HTMLElement>('.overlay');
   const burger = document.querySelector<HTMLButtonElement>('.header_burger');
-  const overlay = document.querySelector<HTMLDivElement>('.overlay');
   const closeButton =
     document.querySelector<HTMLButtonElement>('.sidebar_close_btn');
-  const authButtons =
-    document.querySelectorAll<HTMLButtonElement>('[data-auth]');
-  if (!sidebar || !burger || !closeButton || !overlay) {
-    return;
+
+  if (!sidebar || !overlay || !burger || !closeButton) return;
+
+  sidebar.classList.toggle('is_open', open);
+  overlay.classList.toggle('is_open', open);
+  document.body.classList.toggle('is_locked', open);
+
+  if (open) {
+    closeButton.focus();
+  } else {
+    burger.focus();
   }
+}
 
-  const setOpen = (open: boolean): void => {
-    sidebar.classList.toggle('is_open', open);
-    overlay.classList.toggle('is_open', open);
-    document.body.classList.toggle('is_locked', open);
+export function closeSidebar(): void {
+  if (isSidebarOpen()) setSidebarOpen(false);
+}
 
-    if (open) {
-      closeButton.focus();
-    } else {
-      burger.focus();
+export function initSidebar(): void {
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+
+    if (event.target.closest('.header_burger')) {
+      setSidebarOpen(!isSidebarOpen());
+      return;
     }
-  };
 
-  burger.addEventListener('click', () => {
-    setOpen(!sidebar.classList.contains('is_open'));
-  });
-
-  closeButton.addEventListener('click', () => {
-    setOpen(false);
-  });
-
-  sidebar.addEventListener('click', (event) => {
-    if (event.target instanceof HTMLElement && event.target.closest('a')) {
-      setOpen(false);
+    if (event.target.closest(CLOSE_TRIGGERS)) {
+      closeSidebar();
     }
   });
-
-  overlay.addEventListener('click', () => {
-    setOpen(false);
-  });
-
-  for (const authButton of authButtons) {
-    authButton.addEventListener('click', () => {
-      setOpen(false);
-    });
-  }
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && sidebar.classList.contains('is_open')) {
-      setOpen(false);
-    }
+    if (event.key === 'Escape') closeSidebar();
   });
 }

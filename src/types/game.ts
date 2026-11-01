@@ -1,3 +1,5 @@
+import type { TranslationKey } from '@/features/i18n';
+
 export type GameCategory =
   'puzzle' | 'card' | 'match' | 'farm' | 'strategy' | 'arcade';
 
@@ -6,7 +8,7 @@ export type GameRating =
 
 export type TGameRatingSelect = {
   value: GameRating;
-  label: string;
+  labelKey: TranslationKey;
 };
 export type Game = {
   slug: string;

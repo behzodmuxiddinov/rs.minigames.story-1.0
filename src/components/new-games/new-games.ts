@@ -8,21 +8,21 @@ import type { Game } from '@/services/api';
 import { fetchGames } from '@/services/actions/games.actions';
 import { showErrorBanner } from '@/components/error/error-banner';
 import { EmptyState } from '@/components/empty-state/empty-state';
-import { ERROR_MESSAGE } from '@/constants';
+import { t } from '@/features/i18n';
 
 const AUTO_SLIDE_DELAY = 4000;
 
 export function NewGames(): string {
   return `
-    <section class="new_games" aria-label="New games">
+    <section class="new_games" aria-label="${t('newGames.section')}">
       <div class="new_games_header">
         <div class="section_stick"></div>
-        <p class="section_title">New Games</p>
+        <p class="section_title">${t('newGames.title')}</p>
         <div class="new_games_nav">
-          <button class="carousel_btn" type="button" data-carousel="prev" aria-label="Previous game">
+          <button class="carousel_btn" type="button" data-carousel="prev" aria-label="${t('newGames.previous')}">
             <img class="carousel_icon" src="${arrowLeftIcon}" alt="prev_slider" />
           </button>
-          <button class="carousel_btn" type="button" data-carousel="next" aria-label="Next game">
+          <button class="carousel_btn" type="button" data-carousel="next" aria-label="${t('newGames.next')}">
             <img class="carousel_icon" src="${arrowRightIcon}" alt="next_slider" />
           </button>
         </div>
@@ -41,10 +41,10 @@ function gameCard(game: Game, index: number, classes = ''): string {
         <p class="game_card_name">${game.name}</p>
         <div class="game_card_meta">
           <span class="game_card_rating">
-            <img class="meta_icon" src="${starIcon}" alt="Rating" />${game.rating}
+            <img class="meta_icon" src="${starIcon}" alt="${t('common.rating')}" />${game.rating}
           </span>
           <span class="game_card_likes">
-            <img class="meta_icon" src="${heartIcon}" alt="Likes" />${formatCompact(game.likesCount)}
+            <img class="meta_icon" src="${heartIcon}" alt="${t('common.likes')}" />${formatCompact(game.likesCount)}
           </span>
         </div>
       </div>
@@ -87,7 +87,7 @@ export async function initNewGames(): Promise<void> {
 
       showErrorBanner(
         track,
-        error instanceof Error ? error.message : ERROR_MESSAGE,
+        error instanceof Error ? error.message : t('common.networkError'),
         loadGames,
       );
     }

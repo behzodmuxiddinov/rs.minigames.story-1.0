@@ -1,14 +1,15 @@
 import { eyeIcon, googleIcon, lockIcon, mailIcon, userIcon } from './icons';
 import { PASSWORD_MIN_LENGTH } from './validation';
+import { t } from '@/features/i18n';
 
 export function LoginForm(): string {
   return `
-    <h2 class="auth_title" id="auth_dialog_title">Welcome Back!</h2>
-    <p class="auth_subtitle">Sign in to resume your games and progress.</p>
+    <h2 class="auth_title" id="auth_dialog_title">${t('auth.loginTitle')}</h2>
+    <p class="auth_subtitle">${t('auth.loginSubtitle')}</p>
 
     <form class="auth_form" novalidate>
       <div class="auth_field">
-        <label class="auth_label" for="auth_email">Email Address</label>
+        <label class="auth_label" for="auth_email">${t('auth.email')}</label>
         <div class="auth_control">
           <span class="auth_control_icon">${mailIcon}</span>
           <input
@@ -16,7 +17,7 @@ export function LoginForm(): string {
             id="auth_email"
             name="email"
             type="email"
-            placeholder="e.g. alex@minigames.com"
+            placeholder="${t('auth.loginEmailPlaceholder')}"
             autocomplete="email"
             aria-describedby="auth_email_error"
           />
@@ -25,7 +26,7 @@ export function LoginForm(): string {
       </div>
 
       <div class="auth_field">
-        <label class="auth_label" for="auth_password">Password</label>
+        <label class="auth_label" for="auth_password">${t('auth.password')}</label>
         <div class="auth_control">
           <span class="auth_control_icon">${lockIcon}</span>
           <input
@@ -33,7 +34,7 @@ export function LoginForm(): string {
             id="auth_password"
             name="password"
             type="password"
-            placeholder="Enter your password"
+            placeholder="${t('auth.loginPasswordPlaceholder')}"
             autocomplete="current-password"
             aria-describedby="auth_password_error"
           />
@@ -41,29 +42,29 @@ export function LoginForm(): string {
             class="auth_toggle"
             type="button"
             data-auth-toggle
-            aria-label="Show password"
+            aria-label="${t('auth.showPassword')}"
             aria-pressed="false"
           >${eyeIcon}</button>
         </div>
         <p class="auth_error" id="auth_password_error" role="alert"></p>
       </div>
 
-      <a class="auth_forgot" href="#/forgot-password">Forgot Password?</a>
+      <a class="auth_forgot" href="#/forgot-password">${t('auth.forgot')}</a>
 
-      <button class="btn btn_primary auth_submit" type="submit">Login</button>
+      <button class="btn btn_primary auth_submit" type="submit">${t('auth.login')}</button>
     </form>
 
-    <div class="auth_divider"><span>OR</span></div>
+    <div class="auth_divider"><span>${t('auth.or')}</span></div>
 
     <button class="btn auth_google" type="button">
       ${googleIcon}
-      <span>Continue with Google</span>
+      <span>${t('auth.continueWithGoogle')}</span>
     </button>
 
     <p class="auth_switch">
-      Don't have an account?
+      ${t('auth.noAccount')}
       <button class="auth_switch_btn" type="button" data-auth-switch="register">
-        Register
+        ${t('auth.register')}
       </button>
     </p>
   `;
@@ -71,12 +72,12 @@ export function LoginForm(): string {
 
 export function RegisterForm(): string {
   return `
-    <h2 class="auth_title" id="auth_dialog_title">Create Account</h2>
-    <p class="auth_subtitle">Join MiniGames to track your score &amp; streak.</p>
+    <h2 class="auth_title" id="auth_dialog_title">${t('auth.registerTitle')}</h2>
+    <p class="auth_subtitle">${t('auth.registerSubtitle')}</p>
 
     <form class="auth_form" novalidate>
       <div class="auth_field">
-        <label class="auth_label" for="auth_username">Username</label>
+        <label class="auth_label" for="auth_username">${t('auth.username')}</label>
         <div class="auth_control">
           <span class="auth_control_icon">${userIcon}</span>
           <input
@@ -84,7 +85,7 @@ export function RegisterForm(): string {
             id="auth_username"
             name="username"
             type="text"
-            placeholder="e.g. CozyGamer_99"
+            placeholder="${t('auth.usernamePlaceholder')}"
             autocomplete="username"
             aria-describedby="auth_username_error"
           />
@@ -93,7 +94,7 @@ export function RegisterForm(): string {
       </div>
 
       <div class="auth_field">
-        <label class="auth_label" for="auth_email">Email Address</label>
+        <label class="auth_label" for="auth_email">${t('auth.email')}</label>
         <div class="auth_control">
           <span class="auth_control_icon">${mailIcon}</span>
           <input
@@ -101,7 +102,7 @@ export function RegisterForm(): string {
             id="auth_email"
             name="email"
             type="email"
-            placeholder="your.email@domain.com"
+            placeholder="${t('auth.registerEmailPlaceholder')}"
             autocomplete="email"
             aria-describedby="auth_email_error"
           />
@@ -110,7 +111,7 @@ export function RegisterForm(): string {
       </div>
 
       <div class="auth_field">
-        <label class="auth_label" for="auth_password">Password</label>
+        <label class="auth_label" for="auth_password">${t('auth.password')}</label>
         <div class="auth_control">
           <span class="auth_control_icon">${lockIcon}</span>
           <input
@@ -118,17 +119,24 @@ export function RegisterForm(): string {
             id="auth_password"
             name="password"
             type="password"
-            placeholder="Min. ${PASSWORD_MIN_LENGTH} characters"
+            placeholder="${t('auth.registerPasswordPlaceholder', { count: PASSWORD_MIN_LENGTH })}"
             autocomplete="new-password"
             aria-describedby="auth_password_error"
           />
+          <button
+            class="auth_toggle"
+            type="button"
+            data-auth-toggle
+            aria-label="${t('auth.showPassword')}"
+            aria-pressed="false"
+          >${eyeIcon}</button>
         </div>
         <p class="auth_error" id="auth_password_error" role="alert"></p>
       </div>
 
       <div class="auth_field">
         <label class="auth_label" for="auth_confirm_password">
-          Confirm Password
+          ${t('auth.confirmPassword')}
         </label>
         <div class="auth_control">
           <span class="auth_control_icon">${lockIcon}</span>
@@ -137,30 +145,37 @@ export function RegisterForm(): string {
             id="auth_confirm_password"
             name="confirmPassword"
             type="password"
-            placeholder="Repeat your password"
+            placeholder="${t('auth.confirmPasswordPlaceholder')}"
             autocomplete="new-password"
             aria-describedby="auth_confirm_password_error"
           />
+          <button
+            class="auth_toggle"
+            type="button"
+            data-auth-toggle
+            aria-label="${t('auth.showConfirmPassword')}"
+            aria-pressed="false"
+          >${eyeIcon}</button>
         </div>
         <p class="auth_error" id="auth_confirm_password_error" role="alert"></p>
       </div>
 
       <button class="btn btn_primary auth_submit" type="submit">
-        Create Account
+        ${t('auth.createAccount')}
       </button>
     </form>
 
-    <div class="auth_divider"><span>OR</span></div>
+    <div class="auth_divider"><span>${t('auth.or')}</span></div>
 
     <button class="btn auth_google" type="button">
       ${googleIcon}
-      <span>Sign up with Google</span>
+      <span>${t('auth.signUpWithGoogle')}</span>
     </button>
 
     <p class="auth_switch">
-      Already have an account?
+      ${t('auth.haveAccount')}
       <button class="auth_switch_btn" type="button" data-auth-switch="login">
-        Login
+        ${t('auth.login')}
       </button>
     </p>
   `;

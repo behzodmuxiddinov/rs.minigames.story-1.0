@@ -1,21 +1,19 @@
 import './error-banner.scss';
 import alertIcon from '@/assets/icons/alertCircle.svg';
 import retryIcon from '@/assets/icons/refresh.svg';
-
-const TITLE = 'Something went wrong';
-const RETRY_LABEL = 'Retry';
+import { t } from '@/features/i18n';
 
 export function ErrorBanner(message: string): string {
   return `
     <div class="error_banner" role="alert">
-      <img class="error_banner_icon" src="${alertIcon}" alt="Error" />
+      <img class="error_banner_icon" src="${alertIcon}" alt="${t('common.errorIcon')}" />
       <div class="error_banner_text">
-        <p class="error_banner_title">${TITLE}</p>
+        <p class="error_banner_title">${t('common.errorTitle')}</p>
         <p class="error_banner_message">${message}</p>
       </div>
       <button class="btn error_banner_retry" type="button">
         <img class="error_banner_retry_icon" src="${retryIcon}" alt="" />
-        <span>${RETRY_LABEL}</span>
+        <span>${t('common.retry')}</span>
       </button>
     </div>
   `;

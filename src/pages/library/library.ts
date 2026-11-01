@@ -17,10 +17,19 @@ import {
 import { Pagination } from '@/components/pagination/pagination';
 import { openGameDetails } from '@/components/game-details-dialog/game-details-dialog';
 import { fetchCategories } from '@/services/actions/categories';
-import { fetchGames } from '@/services/actions/games.actions';
+import {
+  fetchGames,
+  toggleFavoriteGame,
+} from '@/services/actions/games.actions';
 import { EmptyState } from '@/components/empty-state/empty-state';
 import { showErrorBanner } from '@/components/error/error-banner';
-import { DEFAULT_GAME_SORT, ERROR_MESSAGE, isGameRating } from '@/constants';
+import { showSnackbar } from '@/components/snackbar/snackbar';
+import { getCurrentUser } from '@/services/auth-store';
+import { formatCompact } from '@/utils/format-number.utilities';
+import heartIcon from '@/assets/icons/heart.svg';
+import heartOutlineIcon from '@/assets/icons/outlineHeart.svg';
+import { DEFAULT_GAME_SORT, isGameRating } from '@/constants';
+import { t } from '@/features/i18n';
 
 const PAGE_SIZE = 6;
 
@@ -43,8 +52,8 @@ export function Library(): string {
         <div class="library_content">
             <div class="library_inner_content">
                 <div class="library_header_content">
-                    <h1>Game Library</h1>
-                    <p>Browse our collection of casual mini-games</p>
+                    <h1>${t('library.title')}</h1>
+                    <p>${t('library.subtitle')}</p>
                 </div>
                 <div class="games_section">
                     <div class="library_filter_content">
@@ -66,8 +75,8 @@ function renderGames(container: HTMLElement, games: Game[]): void {
   if (games.length === 0) {
     container.classList.add('no_games');
     container.innerHTML = EmptyState({
-      title: 'No games found',
-      message: 'Try another category or sorting option.',
+      title: t('library.emptyTitle'),
+      message: t('library.emptyMessage'),
     });
     return;
   }
@@ -84,6 +93,41 @@ function renderGamesSkeleton(container: HTMLElement): void {
   container.innerHTML = Array.from({ length: PAGE_SIZE }, () =>
     LibraryGameCardSkeleton(),
   ).join('');
+}
+
+async function toggleFavorite(button: HTMLButtonElement): Promise<void> {
+  const slug = button.dataset.slug;
+  const icon = button.querySelector('img');
+  const likes = button.querySelector<HTMLElement>('.library_game_card_likes');
+  const user = getCurrentUser();
+  if (!slug || !icon || !likes) return;
+  if (!user?.email) {
+    showSnackbar(t('library.loginForFavorites'), { status: 'info' });
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+    const { isFavorited, likesCount } = await toggleFavoriteGame(slug, {
+      userEmail: user.email,
+    });
+
+    button.setAttribute('aria-pressed', String(isFavorited));
+    button.setAttribute(
+      'aria-label',
+      t(isFavorited ? 'library.removeFavorite' : 'library.addFavorite'),
+    );
+    icon.src = isFavorited ? heartIcon : heartOutlineIcon;
+    likes.textContent = formatCompact(likesCount);
+  } catch (error: unknown) {
+    showSnackbar(
+      error instanceof Error ? error.message : t('library.favoriteError'),
+      { status: 'error' },
+    );
+  } finally {
+    button.disabled = false;
+  }
 }
 
 export function initLibrary(): void {
@@ -127,7 +171,7 @@ export function initLibrary(): void {
       paginationContainer.innerHTML = '';
       showErrorBanner(
         gamesContainer,
-        error instanceof Error ? error.message : ERROR_MESSAGE,
+        error instanceof Error ? error.message : t('common.networkError'),
         loadGames,
       );
     } finally {
@@ -143,8 +187,8 @@ export function initLibrary(): void {
 
       if (categories.length === 0) {
         categoryContainer.innerHTML = EmptyState({
-          title: 'No categories',
-          message: 'Categories are unavailable right now.',
+          title: t('library.noCategoriesTitle'),
+          message: t('library.noCategoriesMessage'),
         });
         return;
       }
@@ -172,7 +216,7 @@ export function initLibrary(): void {
     } catch (error: unknown) {
       showErrorBanner(
         categoryContainer,
-        error instanceof Error ? error.message : ERROR_MESSAGE,
+        error instanceof Error ? error.message : t('common.networkError'),
         loadCategories,
       );
     }
@@ -195,6 +239,14 @@ export function initLibrary(): void {
 
   gamesContainer.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
+
+    const favoriteButton =
+      event.target.closest<HTMLButtonElement>('[data-favorite]');
+    if (favoriteButton) {
+      void toggleFavorite(favoriteButton);
+      return;
+    }
+
     const slug = event.target.attributes.getNamedItem('data-slug')?.value;
     if (event.target.closest('.library_game_card_btn') && slug) {
       openGameDetails(slug);
