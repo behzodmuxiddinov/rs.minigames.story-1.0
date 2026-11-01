@@ -3,7 +3,7 @@ import { formatCompact, formatNumber } from '@/utils/format-number.utilities';
 import starIcon from '@/assets/icons/star.svg';
 import heartIcon from '@/assets/icons/heart.svg';
 import heartOutlineIcon from '@/assets/icons/outlineHeart.svg';
-import closeIcon from '@/assets/icons/primaryClose.svg';
+import closeIcon from '@/assets/icons/primaryClose.svg?raw';
 import sendIcon from '@/assets/icons/sendIcon.svg';
 import type { GameComment, GameDetails, GameRecord } from '@/services/api';
 import {
@@ -236,7 +236,7 @@ export function GameDetailsDialog(): string {
   return `
     <dialog class="game_details_dialog" aria-labelledby="game_details_title">
       <div class="game_details_inner">
-        <button class="game_details_close" type="button" aria-label="${t('common.close')}" data-details-close><img src="${closeIcon}" alt="" /></button>
+        <button class="game_details_close" type="button" aria-label="${t('common.close')}" data-details-close>${closeIcon}</button>
         <div class="game_details_media"></div>
         <div class="game_details_body"></div>
       </div>
