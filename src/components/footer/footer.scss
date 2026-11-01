@@ -166,7 +166,7 @@
     justify-content: center;
     align-items: center;
     line-height: 0;
-    background-color: var(--on-primary);
+    background-color: var(--inverse-surface);
     height: var(--size-3);
     width: var(--size-3);
     border-radius: var(--corner-full);
@@ -179,4 +179,7 @@
   .footer_credit_icon_mono {
     background-color: var(--white);
   }
+}
+[data-theme='dark'] .footer_content {
+  background-color: var(--surface);
 }

@@ -38,8 +38,8 @@ body.is_locked {
   font-size: var(--font-size-label-extra-large);
   font-weight: var(--font-weight-bold);
   line-height: 1.5;
-  color: var(--on-primary);
-  border: 2px solid var(--on-primary);
+  color: var(--on-bg-high);
+  border: 2px solid var(--ink);
   border-radius: var(--corner-medium);
   cursor: pointer;
 }
@@ -53,6 +53,7 @@ body.is_locked {
 }
 
 .btn_primary {
+  color: var(--on-primary);
   background-color: var(--primary-low);
 
   &:hover {

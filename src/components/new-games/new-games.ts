@@ -1,7 +1,7 @@
 import './new-games.scss';
 import { formatCompact } from '@/utils/format-number.utilities';
-import arrowLeftIcon from '@/assets/icons/arrow_back.svg';
-import arrowRightIcon from '@/assets/icons/arrow_forward.svg';
+import arrowLeftIcon from '@/assets/icons/arrow_back.svg?raw';
+import arrowRightIcon from '@/assets/icons/arrow_forward.svg?raw';
 import starIcon from '@/assets/icons/star.svg';
 import heartIcon from '@/assets/icons/heart.svg';
 import type { Game } from '@/services/api';
@@ -20,10 +20,10 @@ export function NewGames(): string {
         <p class="section_title">${t('newGames.title')}</p>
         <div class="new_games_nav">
           <button class="carousel_btn" type="button" data-carousel="prev" aria-label="${t('newGames.previous')}">
-            <img class="carousel_icon" src="${arrowLeftIcon}" alt="prev_slider" />
+            <span class="carousel_icon">${arrowLeftIcon}</span>
           </button>
           <button class="carousel_btn" type="button" data-carousel="next" aria-label="${t('newGames.next')}">
-            <img class="carousel_icon" src="${arrowRightIcon}" alt="next_slider" />
+            <span class="carousel_icon">${arrowRightIcon}</span>
           </button>
         </div>
       </div>

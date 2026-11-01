@@ -15,13 +15,13 @@
     width: var(--size-1);
     height: var(--size-4);
     background-color: var(--primary);
-    border: calc(var(--size-05) / 4) solid var(--on-primary);
+    border: calc(var(--size-05) / 4) solid var(--ink);
     border-radius: var(--size-05);
   }
 
   .section_title {
     font-size: var(--font-size-headline-medium);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     font-weight: var(--font-weight-bold);
     line-height: 100%;
 
@@ -46,20 +46,24 @@
     justify-content: center;
     width: var(--size-5);
     height: var(--size-5);
-    color: var(--on-primary);
-    background-color: var(--white);
-    border: calc(var(--size-05) / 2) solid var(--on-primary);
+    color: var(--on-bg-high);
+    background-color: var(--surface-low);
+    border: calc(var(--size-05) / 2) solid var(--ink);
     border-radius: var(--corner-full);
     transition: all 0.2s ease;
     cursor: pointer;
 
     .carousel_icon {
-      width: calc(var(--size-2) + 2px);
-      height: calc(var(--size-3) - 4px);
-      padding: var(--size-05);
+      display: flex;
+
+      svg {
+        width: var(--size-2);
+        height: var(--size-2);
+      }
     }
 
     &:hover:not(:disabled) {
+      color: var(--on-primary);
       background-color: var(--primary);
     }
 
@@ -88,7 +92,7 @@
     height: calc(var(--size-15) + var(--size-10));
     overflow: hidden;
     background-color: var(--secondary);
-    border: calc(var(--size-05) / 2) solid var(--on-primary);
+    border: calc(var(--size-05) / 2) solid var(--ink);
     border-radius: var(--corner-large);
     cursor: pointer;
     transition: flex-basis 0.3s ease;

@@ -3,8 +3,8 @@
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  background-color: var(--white);
-  border: 2px solid var(--on-primary);
+  background-color: var(--surface-low);
+  border: 2px solid var(--ink);
   border-radius: var(--corner-medium);
   transition: background-color 0.2s ease;
 
@@ -23,8 +23,8 @@
     right: var(--size-2);
     width: 7px;
     height: 7px;
-    border-right: 2px solid var(--on-primary);
-    border-bottom: 2px solid var(--on-primary);
+    border-right: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
     border-radius: 1px;
     transform: translateY(-2px) rotate(45deg);
     pointer-events: none;
@@ -41,7 +41,7 @@
   font: inherit;
   font-size: var(--font-size-label-extra-large);
   font-weight: var(--font-weight-bold);
-  color: var(--on-primary);
+  color: var(--on-bg-high);
   cursor: pointer;
   outline: none;
 
@@ -58,8 +58,8 @@
     &::picker(select) {
       margin-top: var(--size-05);
       padding: 0;
-      background-color: var(--white);
-      border: 2px solid var(--on-primary);
+      background-color: var(--surface-low);
+      border: 2px solid var(--ink);
       border-radius: var(--corner-small);
       box-shadow: var(--shadow-level-1);
     }

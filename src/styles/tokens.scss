@@ -1,26 +1,32 @@
 :root {
+  color-scheme: light;
+
   --white: #ffffff;
   --black: #000000;
   --bg: #f9f8f3;
   --on-bg: #5f5d75;
   --on-bg-low: #737380;
+  --on-bg-high: #242145;
   --bg-footer: #1e1b3a;
   --bg-footer-low: #2a264f;
   --bg-footer-lowest: #3c376e;
   --on-bg-footer: #b9b5c9;
   --surface: #fff9e5;
   --surface-low: #fffcf5;
+  --inverse-surface: #242145;
   --primary: #ffd02b;
   --primary-low: #fde047;
   --primary-high: #e5bb00;
   --on-primary: #242145;
   --secondary: #f0eeff;
   --tertiary: #3a2ebf;
+  --on-tertiary: #ffffff;
   --like: #ff4b4b;
   --error: #b3261e;
   --price-free: #0b8a8f;
   --scrim: rgb(93 98 120 / 70%);
 
+  --ink: #242145;
   --outline: #e5e7eb;
   --outline-variant: #d2d2d2;
 
@@ -98,7 +104,30 @@
 
   --dialog-width-large: 640px;
 
-  --shadow-level-1: 4px 4px var(--on-primary);
-  --shadow-level-2: 6px 6px var(--on-primary);
-  --shadow-level-3: 8px 8px var(--on-primary);
+  --shadow-level-1: 4px 4px var(--ink);
+  --shadow-level-2: 6px 6px var(--ink);
+  --shadow-level-3: 8px 8px var(--ink);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #1c1940;
+  --on-bg: #b4b0c8;
+  --on-bg-low: #918da6;
+  --on-bg-high: #ece9fb;
+  --surface: #12102a;
+  --surface-low: #232048;
+  --inverse-surface: #3c376e;
+  --secondary: #2b2757;
+  --tertiary: #9a8cff;
+  --on-tertiary: #1a1733;
+  --like: #ff6b6b;
+  --error: #f2b8b5;
+  --price-free: #4ad7dd;
+  --scrim: rgb(8 6 20 / 75%);
+
+  --ink: #a9a3d4;
+  --outline: #332f5c;
+  --outline-variant: #413c70;
 }

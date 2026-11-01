@@ -25,6 +25,7 @@ export const en = {
   'common.emptyMessage': 'There is nothing to show right now. Try again later.',
 
   'language.label': 'Language',
+  'theme.toggle': 'Toggle dark mode',
 
   'header.toggleNav': 'Toggle navigation',
   'header.mainNav': 'Main navigation',

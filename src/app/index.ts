@@ -22,6 +22,7 @@ import {
   initLanguageSwitcher,
   onLocaleChange,
 } from '@/features/i18n';
+import { initThemeToggle } from '@/features/theme';
 
 function replaceElement(selector: string, html: string): void {
   const element = document.querySelector(selector);
@@ -55,6 +56,7 @@ export function initApp(): void {
   initAutoLogout();
   initSidebar();
   initLanguageSwitcher();
+  initThemeToggle();
   initRouter();
   initAuthDialog();
   initGameDetailsDialog();

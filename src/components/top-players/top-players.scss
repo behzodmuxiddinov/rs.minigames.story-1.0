@@ -15,13 +15,13 @@
     width: var(--size-1);
     height: var(--size-4);
     background-color: var(--primary);
-    border: 1.5px solid var(--on-primary);
+    border: 1.5px solid var(--ink);
     border-radius: var(--size-05);
   }
 
   .top_players_title {
     font-size: var(--font-size-headline-large);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
     font-weight: var(--font-weight-bold);
     line-height: 100%;
     letter-spacing: 0%;
@@ -30,7 +30,7 @@
   .top_players_table_wrap {
     overflow-x: auto;
     background-color: var(--surface-low);
-    border: 2.5px solid var(--on-primary);
+    border: 2.5px solid var(--ink);
     border-radius: var(--corner-large);
     box-shadow: var(--shadow-level-1);
   }
@@ -40,7 +40,7 @@
     min-width: 640px;
     border-collapse: collapse;
     font-size: var(--font-size-body-small);
-    color: var(--on-primary);
+    color: var(--on-bg-high);
 
     @include tablet {
       font-size: var(--font-size-body-medium);
@@ -61,7 +61,7 @@
 
     thead {
       background-color: var(--tertiary);
-      color: var(--white);
+      color: var(--on-tertiary);
 
       th {
         text-transform: uppercase;
@@ -142,7 +142,7 @@
       justify-content: center;
       align-items: center;
       border-radius: var(--corner-full);
-      border: 1.5px solid var(--on-primary);
+      border: 1.5px solid var(--ink);
       overflow: hidden;
       font-size: var(--font-size-label-medium);
       font-weight: var(--font-weight-bold);
@@ -154,8 +154,8 @@
   .badge {
     display: inline-block;
     padding: var(--size-05) calc(var(--size-1) * 3);
-    color: var(--on-primary);
-    border: 1.5px solid var(--on-primary);
+    color: var(--on-bg-high);
+    border: 1.5px solid var(--ink);
     border-radius: var(--corner-full);
     font-size: var(--font-size-label-medium);
     font-weight: var(--font-weight-bold);
@@ -169,6 +169,14 @@
 
   .is_gold {
     color: var(--primary);
+  }
+
+  .rank1_color,
+  .rank2_color,
+  .rank3_color,
+  .rank4_color,
+  .rank5_color {
+    color: var(--on-primary);
   }
 
   .rank1_color {
