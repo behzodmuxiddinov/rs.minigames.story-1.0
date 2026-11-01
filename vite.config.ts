@@ -23,6 +23,7 @@ export default defineConfig({
         'src/services/firebaseauth.ts',
         'src/services/api/base-url.ts',
         'src/features/auth/icons.ts',
+        'src/features/theme/icons.ts',
       ],
       thresholds: {
         statements: 80,

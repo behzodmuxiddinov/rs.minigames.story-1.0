@@ -6,6 +6,7 @@ import shareIcon from '@/assets/icons/shareIcon.svg?raw';
 import rssIcon from '@/assets/icons/rssIcon.svg?raw';
 import rsSchoolIcon from '@/assets/icons/rsSchoolIcon.svg?raw';
 import { t, type TranslationKey } from '@/features/i18n';
+import { ThemeToggle } from '@/features/theme';
 
 interface FooterLink {
   href: string;
@@ -83,7 +84,7 @@ export function Footer(): string {
               ${columns}
               <div class="footer_column">
                 <h2 class="footer_title">${t('footer.community')}</h2>
-                <div class="footer_socials">${socials}</div>
+                <div class="footer_socials">${socials}${ThemeToggle()}</div>
               </div>
             </div>
           </div>

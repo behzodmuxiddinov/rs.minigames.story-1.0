@@ -27,6 +27,7 @@ export const ru: Translations = {
   'common.emptyMessage': 'Сейчас нечего показать. Загляните позже.',
 
   'language.label': 'Язык',
+  'theme.toggle': 'Переключить тёмную тему',
 
   'header.toggleNav': 'Открыть или закрыть меню',
   'header.mainNav': 'Основная навигация',

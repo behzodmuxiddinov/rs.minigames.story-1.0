@@ -28,6 +28,7 @@ export const uz: Translations = {
     'Hozir ko‘rsatadigan narsa yo‘q. Keyinroq urinib ko‘ring.',
 
   'language.label': 'Til',
+  'theme.toggle': 'Qorong‘i rejimni almashtirish',
 
   'header.toggleNav': 'Menyuni ochish yoki yopish',
   'header.mainNav': 'Asosiy navigatsiya',

@@ -1,5 +1,6 @@
 import './header.scss';
 import logoUrl from '../../assets/images/brand-logo.svg';
+import logoDarkUrl from '../../assets/images/brand-logo-white.svg';
 import { navLinks } from '../../app/router';
 import { LanguageSwitcher, t } from '@/features/i18n';
 
@@ -17,7 +18,8 @@ export function Header(): string {
         <div class="header_inner_content">
           <div class="logo_content">
             <a href="/home" class="logo_link" aria-label="${t('common.brandHome')}">
-              <img src="${logoUrl}" alt="MiniGames" width="172" height="32" />
+              <img class="logo_img_light" src="${logoUrl}" alt="MiniGames" width="172" height="32" />
+              <img class="logo_img_dark" src="${logoDarkUrl}" alt="MiniGames" width="172" height="32" />
             </a>
           </div>
           <div class="tablet_nav">
